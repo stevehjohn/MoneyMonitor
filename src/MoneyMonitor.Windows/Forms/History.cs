@@ -9,6 +9,8 @@ namespace MoneyMonitor.Windows.Forms
     {
         public HistoryChart HistoryChart { get; set; }
 
+        public bool IsTransient { get; private set; }
+
         private Point? _previousMouse;
 
         public History()
@@ -29,6 +31,8 @@ namespace MoneyMonitor.Windows.Forms
         public void Show(bool transient)
         {
             Show();
+
+            IsTransient = transient;
 
             if (transient)
             {

@@ -36,7 +36,8 @@ namespace MoneyMonitor.Windows.Infrastructure
             _trayManager = new TrayManager
                            {
                                ExitClicked = ExitClicked,
-                               IconClicked = IconClicked
+                               IconClicked = IconClicked,
+                               TopMostToggled = TopMostToggled
                            };
 
             _formManager = new FormManager(_historyManager);
@@ -44,6 +45,11 @@ namespace MoneyMonitor.Windows.Infrastructure
             _poller = new ExchangeApiPoller(logger, client, Polled);
 
             _poller.StartPolling(settings.PollInterval);
+        }
+
+        private void TopMostToggled(bool topMost)
+        {
+            _formManager.UpdateTopMost(topMost);
         }
 
         private void Polled(List<ExchangeBalance> balances)

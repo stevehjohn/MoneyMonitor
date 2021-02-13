@@ -21,6 +21,8 @@ namespace MoneyMonitor.Windows.Services
 
         public Action IconClicked { set; private get; }
 
+        public Action<bool> TopMostToggled { set; private get; }
+
         public TrayManager()
         {
             _contextMenu = new ContextMenuStrip();
@@ -134,7 +136,7 @@ namespace MoneyMonitor.Windows.Services
 
             _alwaysOnTop.Checked = AppSettings.Instance.AlwaysOnTop;
 
-            // TODO: Inform Form Manager
+            TopMostToggled(AppSettings.Instance.AlwaysOnTop);
         }
     }
 }

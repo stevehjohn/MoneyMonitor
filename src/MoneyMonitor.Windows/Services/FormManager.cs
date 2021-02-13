@@ -55,6 +55,17 @@ namespace MoneyMonitor.Windows.Services
             }
         }
 
+        public void UpdateTopMost(bool topMost)
+        {
+            foreach (var form in _forms)
+            {
+                if (! form.IsTransient)
+                {
+                    form.TopMost = topMost;
+                }
+            }
+        }
+
         private void FormOnClosed(object sender, EventArgs e)
         {
             _forms.Remove((History) sender);
