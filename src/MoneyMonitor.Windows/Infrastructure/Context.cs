@@ -5,6 +5,7 @@ using MoneyMonitor.Common.Clients;
 using MoneyMonitor.Common.Infrastructure;
 using MoneyMonitor.Common.Models;
 using MoneyMonitor.Common.Services;
+using MoneyMonitor.Windows.Forms;
 using MoneyMonitor.Windows.Infrastructure.Settings;
 using MoneyMonitor.Windows.Services;
 
@@ -33,7 +34,8 @@ namespace MoneyMonitor.Windows.Infrastructure
 
             _trayManager = new TrayManager
                            {
-                               ExitClicked = ExitClicked
+                               ExitClicked = ExitClicked,
+                               IconClicked = IconClicked
                            };
 
             _poller = new ExchangeApiPoller(logger, client, Polled);
@@ -55,6 +57,13 @@ namespace MoneyMonitor.Windows.Infrastructure
             _trayManager.HideTrayIcon();
 
             Application.Exit();
+        }
+
+        private void IconClicked()
+        {
+            var form = new History();
+
+            form.Show();
         }
     }
 }

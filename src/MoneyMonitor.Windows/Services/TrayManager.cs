@@ -15,6 +15,8 @@ namespace MoneyMonitor.Windows.Services
 
         public Action ExitClicked { set; private get; }
 
+        public Action IconClicked { set; private get; }
+
         public TrayManager()
         {
             _contextMenu = new ContextMenuStrip();
@@ -25,6 +27,8 @@ namespace MoneyMonitor.Windows.Services
                         Icon = Icons.right,
                         Visible = true
                     };
+
+            _icon.Click += TrayIconClicked;
 
             ConstructContextMenu();
         }
@@ -63,6 +67,14 @@ namespace MoneyMonitor.Windows.Services
         public void HideTrayIcon()
         {
             _icon.Visible = false;
+        }
+
+        private void TrayIconClicked(object sender, EventArgs eventArgs)
+        {
+            if (((MouseEventArgs) eventArgs).Button == MouseButtons.Left)
+            {
+                IconClicked();
+            }
         }
 
         private void ConstructContextMenu()
