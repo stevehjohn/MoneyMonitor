@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -130,6 +131,24 @@ namespace MoneyMonitor.Windows.Controls
             var pen = new Pen(Color.DimGray, 1);
 
             graphics.DrawLine(pen, 1, (float) currentY, Width - size.Width, (float) currentY);
+
+            if (_dataPoints.Count > 1)
+            {
+                var diff = _dataPoints.Last() - _dataPoints[^2];
+
+                title = $"{(diff > 0 ? "+" : "-")}{CurrencySymbol}{Math.Abs(diff / 100m):N2}";
+
+                size = graphics.MeasureString(title, font);
+
+                if (diff > 0)
+                {
+                    graphics.DrawString(title, font, textBrush, Width - size.Width, 2);
+                }
+                else if (diff < 0)
+                {
+                    graphics.DrawString(title, font, textBrush, Width - size.Width, Height - size.Height);
+                }
+            }
         }
     }
 }
