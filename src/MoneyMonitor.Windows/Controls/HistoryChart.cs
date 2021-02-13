@@ -91,7 +91,7 @@ namespace MoneyMonitor.Windows.Controls
 
             float? currentY = null;
 
-            for (var x = Width - 2; x > -Constants.BarWidth; x -= Constants.BarWidth + Constants.BarSpace)
+            for (var x = Width - 1; x > -Constants.BarWidth; x -= Constants.BarWidth + Constants.BarSpace)
             {
                 graphics.FillRectangle(backgroundBrush, x - Constants.BarWidth, Constants.TextHeight, Constants.BarWidth, Height - Constants.TextHeight * 2);
 
@@ -132,11 +132,13 @@ namespace MoneyMonitor.Windows.Controls
 
             // TODO: Sort magic constant +2
             // ReSharper disable once PossibleInvalidOperationException
-            graphics.DrawString(title, font, textBrush, Width - size.Width, (float) currentY - size.Height / 2f + 2);
+            graphics.DrawString(title, font, textBrush, Width - size.Width - (Constants.BarSpace + Constants.BarSpace) * 10, (float) currentY - size.Height / 2f + 2);
 
             var pen = new Pen(Color.DimGray, 1);
 
-            graphics.DrawLine(pen, 1, (float) currentY, Width - size.Width, (float) currentY);
+            graphics.DrawLine(pen, 1, (float) currentY, Width - size.Width - (Constants.BarSpace + Constants.BarSpace) * 10, (float) currentY);
+
+            graphics.DrawLine(pen,  Width - (Constants.BarSpace + Constants.BarSpace) * 10, (float) currentY, (Constants.BarSpace + Constants.BarSpace) * 10, (float) currentY);
 
             if (_dataPoints.Count > 1)
             {
