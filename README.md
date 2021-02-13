@@ -1,6 +1,32 @@
 # Money Monitor
 
+## Usage
+
+## Installation
+
+I won't provide binaries for this as given the sensitive nature of API keys, I think source code transparency is important, so you'll need to build it yourself. [VS 2019 Community](https://visualstudio.microsoft.com/vs/community/) will do just fine, or `dotnet build` from the [SDK](https://dotnet.microsoft.com/download) if you're a command line warrior.
+
+## Configuration
+
+In `appSettings.json` set `PollInterval` to a value of your liking.
+
+### Coinbase
+
+In Coinbase, create an API key with the permission `wallet:accounts:read`.
+
+Set `CoinbaseCredentials.ApiKey` and `CoinbaseCredentials.ApiSecret` in `appSettings.json` with the values obtained from Coinbase.
+
+## Auto Start
+
+I've configured mine to run on system start.
+
+I created a folder off of the root of `C:\` called `dotnet Apps`. Within there, I created a subfolder `Coinbase.BalanceMonitor`. In there, I put the output of a `Release` build, and set the `appSettings.json` accordingly.
+
+Then, pressed `Win + R` and typed `shell:startup` to open an explorer view of startup shortcuts. Finally, dragged a shortcut to the exe into that location. When dragging the exe, hold `ctrl` and `shift` to create a shortcut.
+
 ## Secrets
+
+If you plan on developing this application further, you'll want your API keys deployed to the build folder, but not set in the original `appSettings.json` (as they could end up in source control).
 
 There is a post-build step which will copy values from `\secrets\secrets.json` into `appSettings.json` in the output folder.
 This is to prevent accidental check-in of secrets (API keys, passwords etc...) to source control as the `secrets` folder is excluded by `.gitignore`.
