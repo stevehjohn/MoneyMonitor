@@ -31,7 +31,7 @@ namespace MoneyMonitor.Windows.Services
                            Top = Screen.PrimaryScreen.WorkingArea.Height - Constants.HistoryHeight,
                            HistoryChart =
                            {
-                               Title = "All Accounts",
+                               Title = "All Currencies",
                                CurrencySymbol = AppSettings.Instance.FiatCurrencySymbol
                            }
                        };

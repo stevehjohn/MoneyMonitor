@@ -24,7 +24,7 @@ Hover over the icon for a quick summary which will show the time the balances we
 
 Click on the icon for a chart showing the history of all investments. This form will close when you click elsewhere on the screen.
 
-Right click the icon for the menu. Exit is self explanatory. Click on a currency to show a history window for that currency. You may also choose whether to keep this windows on top of all others from this menu.
+Right click the icon for the menu. Exit is self explanatory. Click on a currency to show a history window for that currency. You may also choose whether to keep these windows on top of all others from this menu.
 
 ## Auto Start
 

@@ -8,6 +8,8 @@ namespace MoneyMonitor.Windows.Infrastructure.Settings
 {
     public class AppSettings
     {
+        public bool AlwaysOnTop { get; set; }
+
         public int BalanceHigh { get; set; }
 
         public int BalanceLow { get; set; }
@@ -23,6 +25,13 @@ namespace MoneyMonitor.Windows.Infrastructure.Settings
         public static AppSettings Instance => Lazy.Value;
 
         private static readonly Lazy<AppSettings> Lazy = new(GetAppSettings);
+
+        public void Save()
+        {
+            var json = JsonSerializer.Serialize(this);
+
+            File.WriteAllText("appSettings.json", json, Encoding.UTF8);
+        } 
 
         private static AppSettings GetAppSettings()
         {

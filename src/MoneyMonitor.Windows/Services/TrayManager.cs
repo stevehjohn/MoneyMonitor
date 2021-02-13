@@ -13,6 +13,8 @@ namespace MoneyMonitor.Windows.Services
 
         private readonly ContextMenuStrip _contextMenu;
 
+        private ToolStripMenuItem _alwaysOnTop;
+
         public Action ExitClicked { set; private get; }
 
         public Action IconClicked { set; private get; }
@@ -81,11 +83,21 @@ namespace MoneyMonitor.Windows.Services
         {
             _contextMenu.Items.Clear();
 
-            //_contextMenu.Items.Add(new ToolStripMenuItem("Float History Window", null, (_, _) => ToggleFloatHistory()) { Checked = AppSettings.Instance.FloatHistory });
+            _contextMenu.Items.Add(new ToolStripMenuItem("All Currencies", null, (_, _) => ShowCurrencyHistory()));
 
-            //_contextMenu.Items.Add(new ToolStripSeparator());
+            _contextMenu.Items.Add(new ToolStripSeparator());
+
+            _alwaysOnTop = new ToolStripMenuItem("Keep Windows Above Others", null, (_, _) => ToggleTopMost()) { Checked = AppSettings.Instance.AlwaysOnTop };
+
+            _contextMenu.Items.Add(_alwaysOnTop);
+
+            _contextMenu.Items.Add(new ToolStripSeparator());
 
             _contextMenu.Items.Add(new ToolStripMenuItem("Exit", null, (_, _) => ExitClicked()));
+        }
+
+        private void ShowCurrencyHistory(string currency = null)
+        {
         }
 
         private string Difference(int balance)
@@ -102,6 +114,17 @@ namespace MoneyMonitor.Windows.Services
             _previousBalance = balance;
 
             return $" {(difference < 0 ? string.Empty : '+')}{difference / 100m:N2}";
+        }
+
+        private void ToggleTopMost()
+        {
+            AppSettings.Instance.AlwaysOnTop = ! AppSettings.Instance.AlwaysOnTop;
+
+            AppSettings.Instance.Save();
+
+            _alwaysOnTop.Checked = AppSettings.Instance.AlwaysOnTop;
+
+            // TODO: Inform Form Manager
         }
     }
 }
