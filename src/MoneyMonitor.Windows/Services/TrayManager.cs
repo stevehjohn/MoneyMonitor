@@ -23,6 +23,8 @@ namespace MoneyMonitor.Windows.Services
 
         public Action<bool> TopMostToggled { set; private get; }
 
+        public Action<string> ShowCurrencyHistoryClicked { set; private get; }
+
         public TrayManager()
         {
             _contextMenu = new ContextMenuStrip();
@@ -110,6 +112,7 @@ namespace MoneyMonitor.Windows.Services
 
         private void ShowCurrencyHistory(string currency = null)
         {
+            ShowCurrencyHistoryClicked(currency);
         }
 
         private string Difference(int balance)

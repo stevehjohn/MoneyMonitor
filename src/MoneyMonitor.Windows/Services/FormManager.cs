@@ -44,7 +44,7 @@ namespace MoneyMonitor.Windows.Services
 
             form.Activate();
 
-            form.HistoryChart.UpdateData(_historyManager.GetHistory());
+            form.HistoryChart.UpdateData(_historyManager.GetHistory(currency));
         }
 
         public void NewData()

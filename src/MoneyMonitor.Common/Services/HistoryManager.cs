@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
@@ -32,6 +33,10 @@ namespace MoneyMonitor.Common.Services
                 if (string.IsNullOrWhiteSpace(currency))
                 {
                     history.Add(entry.Balances.Sum(b => b.Value));
+                }
+                else
+                {
+                    history.Add(entry.Balances.FirstOrDefault(b => b.Currency.Equals(currency, StringComparison.InvariantCultureIgnoreCase))?.Value ?? 0);
                 }
             }
 

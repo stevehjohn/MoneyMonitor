@@ -37,7 +37,8 @@ namespace MoneyMonitor.Windows.Infrastructure
                            {
                                ExitClicked = ExitClicked,
                                IconClicked = IconClicked,
-                               TopMostToggled = TopMostToggled
+                               TopMostToggled = TopMostToggled,
+                               ShowCurrencyHistoryClicked = ShowCurrencyHistoryClicked
                            };
 
             _formManager = new FormManager(_historyManager);
@@ -45,6 +46,11 @@ namespace MoneyMonitor.Windows.Infrastructure
             _poller = new ExchangeApiPoller(logger, client, Polled);
 
             _poller.StartPolling(settings.PollInterval);
+        }
+
+        private void ShowCurrencyHistoryClicked(string currency)
+        {
+            _formManager.ShowHistory(false, currency);
         }
 
         private void TopMostToggled(bool topMost)
