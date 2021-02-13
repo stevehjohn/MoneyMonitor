@@ -16,6 +16,8 @@ namespace MoneyMonitor.Windows.Services
         private readonly ContextMenuStrip _contextMenu;
 
         private ToolStripMenuItem _alwaysOnTop;
+        
+        private ToolStripMenuItem _allCurrencies;
 
         public Action ExitClicked { set; private get; }
 
@@ -81,7 +83,9 @@ namespace MoneyMonitor.Windows.Services
         {
             _contextMenu.Items.Clear();
 
-            _contextMenu.Items.Add(new ToolStripMenuItem("All Currencies", null, (_, _) => ShowCurrencyHistory()));
+            _allCurrencies = new ToolStripMenuItem("All Currencies", null, (_, _) => ShowCurrencyHistory());
+
+            _contextMenu.Items.Add(_allCurrencies);
 
             if (currencies != null && currencies.Count > 1)
             {
