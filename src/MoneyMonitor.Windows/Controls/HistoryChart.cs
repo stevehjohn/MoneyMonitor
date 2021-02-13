@@ -22,6 +22,8 @@ namespace MoneyMonitor.Windows.Controls
             DoubleBuffered = true;
 
             SetStyle(ControlStyles.UserPaint, true);
+
+            Enabled = false;
         }
 
         public void UpdateData(List<int> dataPoints)
