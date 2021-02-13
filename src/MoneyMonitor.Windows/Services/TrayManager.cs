@@ -27,6 +27,8 @@ namespace MoneyMonitor.Windows.Services
         public Action<bool> TopMostToggled { set; private get; }
 
         public Action<string> ShowCurrencyHistoryClicked { set; private get; }
+        
+        public Action<string> HideCurrencyHistoryClicked { set; private get; }
 
         public TrayManager()
         {
@@ -117,18 +119,31 @@ namespace MoneyMonitor.Windows.Services
 
         private void ToggleCurrencyHistory(string currency = null)
         {
+            bool isChecked;
+
             if (string.IsNullOrWhiteSpace(currency))
             {
                 _allCurrencies.Checked = ! _allCurrencies.Checked;
+
+                isChecked = _allCurrencies.Checked;
             }
             else
             {
                 var item = _contextMenu.Items.GetItem(currency);
 
                 item.Checked = ! item.Checked;
+                
+                isChecked = item.Checked;
             }
 
-            ShowCurrencyHistoryClicked(currency);
+            if (isChecked)
+            {
+                ShowCurrencyHistoryClicked(currency);
+            }
+            else
+            {
+                HideCurrencyHistoryClicked(currency);
+            }
         }
 
         private string Difference(int balance)

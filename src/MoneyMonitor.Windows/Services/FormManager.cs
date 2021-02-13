@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 using MoneyMonitor.Common.Services;
 using MoneyMonitor.Windows.Forms;
@@ -65,6 +66,11 @@ namespace MoneyMonitor.Windows.Services
             }
 
             form.HistoryChart.UpdateData(_historyManager.GetHistory(currency));
+        }
+
+        public void CloseForm(string currency)
+        {
+            _forms.FirstOrDefault(f => (f.Currency ?? string.Empty).Equals(currency ?? string.Empty, StringComparison.InvariantCultureIgnoreCase)).Close();
         }
 
         public void NewData()
