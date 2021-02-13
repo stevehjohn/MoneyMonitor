@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 using MoneyMonitor.Windows.Infrastructure.Settings;
 using MoneyMonitor.Windows.Resources;
@@ -32,7 +34,7 @@ namespace MoneyMonitor.Windows.Services
 
             _icon.Click += TrayIconClicked;
 
-            ConstructContextMenu();
+            ConstructContextMenu(null);
         }
 
         public void BalanceChanged(int newBalance)
@@ -71,19 +73,19 @@ namespace MoneyMonitor.Windows.Services
             _icon.Visible = false;
         }
 
-        private void TrayIconClicked(object sender, EventArgs eventArgs)
-        {
-            if (((MouseEventArgs) eventArgs).Button == MouseButtons.Left)
-            {
-                IconClicked();
-            }
-        }
-
-        private void ConstructContextMenu()
+        public void ConstructContextMenu(List<string> currencies)
         {
             _contextMenu.Items.Clear();
 
             _contextMenu.Items.Add(new ToolStripMenuItem("All Currencies", null, (_, _) => ShowCurrencyHistory()));
+
+            if (currencies != null && currencies.Count > 1)
+            {
+                foreach (var currency in currencies.OrderBy(c => c).ToList())
+                {
+                    _contextMenu.Items.Add(new ToolStripMenuItem(currency.ToUpperInvariant(), null, (_, _) => ShowCurrencyHistory(currency)));
+                }
+            }
 
             _contextMenu.Items.Add(new ToolStripSeparator());
 
@@ -94,6 +96,14 @@ namespace MoneyMonitor.Windows.Services
             _contextMenu.Items.Add(new ToolStripSeparator());
 
             _contextMenu.Items.Add(new ToolStripMenuItem("Exit", null, (_, _) => ExitClicked()));
+        }
+
+        private void TrayIconClicked(object sender, EventArgs eventArgs)
+        {
+            if (((MouseEventArgs) eventArgs).Button == MouseButtons.Left)
+            {
+                IconClicked();
+            }
         }
 
         private void ShowCurrencyHistory(string currency = null)

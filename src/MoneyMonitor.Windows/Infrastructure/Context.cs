@@ -54,6 +54,8 @@ namespace MoneyMonitor.Windows.Infrastructure
 
             _trayManager.BalanceChanged(balances.Sum(b => b.Value));
 
+            _trayManager.ConstructContextMenu(balances.Select(b => b.Currency).ToList());
+
             _formManager.NewData();
         }
 
