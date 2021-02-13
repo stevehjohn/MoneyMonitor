@@ -16,6 +16,8 @@ namespace MoneyMonitor.Windows.Infrastructure.Settings
 
         public CoinbaseCredentials CoinbaseCredentials { get; set; }
 
+        public CoinbaseProCredentials CoinbaseProCredentials { get; set; }
+
         public string FiatCurrency { get; set; }
 
         public string FiatCurrencySymbol { get; set; }
