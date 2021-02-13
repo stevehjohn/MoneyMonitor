@@ -70,6 +70,7 @@ namespace MoneyMonitor.Windows.Services
 
         public void CloseForm(string currency)
         {
+            // ReSharper disable once PossibleNullReferenceException
             _forms.FirstOrDefault(f => (f.Currency ?? string.Empty).Equals(currency ?? string.Empty, StringComparison.InvariantCultureIgnoreCase)).Close();
         }
 

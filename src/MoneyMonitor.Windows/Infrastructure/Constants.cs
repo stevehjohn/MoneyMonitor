@@ -1,6 +1,4 @@
-﻿using System.Drawing;
-
-namespace MoneyMonitor.Windows.Infrastructure
+﻿namespace MoneyMonitor.Windows.Infrastructure
 {
     public static class Constants
     {

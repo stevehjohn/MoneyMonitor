@@ -152,13 +152,14 @@ namespace MoneyMonitor.Windows.Controls
 
                 size = graphics.MeasureString(title, font);
 
-                if (diff > 0)
+                switch (diff)
                 {
-                    graphics.DrawString(title, font, textBrush, Width - size.Width, 2);
-                }
-                else if (diff < 0)
-                {
-                    graphics.DrawString(title, font, textBrush, Width - size.Width, Height - size.Height);
+                    case > 0:
+                        graphics.DrawString(title, font, textBrush, Width - size.Width, 2);
+                        break;
+                    case < 0:
+                        graphics.DrawString(title, font, textBrush, Width - size.Width, Height - size.Height);
+                        break;
                 }
             }
         }
