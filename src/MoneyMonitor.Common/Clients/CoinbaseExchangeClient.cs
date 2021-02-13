@@ -43,6 +43,8 @@ namespace MoneyMonitor.Common.Clients
 
             var exchangeRates = await GetExchangeRates();
 
+            var now = DateTime.UtcNow;
+
             foreach (var coinBalance in balances)
             {
                 var rate = exchangeRates[coinBalance.Currency];
@@ -51,7 +53,8 @@ namespace MoneyMonitor.Common.Clients
                            {
                                Amount = coinBalance.Amount,
                                Currency = coinBalance.Currency,
-                               Value = (int) (coinBalance.Amount / rate) * 100
+                               TimeUtc = now,
+                               Value = (int) (coinBalance.Amount / rate * 100)
                            });
             }
 

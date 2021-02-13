@@ -7,7 +7,22 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Infrastructure\Settings\" />
+    <ProjectReference Include="..\MoneyMonitor.Common\MoneyMonitor.Common.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Resources\Icons.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Icons.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Resources\Icons.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Icons.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>
@@ -17,7 +32,7 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="powershell.exe ..\Copy-Secrets.ps1 $(TargetDir)appSettings.json&#xD;&#xA;" />
+    <Exec Command="powershell.exe -NoProfile -ExecutionPolicy RemoteSigned -file ..\Copy-Secrets.ps1 $(TargetDir)appSettings.json&#xD;&#xA;" />
   </Target>
 
 </Project>
