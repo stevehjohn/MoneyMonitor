@@ -11,6 +11,8 @@ namespace MoneyMonitor.Windows.Forms
 
         public bool IsTransient { get; private set; }
 
+        public string Currency { get; set; }
+
         private Point? _previousMouse;
 
         public History()

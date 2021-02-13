@@ -32,6 +32,7 @@ namespace MoneyMonitor.Windows.Services
         {
             var form = new History
                        {
+                           Currency = currency,
                            Width = Constants.HistoryWidth,
                            Height = Constants.HistoryHeight,
                            Left = Screen.PrimaryScreen.WorkingArea.Width - Constants.HistoryWidth,
@@ -70,7 +71,7 @@ namespace MoneyMonitor.Windows.Services
         {
             foreach (var form in _forms)
             {
-                form.HistoryChart.UpdateData(_historyManager.GetHistory());
+                form.HistoryChart.UpdateData(_historyManager.GetHistory(form.Currency));
             }
         }
 
