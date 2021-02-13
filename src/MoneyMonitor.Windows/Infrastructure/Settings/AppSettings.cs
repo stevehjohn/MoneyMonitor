@@ -28,7 +28,10 @@ namespace MoneyMonitor.Windows.Infrastructure.Settings
 
         public void Save()
         {
-            var json = JsonSerializer.Serialize(this);
+            var json = JsonSerializer.Serialize(this, new JsonSerializerOptions
+                                                      {
+                                                          Converters = { new TimeSpanConverter() }
+                                                      });
 
             File.WriteAllText("appSettings.json", json, Encoding.UTF8);
         } 
