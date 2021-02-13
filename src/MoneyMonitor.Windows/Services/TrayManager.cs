@@ -83,7 +83,7 @@ namespace MoneyMonitor.Windows.Services
         {
             _contextMenu.Items.Clear();
 
-            _allCurrencies = new ToolStripMenuItem("All Currencies", null, (_, _) => ShowCurrencyHistory());
+            _allCurrencies = new ToolStripMenuItem("All Currencies", null, (_, _) => ToggleCurrencyHistory());
 
             _contextMenu.Items.Add(_allCurrencies);
 
@@ -91,7 +91,7 @@ namespace MoneyMonitor.Windows.Services
             {
                 foreach (var currency in currencies.OrderBy(c => c).ToList())
                 {
-                    _contextMenu.Items.Add(new ToolStripMenuItem(currency.ToUpperInvariant(), null, (_, _) => ShowCurrencyHistory(currency)));
+                    _contextMenu.Items.Add(new ToolStripMenuItem(currency.ToUpperInvariant(), null, (_, _) => ToggleCurrencyHistory(currency)));
                 }
             }
 
@@ -114,7 +114,7 @@ namespace MoneyMonitor.Windows.Services
             }
         }
 
-        private void ShowCurrencyHistory(string currency = null)
+        private void ToggleCurrencyHistory(string currency = null)
         {
             ShowCurrencyHistoryClicked(currency);
         }
