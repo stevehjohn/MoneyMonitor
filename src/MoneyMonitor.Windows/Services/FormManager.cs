@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Windows.Forms;
 using MoneyMonitor.Common.Services;
 using MoneyMonitor.Windows.Forms;
@@ -14,11 +15,17 @@ namespace MoneyMonitor.Windows.Services
 
         private readonly List<History> _forms;
 
+        private readonly Color[] _colours;
+
+        private int _colourIndex;
+
         public FormManager(HistoryManager historyManager)
         {
             _historyManager = historyManager;
 
             _forms = new List<History>();
+
+            _colours = new[] { Color.Coral, Color.DeepPink, Color.DarkSeaGreen, Color.DodgerBlue, Color.Gold, Color.Lime };
         }
 
         public void ShowHistory(bool transient, string currency = null)
@@ -43,6 +50,18 @@ namespace MoneyMonitor.Windows.Services
             form.Show(transient);
 
             form.Activate();
+
+            if (! transient)
+            {
+                form.HistoryChart.BarColour = _colours[_colourIndex];
+
+                _colourIndex++;
+
+                if (_colourIndex >= _colours.Length)
+                {
+                    _colourIndex = 0;
+                }
+            }
 
             form.HistoryChart.UpdateData(_historyManager.GetHistory(currency));
         }

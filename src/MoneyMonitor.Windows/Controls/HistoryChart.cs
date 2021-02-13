@@ -15,6 +15,8 @@ namespace MoneyMonitor.Windows.Controls
 
         public string CurrencySymbol { set; private get; }
 
+        public Color BarColour { get; set; }
+
         public HistoryChart()
         {
             InitializeComponent();
@@ -22,6 +24,8 @@ namespace MoneyMonitor.Windows.Controls
             DoubleBuffered = true;
 
             SetStyle(ControlStyles.UserPaint, true);
+
+            BarColour = Color.DarkSlateBlue;
 
             Enabled = false;
         }
@@ -79,7 +83,7 @@ namespace MoneyMonitor.Windows.Controls
 
             var yScale = (float) (Height - Constants.TextHeight * 2) / delta;
 
-            var barBrush = new SolidBrush(Color.DarkSlateBlue);
+            var barBrush = new SolidBrush(BarColour);
 
             var backgroundBrush = new SolidBrush(Color.FromArgb(30, 30, 30));
 
