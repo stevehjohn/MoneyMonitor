@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
+using MoneyMonitor.Windows.Extensions;
 using MoneyMonitor.Windows.Infrastructure.Settings;
 using MoneyMonitor.Windows.Resources;
 
@@ -116,6 +117,17 @@ namespace MoneyMonitor.Windows.Services
 
         private void ToggleCurrencyHistory(string currency = null)
         {
+            if (string.IsNullOrWhiteSpace(currency))
+            {
+                _allCurrencies.Checked = ! _allCurrencies.Checked;
+            }
+            else
+            {
+                var item = _contextMenu.Items.GetItem(currency);
+
+                item.Checked = ! item.Checked;
+            }
+
             ShowCurrencyHistoryClicked(currency);
         }
 
