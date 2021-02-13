@@ -25,8 +25,8 @@ namespace MoneyMonitor.Windows.Infrastructure
         {
             var settings = AppSettings.Instance;
 
-            var client = new CoinbaseExchangeClient(settings.CoinbaseCredentials.ApiKey, settings.CoinbaseCredentials.ApiSecret, settings.FiatCurrency);
-            //var client = new CoinbaseProExchangeClient(settings.CoinbaseCredentials.ApiKey, settings.CoinbaseCredentials.ApiSecret, settings.FiatCurrency);
+            //var client = new CoinbaseExchangeClient(settings.CoinbaseCredentials.ApiKey, settings.CoinbaseCredentials.ApiSecret, settings.FiatCurrency);
+            var client = new CoinbaseProExchangeClient(settings.CoinbaseProCredentials.ApiKey, settings.CoinbaseProCredentials.ApiSecret, settings.CoinbaseProCredentials.Passphrase, settings.FiatCurrency);
 
             var logger = new FileLogger(Constants.LogFilename);
 
