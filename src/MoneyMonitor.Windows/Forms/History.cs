@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Windows.Forms;
 using MoneyMonitor.Windows.Controls;
 
@@ -7,6 +8,8 @@ namespace MoneyMonitor.Windows.Forms
     public partial class History : Form
     {
         public HistoryChart HistoryChart { get; set; }
+
+        private Point? _previousMouse;
 
         public History()
         {
@@ -21,8 +24,48 @@ namespace MoneyMonitor.Windows.Forms
                            };
 
             Controls.Add(HistoryChart);
+        }
 
-            Deactivate += OnDeactivate;
+        public void Show(bool transient)
+        {
+            Show();
+
+            if (transient)
+            {
+                Deactivate += OnDeactivate;
+            }
+            else
+            {
+                Cursor = Cursors.SizeAll;
+
+                MouseDown += OnMouseDown;
+                MouseMove += OnMouseMove;
+                MouseUp += OnMouseUp;
+            }
+        }
+
+        private void OnMouseUp(object sender, MouseEventArgs e)
+        {
+            _previousMouse = null;
+        }
+
+        private void OnMouseMove(object sender, MouseEventArgs e)
+        {
+            if (! _previousMouse.HasValue)
+            {
+                return;
+            }
+
+            Left += Cursor.Position.X - _previousMouse.Value.X;
+
+            Top += Cursor.Position.Y - _previousMouse.Value.Y;
+
+            _previousMouse = Cursor.Position;
+        }
+
+        private void OnMouseDown(object sender, MouseEventArgs e)
+        {
+            _previousMouse = Cursor.Position;
         }
 
         private void OnDeactivate(object sender, EventArgs e)

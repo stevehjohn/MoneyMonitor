@@ -21,7 +21,7 @@ namespace MoneyMonitor.Windows.Services
             _forms = new List<History>();
         }
 
-        public void ShowHistory()
+        public void ShowHistory(bool transient, string currency = null)
         {
             var form = new History
                        {
@@ -31,7 +31,7 @@ namespace MoneyMonitor.Windows.Services
                            Top = Screen.PrimaryScreen.WorkingArea.Height - Constants.HistoryHeight,
                            HistoryChart =
                            {
-                               Title = "All Currencies",
+                               Title = currency?.ToUpperInvariant() ?? "All Currencies",
                                CurrencySymbol = AppSettings.Instance.FiatCurrencySymbol
                            }
                        };
@@ -40,7 +40,7 @@ namespace MoneyMonitor.Windows.Services
 
             _forms.Add(form);
 
-            form.Show();
+            form.Show(transient);
 
             form.Activate();
 

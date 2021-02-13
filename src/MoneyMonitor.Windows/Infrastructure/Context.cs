@@ -52,7 +52,22 @@ namespace MoneyMonitor.Windows.Infrastructure
 
             _historyManager.Save();
 
-            _trayManager.BalanceChanged(balances.Sum(b => b.Value));
+            var balance = balances.Sum(b => b.Value);
+
+            if (balance > AppSettings.Instance.BalanceHigh)
+            {
+                AppSettings.Instance.BalanceHigh = balance;
+
+                AppSettings.Instance.Save();
+            }
+            else if (balance < AppSettings.Instance.BalanceLow)
+            {
+                AppSettings.Instance.BalanceLow = balance;
+
+                AppSettings.Instance.Save();
+            }
+
+            _trayManager.BalanceChanged(balance);
 
             _trayManager.ConstructContextMenu(balances.Select(b => b.Currency).ToList());
 
@@ -68,7 +83,7 @@ namespace MoneyMonitor.Windows.Infrastructure
 
         private void IconClicked()
         {
-            _formManager.ShowHistory();
+            _formManager.ShowHistory(true);
         }
     }
 }
