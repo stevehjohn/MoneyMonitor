@@ -25,7 +25,7 @@ namespace MoneyMonitor.Windows.Services
 
             _forms = new List<History>();
 
-            _colours = new[] { Color.Coral, Color.DeepPink, Color.DarkSeaGreen, Color.DodgerBlue, Color.Gold, Color.Lime };
+            _colours = new[] { Color.Coral, Color.DeepPink, Color.DarkSeaGreen, Color.DodgerBlue, Color.Gold, Color.Lime, Color.DarkTurquoise, Color.LightBlue, Color.MediumSeaGreen, Color.Red };
         }
 
         public void ShowHistory(bool transient, string currency = null)
@@ -51,7 +51,7 @@ namespace MoneyMonitor.Windows.Services
 
             form.Activate();
 
-            if (! transient)
+            if (! transient && ! string.IsNullOrWhiteSpace(currency))
             {
                 form.HistoryChart.BarColour = _colours[_colourIndex];
 

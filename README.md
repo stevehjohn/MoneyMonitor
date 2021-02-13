@@ -1,5 +1,7 @@
 # Money Monitor
 
+![Tray screenshot](https://github.com/stevehjohn/Coinbase/blob/master/assets/tray-shot.png)
+
 ## Usage
 
 ## Installation
