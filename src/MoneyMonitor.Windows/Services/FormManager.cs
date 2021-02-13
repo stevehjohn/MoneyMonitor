@@ -53,15 +53,20 @@ namespace MoneyMonitor.Windows.Services
 
             form.Activate();
 
-            if (! transient && ! string.IsNullOrWhiteSpace(currency))
+            if (! transient)
             {
-                form.HistoryChart.BarColour = _colours[_colourIndex];
+                form.TopMost = AppSettings.Instance.AlwaysOnTop;
 
-                _colourIndex++;
-
-                if (_colourIndex >= _colours.Length)
+                if (! string.IsNullOrWhiteSpace(currency))
                 {
-                    _colourIndex = 0;
+                    form.HistoryChart.BarColour = _colours[_colourIndex];
+
+                    _colourIndex++;
+
+                    if (_colourIndex >= _colours.Length)
+                    {
+                        _colourIndex = 0;
+                    }
                 }
             }
 
