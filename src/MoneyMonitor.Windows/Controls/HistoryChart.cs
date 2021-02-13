@@ -130,15 +130,19 @@ namespace MoneyMonitor.Windows.Controls
 
             size = graphics.MeasureString(title, font);
 
-            // TODO: Sort magic constant +2
-            // ReSharper disable once PossibleInvalidOperationException
-            graphics.DrawString(title, font, textBrush, Width - size.Width - (Constants.BarSpace + Constants.BarSpace) * 10, (float) currentY - size.Height / 2f + 2);
-
             var pen = new Pen(Color.DimGray, 1);
 
-            graphics.DrawLine(pen, 1, (float) currentY, Width - size.Width - (Constants.BarSpace + Constants.BarSpace) * 10, (float) currentY);
+            var textBackgroundBrush = new SolidBrush(Color.Black);
 
-            graphics.DrawLine(pen,  Width - (Constants.BarSpace + Constants.BarSpace) * 10, (float) currentY, (Constants.BarSpace + Constants.BarSpace) * 10, (float) currentY);
+            // ReSharper disable once PossibleInvalidOperationException
+            graphics.DrawLine(pen, 1, (float) currentY, Width, (float) currentY);
+
+            graphics.FillRectangle(textBackgroundBrush, Width - size.Width - (Constants.BarSpace + Constants.BarSpace) * 10, (float) currentY - size.Height / 2f, size.Width, size.Height);
+
+            // TODO: Sort magic constant +2
+            graphics.DrawString(title, font, textBrush, Width - size.Width - (Constants.BarSpace + Constants.BarSpace) * 10, (float) currentY - size.Height / 2f + 2);
+
+            graphics.DrawRectangle(pen, Width - size.Width - (Constants.BarSpace + Constants.BarSpace) * 10, (float) currentY - size.Height / 2f, size.Width, size.Height);
 
             if (_dataPoints.Count > 1)
             {
