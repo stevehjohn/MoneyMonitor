@@ -23,6 +23,21 @@ namespace MoneyMonitor.Common.Services
             _history = new Queue<HistoryEntry>(_length);
         }
 
+        public List<int> GetHistory(string currency = null)
+        {
+            var history = new List<int>();
+
+            foreach (var entry in _history)
+            {
+                if (string.IsNullOrWhiteSpace(currency))
+                {
+                    history.Add(entry.Balances.Sum(b => b.Value));
+                }
+            }
+
+            return history;
+        }
+
         public void Save()
         {
             var json = JsonSerializer.Serialize(_history);

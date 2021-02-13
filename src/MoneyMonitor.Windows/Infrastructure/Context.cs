@@ -5,7 +5,6 @@ using MoneyMonitor.Common.Clients;
 using MoneyMonitor.Common.Infrastructure;
 using MoneyMonitor.Common.Models;
 using MoneyMonitor.Common.Services;
-using MoneyMonitor.Windows.Forms;
 using MoneyMonitor.Windows.Infrastructure.Settings;
 using MoneyMonitor.Windows.Services;
 
@@ -17,6 +16,8 @@ namespace MoneyMonitor.Windows.Infrastructure
 
         // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable - don't want it GC'd when constructor completes.
         private readonly ExchangeApiPoller _poller;
+
+        private readonly FormManager _formManager;
 
         private readonly TrayManager _trayManager;
 
@@ -38,6 +39,8 @@ namespace MoneyMonitor.Windows.Infrastructure
                                IconClicked = IconClicked
                            };
 
+            _formManager = new FormManager(_historyManager);
+
             _poller = new ExchangeApiPoller(logger, client, Polled);
 
             _poller.StartPolling(settings.PollInterval);
@@ -50,6 +53,8 @@ namespace MoneyMonitor.Windows.Infrastructure
             _historyManager.Save();
 
             _trayManager.BalanceChanged(balances.Sum(b => b.Value));
+
+            _formManager.NewData();
         }
 
         private void ExitClicked()
@@ -61,9 +66,7 @@ namespace MoneyMonitor.Windows.Infrastructure
 
         private void IconClicked()
         {
-            var form = new History();
-
-            form.Show();
+            _formManager.ShowHistory();
         }
     }
 }
