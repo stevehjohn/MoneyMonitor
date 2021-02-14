@@ -20,6 +20,8 @@ namespace MoneyMonitor.Windows.Services
         
         private ToolStripMenuItem _allCurrencies;
 
+        private delegate void SafeCallDelegate(List<string> currencies);
+
         public Action ExitClicked { set; private get; }
 
         public Action IconClicked { set; private get; }
@@ -84,29 +86,50 @@ namespace MoneyMonitor.Windows.Services
 
         public void ConstructContextMenu(List<string> currencies)
         {
-            _contextMenu.Items.Clear();
-
-            _allCurrencies = new ToolStripMenuItem("All Currencies", null, (_, _) => ToggleCurrencyHistory());
-
-            _contextMenu.Items.Add(_allCurrencies);
-
-            if (currencies != null && currencies.Count > 1)
+            if (_contextMenu.InvokeRequired)
             {
-                foreach (var currency in currencies.OrderBy(c => c).ToList())
-                {
-                    _contextMenu.Items.Add(new ToolStripMenuItem(currency.ToUpperInvariant(), null, (_, _) => ToggleCurrencyHistory(currency)));
-                }
+                var safeCallDelegate = new SafeCallDelegate(ConstructContextMenu);
+
+                _contextMenu.Invoke(safeCallDelegate, currencies);
             }
+            else
+            {
+                var allCurrenciesChecked = _allCurrencies?.Checked ?? false;
 
-            _contextMenu.Items.Add(new ToolStripSeparator());
+                var isChecked = new List<string>();
 
-            _alwaysOnTop = new ToolStripMenuItem("Keep Windows Above Others", null, (_, _) => ToggleTopMost()) { Checked = AppSettings.Instance.AlwaysOnTop };
+                foreach (var item in _contextMenu.Items)
+                {
+                    if (item is ToolStripMenuItem menuItem && menuItem.Tag != null && menuItem.Checked)
+                    {
+                        isChecked.Add((string) menuItem.Tag);
+                    }
+                }
 
-            _contextMenu.Items.Add(_alwaysOnTop);
+                _contextMenu.Items.Clear();
 
-            _contextMenu.Items.Add(new ToolStripSeparator());
+                _allCurrencies = new ToolStripMenuItem("All Currencies", null, (_, _) => ToggleCurrencyHistory()) { Checked = allCurrenciesChecked };
 
-            _contextMenu.Items.Add(new ToolStripMenuItem("Exit", null, (_, _) => ExitClicked()));
+                _contextMenu.Items.Add(_allCurrencies);
+
+                if (currencies != null && currencies.Count > 1)
+                {
+                    foreach (var currency in currencies.OrderBy(c => c).ToList())
+                    {
+                        _contextMenu.Items.Add(new ToolStripMenuItem(currency.ToUpperInvariant(), null, (_, _) => ToggleCurrencyHistory(currency)) { Tag = currency, Checked = isChecked.Contains(currency) });
+                    }
+                }
+
+                _contextMenu.Items.Add(new ToolStripSeparator());
+
+                _alwaysOnTop = new ToolStripMenuItem("Keep Windows Above Others", null, (_, _) => ToggleTopMost()) { Checked = AppSettings.Instance.AlwaysOnTop };
+
+                _contextMenu.Items.Add(_alwaysOnTop);
+
+                _contextMenu.Items.Add(new ToolStripSeparator());
+
+                _contextMenu.Items.Add(new ToolStripMenuItem("Exit", null, (_, _) => ExitClicked()));
+            }
         }
 
         private void TrayIconClicked(object sender, EventArgs eventArgs)
