@@ -84,6 +84,8 @@ namespace MoneyMonitor.Windows.Services
 
         public void ConstructContextMenu(List<string> currencies)
         {
+            // TODO: Get checked states and restore after rebuilding menu.
+
             _contextMenu.Items.Clear();
 
             _allCurrencies = new ToolStripMenuItem("All Currencies", null, (_, _) => ToggleCurrencyHistory());
