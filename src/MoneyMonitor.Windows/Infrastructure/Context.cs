@@ -5,6 +5,7 @@ using MoneyMonitor.Common.Clients;
 using MoneyMonitor.Common.Infrastructure;
 using MoneyMonitor.Common.Models;
 using MoneyMonitor.Common.Services;
+using MoneyMonitor.Windows.Exceptions;
 using MoneyMonitor.Windows.Infrastructure.Settings;
 using MoneyMonitor.Windows.Services;
 
@@ -25,8 +26,19 @@ namespace MoneyMonitor.Windows.Infrastructure
         {
             var settings = AppSettings.Instance;
 
-            var client = new CoinbaseExchangeClient(settings.CoinbaseCredentials.ApiKey, settings.CoinbaseCredentials.ApiSecret, settings.FiatCurrency);
-            //var client = new CoinbaseProExchangeClient(settings.CoinbaseProCredentials.ApiKey, settings.CoinbaseProCredentials.ApiSecret, settings.CoinbaseProCredentials.Passphrase, settings.FiatCurrency);
+            ICryptoExchangeClient client;
+
+            switch (AppSettings.Instance.Client)
+            {
+                case "CoinbaseExchangeClient":
+                    client = new CoinbaseExchangeClient(settings.CoinbaseCredentials.ApiKey, settings.CoinbaseCredentials.ApiSecret, settings.FiatCurrency);
+                    break;
+                case "CoinbaseProExchangeClient":
+                    client = new CoinbaseProExchangeClient(settings.CoinbaseProCredentials.ApiKey, settings.CoinbaseProCredentials.ApiSecret, settings.CoinbaseProCredentials.Passphrase, settings.FiatCurrency);
+                    break;
+                default:
+                    throw new MoneyMonitorConfigurationException($"Unknown API client {AppSettings.Instance.Client}.");
+            }
 
             var logger = new FileLogger(Constants.LogFilename);
 
