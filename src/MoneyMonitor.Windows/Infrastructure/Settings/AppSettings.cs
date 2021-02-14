@@ -20,6 +20,10 @@ namespace MoneyMonitor.Windows.Infrastructure.Settings
 
         public CoinbaseProCredentials CoinbaseProCredentials { get; set; }
 
+        public string ExcelCell { get; set; }
+        
+        public string ExcelFilePath { get; set; }
+
         public string FiatCurrency { get; set; }
 
         public string FiatCurrencySymbol { get; set; }

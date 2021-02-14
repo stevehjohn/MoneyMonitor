@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using MoneyMonitor.Common.Clients;
@@ -8,6 +9,7 @@ using MoneyMonitor.Common.Services;
 using MoneyMonitor.Windows.Exceptions;
 using MoneyMonitor.Windows.Infrastructure.Settings;
 using MoneyMonitor.Windows.Services;
+using OfficeOpenXml;
 
 namespace MoneyMonitor.Windows.Infrastructure
 {
@@ -103,6 +105,35 @@ namespace MoneyMonitor.Windows.Infrastructure
             _trayManager.ConstructContextMenu(balances.Select(b => b.Currency).ToList());
 
             _formManager.NewData();
+
+            UpdateExcel(balance);
+        }
+
+        private static void UpdateExcel(int balance)
+        {
+            if (string.IsNullOrWhiteSpace(AppSettings.Instance.ExcelFilePath) || string.IsNullOrWhiteSpace(AppSettings.Instance.ExcelCell))
+            {
+                return;
+            }
+
+            try
+            {
+                using var package = new ExcelPackage(new FileInfo(AppSettings.Instance.ExcelFilePath));
+
+                var sheet = package.Workbook.Worksheets[0];
+
+                var cell = sheet.Cells[AppSettings.Instance.ExcelCell];
+
+                cell.Style.Numberformat.Format = "£#,###,##0.00";
+
+                cell.Value = balance / 100m;
+
+                package.Save();
+            }
+            catch
+            {
+                //
+            } 
         }
 
         private void ExitClicked()

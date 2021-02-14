@@ -35,6 +35,10 @@
     <Folder Include="Exceptions\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="EPPlus" Version="5.5.3" />
+  </ItemGroup>
+
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="powershell.exe -NoProfile -ExecutionPolicy RemoteSigned -file ..\Copy-Secrets.ps1 $(TargetDir)appSettings.json&#xD;&#xA;" />
   </Target>
