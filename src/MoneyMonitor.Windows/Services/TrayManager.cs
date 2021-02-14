@@ -86,8 +86,6 @@ namespace MoneyMonitor.Windows.Services
 
         public void ConstructContextMenu(List<string> currencies)
         {
-            // TODO: Get checked states and restore after rebuilding menu.
-
             if (_contextMenu.InvokeRequired)
             {
                 var safeCallDelegate = new SafeCallDelegate(ConstructContextMenu);
