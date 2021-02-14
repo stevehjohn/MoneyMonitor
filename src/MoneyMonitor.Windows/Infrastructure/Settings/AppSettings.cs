@@ -14,7 +14,11 @@ namespace MoneyMonitor.Windows.Infrastructure.Settings
 
         public int BalanceLow { get; set; }
 
+        public string Client { get; set; }
+
         public CoinbaseCredentials CoinbaseCredentials { get; set; }
+
+        public CoinbaseProCredentials CoinbaseProCredentials { get; set; }
 
         public string FiatCurrency { get; set; }
 

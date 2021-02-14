@@ -31,6 +31,10 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Exceptions\" />
+  </ItemGroup>
+
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="powershell.exe -NoProfile -ExecutionPolicy RemoteSigned -file ..\Copy-Secrets.ps1 $(TargetDir)appSettings.json&#xD;&#xA;" />
   </Target>

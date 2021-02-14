@@ -14,6 +14,7 @@ namespace MoneyMonitor.Common.Clients
     public class CoinbaseExchangeClient : ICryptoExchangeClient
     {
         private readonly HttpClient _client;
+
         private readonly string _apiSecret;
         private readonly string _fiatCurrency;
 
@@ -88,8 +89,8 @@ namespace MoneyMonitor.Common.Clients
                     {
                         balances.Add(new ExchangeBalance
                                      {
-                                         Currency = account.Balance.Currency,
-                                         Amount = balance
+                                         Amount = balance,
+                                         Currency = account.Balance.Currency
                                      });
                     }
                 }
