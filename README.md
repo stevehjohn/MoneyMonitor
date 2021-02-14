@@ -34,6 +34,10 @@ Click on the icon for a chart showing the history of all investments. This form 
 
 Right click the icon for the menu. Exit is self explanatory. Click on a currency to show a history window for that currency. You may also choose whether to keep these windows on top of all others from this menu.
 
+### Excel Spreadsheet Integration
+
+The app can also optionally update a cell in a spreadsheet with your current balance (if you're nerd like me who tracks finances in a spreadsheet). Simply put the path to the spreadsheet in the `ExcelFilePath` app setting and put the cell in `ExcelCell`.
+
 ## Auto Start
 
 I've configured mine to run on system start.
