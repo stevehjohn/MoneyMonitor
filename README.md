@@ -16,7 +16,13 @@ In `appSettings.json` set `PollInterval` to a value of your liking.
 
 In Coinbase, create an API key with the permission `wallet:accounts:read`.
 
-Set `CoinbaseCredentials.ApiKey` and `CoinbaseCredentials.ApiSecret` in `appSettings.json` with the values obtained from Coinbase.
+Set `CoinbaseCredentials.ApiKey` and `CoinbaseCredentials.ApiSecret` in `appSettings.json` with the values obtained from Coinbase. Set `Client` to `CoinbaseExchangeClient`.
+
+### Coinbase Pro
+
+In Coinbase Pro, create an API key with `View` permissions.
+
+Set `CoinbaseProCredentials.ApiKey`, `CoinbaseProCredentials.ApiSecret` and `CoinbaseProCredentials.Passphrase` in `appSettings.json` with the values obtained from Coinbase Pro. Ensure the value of `Client` is `CoinbaseProExchangeClient`.
 
 ## User Interface
 
