@@ -17,6 +17,8 @@ namespace MoneyMonitor.Windows.Controls
 
         public Color BarColour { get; set; }
 
+        public decimal? ExchangeRate { set; private get; }
+
         public HistoryChart()
         {
             InitializeComponent();
@@ -161,6 +163,15 @@ namespace MoneyMonitor.Windows.Controls
                         graphics.DrawString(title, font, textBrush, Width - size.Width, Height - size.Height);
                         break;
                 }
+            }
+
+            if (ExchangeRate.HasValue)
+            {
+                title = $"1 {Title} : £{1 / ExchangeRate:N2}";
+
+                size = graphics.MeasureString(title, font);
+
+                graphics.DrawString(title, font, textBrush, 2, Height - size.Height);
             }
         }
     }

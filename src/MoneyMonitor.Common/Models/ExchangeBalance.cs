@@ -11,5 +11,7 @@ namespace MoneyMonitor.Common.Models
         public int Value { get; set; }
 
         public DateTime TimeUtc { get; set; }
+
+        public decimal ExchangeRate { get; set; }
     }
 }

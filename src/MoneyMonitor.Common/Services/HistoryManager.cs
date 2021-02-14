@@ -43,6 +43,12 @@ namespace MoneyMonitor.Common.Services
             return history;
         }
 
+        public decimal GetExchangeRate(string currency)
+        {
+            // ReSharper disable once PossibleNullReferenceException
+            return _history.Last().Balances.FirstOrDefault(b => b.Currency.Equals(currency, StringComparison.InvariantCultureIgnoreCase)).ExchangeRate;
+        }
+
         public void Save()
         {
             var json = JsonSerializer.Serialize(_history);

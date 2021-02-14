@@ -41,7 +41,10 @@ namespace MoneyMonitor.Windows.Services
                            HistoryChart =
                            {
                                Title = currency?.ToUpperInvariant() ?? "All Currencies",
-                               CurrencySymbol = AppSettings.Instance.FiatCurrencySymbol
+                               CurrencySymbol = AppSettings.Instance.FiatCurrencySymbol,
+                               ExchangeRate = currency == null
+                                   ? null
+                                   : _historyManager.GetExchangeRate(currency)
                            }
                        };
 
