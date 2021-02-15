@@ -19,6 +19,8 @@ namespace MoneyMonitor.Windows.Controls
 
         public decimal? ExchangeRate { set; private get; }
 
+        private DateTime? _dataTime;
+
         public HistoryChart()
         {
             InitializeComponent();
@@ -32,9 +34,11 @@ namespace MoneyMonitor.Windows.Controls
             Enabled = false;
         }
 
-        public void UpdateData(List<int> dataPoints)
+        public void UpdateData(List<int> dataPoints, DateTime? dataTime)
         {
             _dataPoints = dataPoints;
+
+            _dataTime = dataTime;
 
             Invalidate();
         }
@@ -49,7 +53,7 @@ namespace MoneyMonitor.Windows.Controls
 
             var textBrush = new SolidBrush(Color.White);
             
-            graphics.DrawString(Title, font, textBrush, 2, 2);
+            graphics.DrawString($"{Title} @ {_dataTime:HH:mm.ss}", font, textBrush, 2, 2);
 
             string text;
 

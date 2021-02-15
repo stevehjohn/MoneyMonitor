@@ -43,6 +43,11 @@ namespace MoneyMonitor.Common.Services
             return history;
         }
 
+        public DateTime? GetHistoryTime()
+        {
+            return _history.LastOrDefault()?.Time;
+        }
+
         public decimal GetExchangeRate(string currency)
         {
             // ReSharper disable once PossibleNullReferenceException
