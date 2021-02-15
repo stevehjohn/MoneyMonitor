@@ -40,7 +40,7 @@ namespace MoneyMonitor.Windows.Services
                            Top = Screen.PrimaryScreen.WorkingArea.Height - Constants.HistoryHeight,
                            HistoryChart =
                            {
-                               Title = currency?.ToUpperInvariant() ?? "All Currencies",
+                               Title = currency?.ToUpperInvariant() ?? "Total",
                                CurrencySymbol = AppSettings.Instance.FiatCurrencySymbol,
                                ExchangeRate = currency == null
                                    ? null

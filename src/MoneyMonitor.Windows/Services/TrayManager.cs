@@ -108,7 +108,7 @@ namespace MoneyMonitor.Windows.Services
 
                 _contextMenu.Items.Clear();
 
-                _allCurrencies = new ToolStripMenuItem("All Currencies", null, (_, _) => ToggleCurrencyHistory()) { Checked = allCurrenciesChecked };
+                _allCurrencies = new ToolStripMenuItem("Total", null, (_, _) => ToggleCurrencyHistory()) { Checked = allCurrenciesChecked };
 
                 _contextMenu.Items.Add(_allCurrencies);
 
