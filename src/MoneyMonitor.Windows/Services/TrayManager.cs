@@ -32,6 +32,8 @@ namespace MoneyMonitor.Windows.Services
         
         public Action<string> HideCurrencyHistoryClicked { set; private get; }
 
+        public Action RefreshClicked { set; private get; }
+
         public TrayManager()
         {
             _contextMenu = new ContextMenuStrip();
@@ -125,6 +127,10 @@ namespace MoneyMonitor.Windows.Services
                 _alwaysOnTop = new ToolStripMenuItem("Keep Windows Above Others", null, (_, _) => ToggleTopMost()) { Checked = AppSettings.Instance.AlwaysOnTop };
 
                 _contextMenu.Items.Add(_alwaysOnTop);
+
+                _contextMenu.Items.Add(new ToolStripSeparator());
+
+                _contextMenu.Items.Add(new ToolStripMenuItem("Refresh", null, (_, _) => RefreshClicked()));
 
                 _contextMenu.Items.Add(new ToolStripSeparator());
 

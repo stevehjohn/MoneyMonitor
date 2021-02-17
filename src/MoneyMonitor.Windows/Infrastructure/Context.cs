@@ -24,19 +24,19 @@ namespace MoneyMonitor.Windows.Infrastructure
 
         private readonly TrayManager _trayManager;
 
+        private readonly ICryptoExchangeClient _exchangeClient;
+
         public Context()
         {
             var settings = AppSettings.Instance;
 
-            ICryptoExchangeClient client;
-
             switch (AppSettings.Instance.Client)
             {
                 case "CoinbaseExchangeClient":
-                    client = new CoinbaseExchangeClient(settings.CoinbaseCredentials.ApiKey, settings.CoinbaseCredentials.ApiSecret, settings.FiatCurrency);
+                    _exchangeClient = new CoinbaseExchangeClient(settings.CoinbaseCredentials.ApiKey, settings.CoinbaseCredentials.ApiSecret, settings.FiatCurrency);
                     break;
                 case "CoinbaseProExchangeClient":
-                    client = new CoinbaseProExchangeClient(settings.CoinbaseProCredentials.ApiKey, settings.CoinbaseProCredentials.ApiSecret, settings.CoinbaseProCredentials.Passphrase, settings.FiatCurrency);
+                    _exchangeClient = new CoinbaseProExchangeClient(settings.CoinbaseProCredentials.ApiKey, settings.CoinbaseProCredentials.ApiSecret, settings.CoinbaseProCredentials.Passphrase, settings.FiatCurrency);
                     break;
                 default:
                     throw new MoneyMonitorConfigurationException($"Unknown API client {AppSettings.Instance.Client}.");
@@ -54,14 +54,24 @@ namespace MoneyMonitor.Windows.Infrastructure
                                IconClicked = IconClicked,
                                TopMostToggled = TopMostToggled,
                                ShowCurrencyHistoryClicked = ShowCurrencyHistoryClicked,
-                               HideCurrencyHistoryClicked = HideCurrencyHistoryClicked
+                               HideCurrencyHistoryClicked = HideCurrencyHistoryClicked,
+                               RefreshClicked = RefreshClicked
                            };
 
             _formManager = new FormManager(_historyManager);
 
-            _poller = new ExchangeApiPoller(logger, client, Polled);
+            _poller = new ExchangeApiPoller(logger, _exchangeClient, Polled);
 
             _poller.StartPolling(settings.PollInterval);
+        }
+
+        private async void RefreshClicked()
+        {
+            var balances = await _exchangeClient.GetBalances();
+
+            _historyManager.AddEntry(balances);
+
+            _formManager.NewData();
         }
 
         private void HideCurrencyHistoryClicked(string currency)
