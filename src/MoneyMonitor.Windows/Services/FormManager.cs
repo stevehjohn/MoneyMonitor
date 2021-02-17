@@ -41,10 +41,7 @@ namespace MoneyMonitor.Windows.Services
                            HistoryChart =
                            {
                                Title = currency?.ToUpperInvariant() ?? "Total",
-                               CurrencySymbol = AppSettings.Instance.FiatCurrencySymbol,
-                               ExchangeRate = currency == null
-                                   ? null
-                                   : _historyManager.GetExchangeRate(currency)
+                               CurrencySymbol = AppSettings.Instance.FiatCurrencySymbol
                            }
                        };
 
@@ -73,7 +70,7 @@ namespace MoneyMonitor.Windows.Services
                 }
             }
 
-            form.HistoryChart.UpdateData(_historyManager.GetHistory(currency), _historyManager.GetHistoryTime());
+            form.HistoryChart.UpdateData(_historyManager.GetHistory(currency), _historyManager.GetHistoryTime(), _historyManager.GetExchangeRate(currency));
         }
 
         public void CloseForm(string currency)
@@ -86,7 +83,7 @@ namespace MoneyMonitor.Windows.Services
         {
             foreach (var form in _forms)
             {
-                form.HistoryChart.UpdateData(_historyManager.GetHistory(form.Currency), _historyManager.GetHistoryTime());
+                form.HistoryChart.UpdateData(_historyManager.GetHistory(form.Currency), _historyManager.GetHistoryTime(), _historyManager.GetExchangeRate(form.Currency));
             }
         }
 

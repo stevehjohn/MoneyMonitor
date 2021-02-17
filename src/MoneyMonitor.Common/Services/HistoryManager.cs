@@ -48,8 +48,13 @@ namespace MoneyMonitor.Common.Services
             return _history.LastOrDefault()?.Time;
         }
 
-        public decimal GetExchangeRate(string currency)
+        public decimal? GetExchangeRate(string currency)
         {
+            if (string.IsNullOrWhiteSpace(currency))
+            {
+                return null;
+            }
+
             // ReSharper disable once PossibleNullReferenceException
             return _history.Last().Balances.FirstOrDefault(b => b.Currency.Equals(currency, StringComparison.InvariantCultureIgnoreCase)).ExchangeRate;
         }

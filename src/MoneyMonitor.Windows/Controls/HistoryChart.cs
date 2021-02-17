@@ -34,11 +34,13 @@ namespace MoneyMonitor.Windows.Controls
             Enabled = false;
         }
 
-        public void UpdateData(List<int> dataPoints, DateTime? dataTime)
+        public void UpdateData(List<int> dataPoints, DateTime? dataTime, decimal? exchangeRate)
         {
             _dataPoints = dataPoints;
 
             _dataTime = dataTime;
+
+            ExchangeRate = exchangeRate;
 
             Invalidate();
         }
