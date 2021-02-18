@@ -14,6 +14,8 @@ namespace MoneyMonitor.Windows.Infrastructure.Settings
 
         public int BalanceLow { get; set; }
 
+        public BinanceCredentials BinanceCredentials { get; set; }
+
         public string Client { get; set; }
 
         public CoinbaseCredentials CoinbaseCredentials { get; set; }
