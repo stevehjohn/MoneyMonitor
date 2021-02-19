@@ -17,7 +17,9 @@ namespace MoneyMonitor.Common.Clients
 
         private readonly string _secretKey;
 
-        public BinanceExchangeClient(string apiKey, string secretKey)
+        private readonly string _fiatCurrency;
+
+        public BinanceExchangeClient(string apiKey, string secretKey, string fiatCurrency)
         {
             _client = new HttpClient
                       {
@@ -25,6 +27,8 @@ namespace MoneyMonitor.Common.Clients
                       };
 
             _secretKey = secretKey;
+
+            _fiatCurrency = fiatCurrency;
 
             _client.DefaultRequestHeaders.Add("X-MBX-APIKEY", apiKey);
         }
@@ -46,6 +50,12 @@ namespace MoneyMonitor.Common.Clients
 
             foreach (var coinBalance in balances)
             {
+                if (! exchangeRates.ContainsKey(coinBalance.Currency))
+                {
+                    // Not sure why some currencies don't convert...
+                    continue;
+                }
+
                 var rate = exchangeRates[coinBalance.Currency];
 
                 result.Add(new ExchangeBalance
@@ -97,9 +107,15 @@ namespace MoneyMonitor.Common.Clients
 
             foreach (var coin in coins)
             {
-                var message = new HttpRequestMessage(HttpMethod.Get, $"/api/v3/ticker/price?symbol={coin}GBP");
+                var message = new HttpRequestMessage(HttpMethod.Get, $"/api/v3/ticker/price?symbol={coin}{_fiatCurrency}");
 
                 var response = await _client.SendAsync(message);
+
+                if (! response.IsSuccessStatusCode)
+                {
+                    // Not sure why some currencies don't convert...
+                    continue;
+                }
 
                 var data = JsonSerializer.Deserialize<Ticker>(await response.Content.ReadAsStringAsync());
 
