@@ -12,17 +12,25 @@ I won't provide binaries for this as given the sensitive nature of API keys, I t
 
 In `appSettings.json` set `PollInterval` to a value of your liking.
 
+If you would like to monitor multiple exchanges, configure them as below and comma separate the list of exchanges in the `Clients` setting, e.g. `BinanceExchangeClient,CoinbaseExchangeClient`.
+
+### Binance
+
+In Binance, create an API key. The default permissions (`Enable Reading`) should suffice.
+
+Set `BinanceCredentials.ApiKey` and `BinanceCredentials.SecretKey` in `appSettings.json` with the values obtained from Binance. Add `BinanceExchangeClient` to the `Clients` setting.
+
 ### Coinbase
 
 In Coinbase, create an API key with the permission `wallet:accounts:read`.
 
-Set `CoinbaseCredentials.ApiKey` and `CoinbaseCredentials.ApiSecret` in `appSettings.json` with the values obtained from Coinbase. Set `Client` to `CoinbaseExchangeClient`.
+Set `CoinbaseCredentials.ApiKey` and `CoinbaseCredentials.ApiSecret` in `appSettings.json` with the values obtained from Coinbase. Add `CoinbaseExchangeClient` to the `Clients` setting.
 
 ### Coinbase Pro
 
 In Coinbase Pro, create an API key with `View` permissions.
 
-Set `CoinbaseProCredentials.ApiKey`, `CoinbaseProCredentials.ApiSecret` and `CoinbaseProCredentials.Passphrase` in `appSettings.json` with the values obtained from Coinbase Pro. Ensure the value of `Client` is `CoinbaseProExchangeClient`.
+Set `CoinbaseProCredentials.ApiKey`, `CoinbaseProCredentials.ApiSecret` and `CoinbaseProCredentials.Passphrase` in `appSettings.json` with the values obtained from Coinbase Pro. Add `CoinbaseProExchangeClient` to the `Clients` setting.
 
 ## User Interface
 

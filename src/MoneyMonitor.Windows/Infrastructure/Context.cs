@@ -36,15 +36,15 @@ namespace MoneyMonitor.Windows.Infrastructure
 
             foreach (var client in clients)
             {
-                switch (client)
+                switch (client.Trim().ToLowerInvariant())
                 {
-                    case "CoinbaseExchangeClient":
+                    case "coinbaseexchangeclient":
                         exchangeClients.Add(new CoinbaseExchangeClient(settings.CoinbaseCredentials.ApiKey, settings.CoinbaseCredentials.ApiSecret, settings.FiatCurrency));
                         break;
-                    case "CoinbaseProExchangeClient":
+                    case "coinbaseproexchangeclient":
                         exchangeClients.Add(new CoinbaseProExchangeClient(settings.CoinbaseProCredentials.ApiKey, settings.CoinbaseProCredentials.ApiSecret, settings.CoinbaseProCredentials.Passphrase, settings.FiatCurrency));
                         break;
-                    case "BinanceExchangeClient":
+                    case "binanceexchangeclient":
                         exchangeClients.Add(new BinanceExchangeClient(settings.BinanceCredentials.ApiKey, settings.BinanceCredentials.SecretKey, settings.FiatCurrency));
                         break;
                     default:
