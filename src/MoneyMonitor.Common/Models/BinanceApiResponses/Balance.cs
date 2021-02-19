@@ -8,6 +8,6 @@ namespace MoneyMonitor.Common.Models.BinanceApiResponses
         public string Asset { get; set; }
 
         [JsonPropertyName("free")]
-        public decimal Free { get; set; }
+        public string Free { get; set; }
     }
 }

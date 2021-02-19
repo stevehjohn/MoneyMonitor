@@ -51,11 +51,13 @@ namespace MoneyMonitor.Common.Clients
             // ReSharper disable once PossibleNullReferenceException
             foreach (var account in data.Balances)
             {
-                if (account.Free > 0)
+                var balance = decimal.Parse(account.Free);
+
+                if (balance > 0)
                 {
                     balances.Add(new ExchangeBalance
                                  {
-                                     Amount = account.Free,
+                                     Amount = balance,
                                      Currency = account.Asset
                                  });
                 }
