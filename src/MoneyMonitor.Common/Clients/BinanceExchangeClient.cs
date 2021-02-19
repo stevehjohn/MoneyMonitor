@@ -64,7 +64,7 @@ namespace MoneyMonitor.Common.Clients
                                Currency = coinBalance.Currency,
                                ExchangeRate = rate,
                                TimeUtc = now,
-                               Value = (int) (coinBalance.Amount / rate * 100)
+                               Value = (int) (coinBalance.Amount * rate * 100)
                            });
             }
 
