@@ -66,8 +66,8 @@ namespace MoneyMonitor.Common.Clients
 
         private string BuildQueryString()
         {
-            var timestamp = $"{(long) DateTime.UtcNow.Subtract(DateTime.UnixEpoch).TotalSeconds}";
-
+            var timestamp = $"{(long) DateTime.UtcNow.Subtract(DateTime.UnixEpoch).TotalMilliseconds}";
+            
             var query = $"timestamp={timestamp}";
 
             var bytes = Encoding.ASCII.GetBytes(query);
