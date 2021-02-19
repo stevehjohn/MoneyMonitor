@@ -16,7 +16,7 @@ namespace MoneyMonitor.Windows.Infrastructure.Settings
 
         public BinanceCredentials BinanceCredentials { get; set; }
 
-        public string Client { get; set; }
+        public string Clients { get; set; }
 
         public CoinbaseCredentials CoinbaseCredentials { get; set; }
 

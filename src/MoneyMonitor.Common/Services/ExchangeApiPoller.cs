@@ -1,5 +1,6 @@
-﻿    using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using MoneyMonitor.Common.Clients;
@@ -12,17 +13,17 @@ namespace MoneyMonitor.Common.Services
     {
         private readonly ILogger _logger;
 
-        private readonly ICryptoExchangeClient _exchangeClient;
+        private readonly ExchangeAggregator _exchangeAggregator;
 
         private readonly Action<List<ExchangeBalance>> _polled;
 
         private Thread _pollThread;
 
-        public ExchangeApiPoller(ILogger logger, ICryptoExchangeClient exchangeClient, Action<List<ExchangeBalance>> polled)
+        public ExchangeApiPoller(ILogger logger, ExchangeAggregator exchangeAggregator, Action<List<ExchangeBalance>> polled)
         {
             _logger = logger;
 
-            _exchangeClient = exchangeClient;
+            _exchangeAggregator = exchangeAggregator;
 
             _polled = polled;
         }
@@ -43,9 +44,7 @@ namespace MoneyMonitor.Common.Services
             {
                 try
                 {
-                    var balances = await _exchangeClient.GetBalances();
-
-                    _polled(balances);
+                    _polled(await _exchangeAggregator.GetAllBalances());
                 }
                 catch (Exception exception)
                 {

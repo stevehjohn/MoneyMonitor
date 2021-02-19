@@ -24,25 +24,32 @@ namespace MoneyMonitor.Windows.Infrastructure
 
         private readonly TrayManager _trayManager;
 
-        private readonly ICryptoExchangeClient _exchangeClient;
+        private readonly ExchangeAggregator _exchangeAggregator;
 
         public Context()
         {
             var settings = AppSettings.Instance;
 
-            switch (AppSettings.Instance.Client)
+            var clients = settings.Clients.Split(',');
+
+            var exchangeClients = new List<ICryptoExchangeClient>();
+
+            foreach (var client in clients)
             {
-                case "CoinbaseExchangeClient":
-                    _exchangeClient = new CoinbaseExchangeClient(settings.CoinbaseCredentials.ApiKey, settings.CoinbaseCredentials.ApiSecret, settings.FiatCurrency);
-                    break;
-                case "CoinbaseProExchangeClient":
-                    _exchangeClient = new CoinbaseProExchangeClient(settings.CoinbaseProCredentials.ApiKey, settings.CoinbaseProCredentials.ApiSecret, settings.CoinbaseProCredentials.Passphrase, settings.FiatCurrency);
-                    break;
-                case "BinanceExchangeClient":
-                    _exchangeClient = new BinanceExchangeClient(settings.BinanceCredentials.ApiKey, settings.BinanceCredentials.SecretKey, settings.FiatCurrency);
-                    break;
-                default:
-                    throw new MoneyMonitorConfigurationException($"Unknown API client {AppSettings.Instance.Client}.");
+                switch (client)
+                {
+                    case "CoinbaseExchangeClient":
+                        exchangeClients.Add(new CoinbaseExchangeClient(settings.CoinbaseCredentials.ApiKey, settings.CoinbaseCredentials.ApiSecret, settings.FiatCurrency));
+                        break;
+                    case "CoinbaseProExchangeClient":
+                        exchangeClients.Add(new CoinbaseProExchangeClient(settings.CoinbaseProCredentials.ApiKey, settings.CoinbaseProCredentials.ApiSecret, settings.CoinbaseProCredentials.Passphrase, settings.FiatCurrency));
+                        break;
+                    case "BinanceExchangeClient":
+                        exchangeClients.Add(new BinanceExchangeClient(settings.BinanceCredentials.ApiKey, settings.BinanceCredentials.SecretKey, settings.FiatCurrency));
+                        break;
+                    default:
+                        throw new MoneyMonitorConfigurationException($"Unknown API client {client}.");
+                }
             }
 
             var logger = new FileLogger(Constants.LogFilename);
@@ -63,14 +70,16 @@ namespace MoneyMonitor.Windows.Infrastructure
 
             _formManager = new FormManager(_historyManager);
 
-            _poller = new ExchangeApiPoller(logger, _exchangeClient, Polled);
+            _exchangeAggregator = new ExchangeAggregator(exchangeClients);
+
+            _poller = new ExchangeApiPoller(logger, _exchangeAggregator, Polled);
 
             _poller.StartPolling(settings.PollInterval);
         }
 
         private async void RefreshClicked()
         {
-            var balances = await _exchangeClient.GetBalances();
+            var balances = await _exchangeAggregator.GetAllBalances();
 
             _historyManager.AddEntry(balances);
 
