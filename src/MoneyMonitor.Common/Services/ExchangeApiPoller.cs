@@ -1,7 +1,7 @@
-﻿    using System;
+﻿using System;
 using System.Collections.Generic;
-    using System.Linq;
-    using System.Threading;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using MoneyMonitor.Common.Clients;
 using MoneyMonitor.Common.Infrastructure;
@@ -13,17 +13,17 @@ namespace MoneyMonitor.Common.Services
     {
         private readonly ILogger _logger;
 
-        private readonly List<ICryptoExchangeClient> _exchangeClients;
+        private readonly ExchangeAggregator _exchangeAggregator;
 
         private readonly Action<List<ExchangeBalance>> _polled;
 
         private Thread _pollThread;
 
-        public ExchangeApiPoller(ILogger logger, List<ICryptoExchangeClient> exchangeClients, Action<List<ExchangeBalance>> polled)
+        public ExchangeApiPoller(ILogger logger, ExchangeAggregator exchangeAggregator, Action<List<ExchangeBalance>> polled)
         {
             _logger = logger;
 
-            _exchangeClients = exchangeClients;
+            _exchangeAggregator = exchangeAggregator;
 
             _polled = polled;
         }
@@ -44,30 +44,7 @@ namespace MoneyMonitor.Common.Services
             {
                 try
                 {
-                    var allBalances = new List<ExchangeBalance>();
-
-                    foreach (var client in _exchangeClients)
-                    {
-                        var balances = await client.GetBalances();
-
-                        foreach (var balance in balances)
-                        {
-                            var item = allBalances.FirstOrDefault(b => b.Currency.Equals(balance.Currency, StringComparison.InvariantCultureIgnoreCase));
-
-                            if (item == null)
-                            {
-                                allBalances.Add(new ExchangeBalance
-                                                {
-                                                    
-                                                });
-                            }
-                            else
-                            {
-                            }
-                        }
-                    }
-
-                    _polled(allBalances);
+                    _polled(await _exchangeAggregator.GetAllBalances());
                 }
                 catch (Exception exception)
                 {
