@@ -38,6 +38,9 @@ namespace MoneyMonitor.Windows.Infrastructure
                 case "CoinbaseProExchangeClient":
                     _exchangeClient = new CoinbaseProExchangeClient(settings.CoinbaseProCredentials.ApiKey, settings.CoinbaseProCredentials.ApiSecret, settings.CoinbaseProCredentials.Passphrase, settings.FiatCurrency);
                     break;
+                case "BinanceExchangeClient":
+                    _exchangeClient = new BinanceExchangeClient(settings.BinanceCredentials.ApiKey, settings.BinanceCredentials.SecretKey);
+                    break;
                 default:
                     throw new MoneyMonitorConfigurationException($"Unknown API client {AppSettings.Instance.Client}.");
             }
