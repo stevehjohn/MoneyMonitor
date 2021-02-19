@@ -48,17 +48,24 @@ namespace MoneyMonitor.Common.Clients
 
             var data = JsonSerializer.Deserialize<Account>(stringData);
 
+            var now = DateTime.UtcNow;
+
             // ReSharper disable once PossibleNullReferenceException
             foreach (var account in data.Balances)
             {
                 var balance = decimal.Parse(account.Free);
+
+                var rate = 1;
 
                 if (balance > 0)
                 {
                     balances.Add(new ExchangeBalance
                                  {
                                      Amount = balance,
-                                     Currency = account.Asset
+                                     Currency = account.Asset,
+                                     ExchangeRate = rate,
+                                     TimeUtc = now,
+                                     Value = (int) (balance / rate * 100)
                                  });
                 }
             }
