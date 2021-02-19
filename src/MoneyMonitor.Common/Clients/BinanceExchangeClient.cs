@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
-using System.Threading;
 using System.Threading.Tasks;
 using MoneyMonitor.Common.Models;
 using MoneyMonitor.Common.Models.BinanceApiResponses;
@@ -33,7 +33,32 @@ namespace MoneyMonitor.Common.Clients
         {
             var balances = await GetCoinBalances();
 
-            return null;
+            var result = new List<ExchangeBalance>();
+
+            if (balances.Count == 0)
+            {
+                return result;
+            }
+
+            var exchangeRates = await GetExchangeRates(balances.Select(r => r.Currency).ToList());
+
+            var now = DateTime.UtcNow;
+
+            foreach (var coinBalance in balances)
+            {
+                var rate = exchangeRates[coinBalance.Currency];
+
+                result.Add(new ExchangeBalance
+                           {
+                               Amount = coinBalance.Amount,
+                               Currency = coinBalance.Currency,
+                               ExchangeRate = rate,
+                               TimeUtc = now,
+                               Value = (int) (coinBalance.Amount / rate * 100)
+                           });
+            }
+
+            return result;
         }
         
         private async Task<List<ExchangeBalance>> GetCoinBalances()
@@ -47,30 +72,42 @@ namespace MoneyMonitor.Common.Clients
             var stringData = await response.Content.ReadAsStringAsync();
 
             var data = JsonSerializer.Deserialize<Account>(stringData);
-
-            var now = DateTime.UtcNow;
-
+                
             // ReSharper disable once PossibleNullReferenceException
             foreach (var account in data.Balances)
             {
                 var balance = decimal.Parse(account.Free);
-
-                var rate = 1;
 
                 if (balance > 0)
                 {
                     balances.Add(new ExchangeBalance
                                  {
                                      Amount = balance,
-                                     Currency = account.Asset,
-                                     ExchangeRate = rate,
-                                     TimeUtc = now,
-                                     Value = (int) (balance / rate * 100)
+                                     Currency = account.Asset
                                  });
                 }
             }
 
             return balances;
+        }
+
+        private async Task<Dictionary<string, decimal>> GetExchangeRates(List<string> coins)
+        {
+            var rates = new Dictionary<string, decimal>();
+
+            foreach (var coin in coins)
+            {
+                var message = new HttpRequestMessage(HttpMethod.Get, $"/api/v3/ticker/price?symbol={coin}GBP");
+
+                var response = await _client.SendAsync(message);
+
+                var data = JsonSerializer.Deserialize<Ticker>(await response.Content.ReadAsStringAsync());
+
+                // ReSharper disable once PossibleNullReferenceException
+                rates.Add(coin, decimal.Parse(data.Price));
+            }
+
+            return rates;
         }
 
         private string BuildQueryString()
