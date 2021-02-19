@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using MoneyMonitor.Common.Clients;
 using MoneyMonitor.Common.Infrastructure;
 using MoneyMonitor.Common.Models;
 
