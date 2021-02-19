@@ -1,6 +1,7 @@
 ﻿    using System;
 using System.Collections.Generic;
-using System.Threading;
+    using System.Linq;
+    using System.Threading;
 using System.Threading.Tasks;
 using MoneyMonitor.Common.Clients;
 using MoneyMonitor.Common.Infrastructure;
@@ -12,17 +13,17 @@ namespace MoneyMonitor.Common.Services
     {
         private readonly ILogger _logger;
 
-        private readonly ICryptoExchangeClient _exchangeClient;
+        private readonly List<ICryptoExchangeClient> _exchangeClients;
 
         private readonly Action<List<ExchangeBalance>> _polled;
 
         private Thread _pollThread;
 
-        public ExchangeApiPoller(ILogger logger, ICryptoExchangeClient exchangeClient, Action<List<ExchangeBalance>> polled)
+        public ExchangeApiPoller(ILogger logger, List<ICryptoExchangeClient> exchangeClients, Action<List<ExchangeBalance>> polled)
         {
             _logger = logger;
 
-            _exchangeClient = exchangeClient;
+            _exchangeClients = exchangeClients;
 
             _polled = polled;
         }
@@ -43,9 +44,30 @@ namespace MoneyMonitor.Common.Services
             {
                 try
                 {
-                    var balances = await _exchangeClient.GetBalances();
+                    var allBalances = new List<ExchangeBalance>();
 
-                    _polled(balances);
+                    foreach (var client in _exchangeClients)
+                    {
+                        var balances = await client.GetBalances();
+
+                        foreach (var balance in balances)
+                        {
+                            var item = allBalances.FirstOrDefault(b => b.Currency.Equals(balance.Currency, StringComparison.InvariantCultureIgnoreCase));
+
+                            if (item == null)
+                            {
+                                allBalances.Add(new ExchangeBalance
+                                                {
+                                                    
+                                                });
+                            }
+                            else
+                            {
+                            }
+                        }
+                    }
+
+                    _polled(allBalances);
                 }
                 catch (Exception exception)
                 {

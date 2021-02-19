@@ -69,7 +69,7 @@ namespace MoneyMonitor.Windows.Infrastructure
 
             _formManager = new FormManager(_historyManager);
 
-            _poller = new ExchangeApiPoller(logger, _exchangeClient, Polled);
+            _poller = new ExchangeApiPoller(logger, _exchangeClients, Polled);
 
             _poller.StartPolling(settings.PollInterval);
         }
