@@ -173,11 +173,17 @@ namespace MoneyMonitor.Windows.Controls
 
             if (ExchangeRate.HasValue)
             {
-                title = $"1 {Title} : £{1 / ExchangeRate:N2}";
+                var exchangeRate = 1 / ExchangeRate;
+
+                title = $"1 {Title} : £{exchangeRate:N4}";
 
                 size = graphics.MeasureString(title, font);
 
-                graphics.DrawString(title, font, textBrush, 2, Height - size.Height);
+                var dimTextBrush = new SolidBrush(Color.Gray);
+
+                graphics.DrawString(title, font, dimTextBrush, 2, Height - size.Height);
+
+                graphics.DrawString(title.Substring(0, title.Length - 2), font, textBrush, 2, Height - size.Height);
             }
         }
     }
