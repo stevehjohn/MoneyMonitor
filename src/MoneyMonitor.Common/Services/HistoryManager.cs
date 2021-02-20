@@ -59,6 +59,17 @@ namespace MoneyMonitor.Common.Services
             return _history.Last().Balances.FirstOrDefault(b => b.Currency.Equals(currency, StringComparison.InvariantCultureIgnoreCase)).ExchangeRate;
         }
 
+        public decimal? GetHolding(string currency)
+        {
+            if (string.IsNullOrWhiteSpace(currency))
+            {
+                return null;
+            }
+
+            // ReSharper disable once PossibleNullReferenceException
+            return _history.Last().Balances.FirstOrDefault(b => b.Currency.Equals(currency, StringComparison.InvariantCultureIgnoreCase)).Amount;
+        }
+
         public void Save()
         {
             var json = JsonSerializer.Serialize(_history);

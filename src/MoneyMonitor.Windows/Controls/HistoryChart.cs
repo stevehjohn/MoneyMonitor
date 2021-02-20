@@ -11,15 +11,17 @@ namespace MoneyMonitor.Windows.Controls
     {
         private List<int> _dataPoints;
 
+        private decimal? _exchangeRate;
+
+        private DateTime? _dataTime;
+
+        private decimal? _holding;
+
         public string Title { set; private get; }
 
         public string CurrencySymbol { set; private get; }
 
         public Color BarColour { get; set; }
-
-        public decimal? ExchangeRate { set; private get; }
-
-        private DateTime? _dataTime;
 
         public HistoryChart()
         {
@@ -34,13 +36,15 @@ namespace MoneyMonitor.Windows.Controls
             Enabled = false;
         }
 
-        public void UpdateData(List<int> dataPoints, DateTime? dataTime, decimal? exchangeRate)
+        public void UpdateData(List<int> dataPoints, DateTime? dataTime, decimal? exchangeRate, decimal? holding)
         {
             _dataPoints = dataPoints;
 
             _dataTime = dataTime;
 
-            ExchangeRate = exchangeRate;
+            _exchangeRate = exchangeRate;
+
+            _holding = holding;
 
             Invalidate();
         }
@@ -152,6 +156,20 @@ namespace MoneyMonitor.Windows.Controls
 
             graphics.DrawRectangle(pen, Width - size.Width - (Constants.BarSpace + Constants.BarSpace) * 10, (float) currentY - size.Height / 2f, size.Width, size.Height);
 
+            if (_holding.HasValue)
+            {
+                title = $"{_holding:G29}";
+
+                size = graphics.MeasureString(title, font);
+
+                graphics.FillRectangle(textBackgroundBrush, (Constants.BarSpace + Constants.BarSpace) * 10, (float) currentY - size.Height / 2f, size.Width, size.Height);
+
+                // TODO: Sort magic constant +2
+                graphics.DrawString(title, font, textBrush, (Constants.BarSpace + Constants.BarSpace) * 10, (float) currentY - size.Height / 2f + 2);
+
+                graphics.DrawRectangle(pen, (Constants.BarSpace + Constants.BarSpace) * 10, (float) currentY - size.Height / 2f, size.Width, size.Height);
+            }
+
             if (_dataPoints.Count > 1)
             {
                 var diff = _dataPoints.Last() - _dataPoints[^2];
@@ -171,9 +189,9 @@ namespace MoneyMonitor.Windows.Controls
                 }
             }
 
-            if (ExchangeRate.HasValue)
+            if (_exchangeRate.HasValue)
             {
-                var exchangeRate = 1 / ExchangeRate;
+                var exchangeRate = 1 / _exchangeRate;
 
                 title = $"1 {Title} : £{exchangeRate:N4}";
 
