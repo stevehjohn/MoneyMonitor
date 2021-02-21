@@ -2,6 +2,7 @@
 using System.Drawing;
 using System.Windows.Forms;
 using MoneyMonitor.Windows.Controls;
+using MoneyMonitor.Windows.Infrastructure;
 
 namespace MoneyMonitor.Windows.Forms
 {
@@ -24,7 +25,11 @@ namespace MoneyMonitor.Windows.Forms
                                Left = 1,
                                Top = 1,
                                Width = Width - 2,
-                               Height = Height - 2
+                               Height = Height - 2,
+                               BarWidth = Constants.BarWidth,
+                               BarSpace = Constants.BarSpace,
+                               FontName = "Lucida Console",
+                               FontSize = 16
                            };
 
             Controls.Add(HistoryChart);
