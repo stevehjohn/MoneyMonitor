@@ -29,7 +29,7 @@ namespace MoneyMonitor.Windows.Forms
                                BarWidth = Constants.BarWidth,
                                BarSpace = Constants.BarSpace,
                                FontName = "Lucida Console",
-                               FontSize = 8
+                               FontSize = 16
                            };
 
             Controls.Add(HistoryChart);

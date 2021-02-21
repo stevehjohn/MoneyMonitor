@@ -101,7 +101,7 @@ namespace MoneyMonitor.Windows.Controls
                 return;
             }
 
-            var yScale = (float) (Height - Constants.TextHeight * 2) / delta;
+            var yScale = (float) (Height - FontSize * 4) / delta;
 
             var barBrush = new SolidBrush(BarColour);
 
@@ -113,7 +113,7 @@ namespace MoneyMonitor.Windows.Controls
 
             for (var x = Width - 1; x > -BarWidth; x -= BarWidth + BarSpace)
             {
-                graphics.FillRectangle(backgroundBrush, x - BarWidth, Constants.TextHeight, BarWidth, Height - Constants.TextHeight * 2);
+                graphics.FillRectangle(backgroundBrush, x - BarWidth, FontSize * 2, BarWidth, Height - FontSize * 4);
 
                 if (index < 0)
                 {
@@ -127,9 +127,9 @@ namespace MoneyMonitor.Windows.Controls
                     barHeight = 2;
                 }
 
-                graphics.FillRectangle(barBrush, x - BarWidth, Constants.TextHeight + (Height - Constants.TextHeight * 2 - barHeight), BarWidth, barHeight);
+                graphics.FillRectangle(barBrush, x - BarWidth, FontSize * 2 + (Height - FontSize * 4 - barHeight), BarWidth, barHeight);
 
-                currentY ??= Constants.TextHeight + (Height - Constants.TextHeight * 2 - barHeight);
+                currentY ??= FontSize * 2 + (Height - FontSize * 4 - barHeight);
 
                 index--;
             }
