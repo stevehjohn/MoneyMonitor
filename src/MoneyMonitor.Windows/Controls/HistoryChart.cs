@@ -23,6 +23,14 @@ namespace MoneyMonitor.Windows.Controls
 
         public Color BarColour { get; set; }
 
+        public int BarWidth { get; set; }
+
+        public int BarSpace { get; set; }
+
+        public string FontName { get; set; }
+
+        public int FontSize { get; set; }
+
         public HistoryChart()
         {
             InitializeComponent();
@@ -55,7 +63,7 @@ namespace MoneyMonitor.Windows.Controls
 
             graphics.Clear(Color.Black);
 
-            var font = new Font("Lucida Console", 8);
+            var font = new Font(FontName, FontSize);
 
             var textBrush = new SolidBrush(Color.White);
             
@@ -103,9 +111,9 @@ namespace MoneyMonitor.Windows.Controls
 
             float? currentY = null;
 
-            for (var x = Width - 1; x > -Constants.BarWidth; x -= Constants.BarWidth + Constants.BarSpace)
+            for (var x = Width - 1; x > -BarWidth; x -= BarWidth + BarSpace)
             {
-                graphics.FillRectangle(backgroundBrush, x - Constants.BarWidth, Constants.TextHeight, Constants.BarWidth, Height - Constants.TextHeight * 2);
+                graphics.FillRectangle(backgroundBrush, x - BarWidth, Constants.TextHeight, BarWidth, Height - Constants.TextHeight * 2);
 
                 if (index < 0)
                 {
@@ -119,7 +127,7 @@ namespace MoneyMonitor.Windows.Controls
                     barHeight = 2;
                 }
 
-                graphics.FillRectangle(barBrush, x - Constants.BarWidth, Constants.TextHeight + (Height - Constants.TextHeight * 2 - barHeight), Constants.BarWidth, barHeight);
+                graphics.FillRectangle(barBrush, x - BarWidth, Constants.TextHeight + (Height - Constants.TextHeight * 2 - barHeight), BarWidth, barHeight);
 
                 currentY ??= Constants.TextHeight + (Height - Constants.TextHeight * 2 - barHeight);
 
@@ -149,12 +157,12 @@ namespace MoneyMonitor.Windows.Controls
             // ReSharper disable once PossibleInvalidOperationException
             graphics.DrawLine(pen, 1, (float) currentY, Width, (float) currentY);
 
-            graphics.FillRectangle(textBackgroundBrush, Width - size.Width - (Constants.BarSpace + Constants.BarSpace) * 10, (float) currentY - size.Height / 2f, size.Width, size.Height);
+            graphics.FillRectangle(textBackgroundBrush, Width - size.Width - BarSpace * 20, (float) currentY - size.Height / 2f, size.Width, size.Height);
 
             // TODO: Sort magic constant +2
-            graphics.DrawString(title, font, textBrush, Width - size.Width - (Constants.BarSpace + Constants.BarSpace) * 10, (float) currentY - size.Height / 2f + 2);
+            graphics.DrawString(title, font, textBrush, Width - size.Width - BarSpace * 20, (float) currentY - size.Height / 2f + 2);
 
-            graphics.DrawRectangle(pen, Width - size.Width - (Constants.BarSpace + Constants.BarSpace) * 10, (float) currentY - size.Height / 2f, size.Width, size.Height);
+            graphics.DrawRectangle(pen, Width - size.Width - BarSpace * 20, (float) currentY - size.Height / 2f, size.Width, size.Height);
 
             if (_holding.HasValue)
             {
@@ -162,12 +170,12 @@ namespace MoneyMonitor.Windows.Controls
 
                 size = graphics.MeasureString(title, font);
 
-                graphics.FillRectangle(textBackgroundBrush, (Constants.BarSpace + Constants.BarSpace) * 10, (float) currentY - size.Height / 2f, size.Width, size.Height);
+                graphics.FillRectangle(textBackgroundBrush, BarSpace * 20, (float) currentY - size.Height / 2f, size.Width, size.Height);
 
                 // TODO: Sort magic constant +2
-                graphics.DrawString(title, font, textBrush, (Constants.BarSpace + Constants.BarSpace) * 10, (float) currentY - size.Height / 2f + 2);
+                graphics.DrawString(title, font, textBrush, BarSpace * 20, (float) currentY - size.Height / 2f + 2);
 
-                graphics.DrawRectangle(pen, (Constants.BarSpace + Constants.BarSpace) * 10, (float) currentY - size.Height / 2f, size.Width, size.Height);
+                graphics.DrawRectangle(pen, BarSpace * 20, (float) currentY - size.Height / 2f, size.Width, size.Height);
             }
 
             if (_dataPoints.Count > 1)
