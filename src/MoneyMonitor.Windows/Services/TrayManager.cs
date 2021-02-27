@@ -102,7 +102,6 @@ namespace MoneyMonitor.Windows.Services
             {
                 _contextMenu.Items.Clear();
 
-                // TODO: Can we just use _formManager for Checked?
                 _allCurrencies = new ToolStripMenuItem("Total", null, (_, _) => ToggleCurrencyHistory()) { Checked = _formManager.IsFormShown(null) };
 
                 _contextMenu.Items.Add(_allCurrencies);
@@ -111,7 +110,6 @@ namespace MoneyMonitor.Windows.Services
                 {
                     foreach (var currency in currencies.OrderBy(c => c).ToList())
                     {
-                        // TODO: Can we just use _formManager for Checked?
                         _contextMenu.Items.Add(new ToolStripMenuItem(currency.ToUpperInvariant(), null, (_, _) => ToggleCurrencyHistory(currency)) { Tag = currency, Checked = _formManager.IsFormShown(currency) });
                     }
                 }
