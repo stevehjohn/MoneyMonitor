@@ -78,6 +78,8 @@ namespace MoneyMonitor.Windows.Infrastructure
 
             _formManager = new FormManager(_historyManager);
 
+            _formManager.RestoreState();
+
             _exchangeAggregator = new ExchangeAggregator(exchangeClients);
 
             _poller = new ExchangeApiPoller(_logger, _exchangeAggregator, Polled);

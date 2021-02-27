@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
+using System.Text.Json;
 using System.Windows.Forms;
 using MoneyMonitor.Common.Services;
 using MoneyMonitor.Windows.Forms;
 using MoneyMonitor.Windows.Infrastructure;
 using MoneyMonitor.Windows.Infrastructure.Settings;
+using MoneyMonitor.Windows.Models;
 
 namespace MoneyMonitor.Windows.Services
 {
@@ -29,15 +32,15 @@ namespace MoneyMonitor.Windows.Services
             _colours = new[] { Color.Coral, Color.DeepPink, Color.DarkSeaGreen, Color.DodgerBlue, Color.Gold, Color.Lime, Color.DarkTurquoise, Color.LightBlue, Color.MediumSeaGreen, Color.Red };
         }
 
-        public void ShowHistory(bool transient, string currency = null)
+        public void ShowHistory(bool transient, string currency = null, int? left = null, int? top = null)
         {
             var form = new History
                        {
                            Currency = currency,
                            Width = Constants.HistoryWidth,
                            Height = Constants.HistoryHeight,
-                           Left = Screen.PrimaryScreen.WorkingArea.Width - Constants.HistoryWidth,
-                           Top = Screen.PrimaryScreen.WorkingArea.Height - Constants.HistoryHeight,
+                           Left = left ?? Screen.PrimaryScreen.WorkingArea.Width - Constants.HistoryWidth,
+                           Top = top ?? Screen.PrimaryScreen.WorkingArea.Height - Constants.HistoryHeight,
                            HistoryChart =
                            {
                                Title = currency?.ToUpperInvariant() ?? "Total",
@@ -145,6 +148,40 @@ namespace MoneyMonitor.Windows.Services
 
         public void SaveState()
         {
+            var state = new List<FormState>();
+
+            foreach (var form in _forms)
+            {
+                if (! form.IsTransient)
+                {
+                    state.Add(new FormState
+                              {
+                                  Currency = form.Currency,
+                                  Left = form.Left,
+                                  Top = form.Top
+                              });
+                }
+            }
+
+            File.WriteAllText(Constants.FormStateFilename, JsonSerializer.Serialize(state.ToArray()));
+        }
+
+        public void RestoreState()
+        {
+            if (! File.Exists(Constants.FormStateFilename))
+            {
+                return;
+            }
+
+            var stateJson = File.ReadAllText(Constants.FormStateFilename);
+
+            var states = JsonSerializer.Deserialize<FormState[]>(stateJson);
+
+            // ReSharper disable once PossibleNullReferenceException
+            foreach (var state in states)
+            {
+                ShowHistory(false, state.Currency, state.Left, state.Top);
+            }
         }
 
         private void FormOnClosed(object sender, EventArgs e)
