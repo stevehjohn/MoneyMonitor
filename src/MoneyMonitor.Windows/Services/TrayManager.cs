@@ -100,22 +100,10 @@ namespace MoneyMonitor.Windows.Services
             }
             else
             {
-                var allCurrenciesChecked = _allCurrencies?.Checked ?? false;
-
-                var isChecked = new List<string>();
-
-                foreach (var item in _contextMenu.Items)
-                {
-                    if (item is ToolStripMenuItem menuItem && menuItem.Tag != null && menuItem.Checked)
-                    {
-                        isChecked.Add((string) menuItem.Tag);
-                    }
-                }
-
                 _contextMenu.Items.Clear();
 
                 // TODO: Can we just use _formManager for Checked?
-                _allCurrencies = new ToolStripMenuItem("Total", null, (_, _) => ToggleCurrencyHistory()) { Checked = allCurrenciesChecked || _formManager.IsFormShown(null) };
+                _allCurrencies = new ToolStripMenuItem("Total", null, (_, _) => ToggleCurrencyHistory()) { Checked = _formManager.IsFormShown(null) };
 
                 _contextMenu.Items.Add(_allCurrencies);
 
@@ -124,7 +112,7 @@ namespace MoneyMonitor.Windows.Services
                     foreach (var currency in currencies.OrderBy(c => c).ToList())
                     {
                         // TODO: Can we just use _formManager for Checked?
-                        _contextMenu.Items.Add(new ToolStripMenuItem(currency.ToUpperInvariant(), null, (_, _) => ToggleCurrencyHistory(currency)) { Tag = currency, Checked = isChecked.Contains(currency) || _formManager.IsFormShown(currency) });
+                        _contextMenu.Items.Add(new ToolStripMenuItem(currency.ToUpperInvariant(), null, (_, _) => ToggleCurrencyHistory(currency)) { Tag = currency, Checked = _formManager.IsFormShown(currency) });
                     }
                 }
 
