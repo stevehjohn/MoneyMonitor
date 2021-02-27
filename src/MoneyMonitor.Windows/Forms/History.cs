@@ -16,6 +16,8 @@ namespace MoneyMonitor.Windows.Forms
 
         public Action<History, Point> FormMoved { set; private get; }
 
+        public Action CloseEventReceived { set; private get; }
+
         private Point? _previousMouse;
 
         public History()
@@ -35,6 +37,13 @@ namespace MoneyMonitor.Windows.Forms
                            };
 
             Controls.Add(HistoryChart);
+
+            Closing += OnClosingInternal;
+        }
+
+        private void OnClosingInternal(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            CloseEventReceived?.Invoke();
         }
 
         public void Show(bool transient)

@@ -47,7 +47,8 @@ namespace MoneyMonitor.Windows.Services
                                CurrencySymbol = AppSettings.Instance.FiatCurrencySymbol
                            },
                            Text = currency,
-                           FormMoved = FormMoved
+                           FormMoved = FormMoved,
+                           CloseEventReceived = FormClosed
                        };
 
             form.Closed += FormOnClosed;
@@ -144,6 +145,11 @@ namespace MoneyMonitor.Windows.Services
                     break;
                 }
             }
+        }
+
+        public void FormClosed()
+        {
+            SaveState();
         }
 
         public void SaveState()

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using Microsoft.Win32;
 using MoneyMonitor.Common.Clients;
 using MoneyMonitor.Common.Infrastructure;
 using MoneyMonitor.Common.Models;
@@ -32,8 +31,6 @@ namespace MoneyMonitor.Windows.Infrastructure
 
         public Context()
         {
-            SystemEvents.SessionEnded += OnSessionEnded;
-
             var settings = AppSettings.Instance;
 
             var clients = settings.Clients.Split(',');
@@ -85,11 +82,6 @@ namespace MoneyMonitor.Windows.Infrastructure
             _poller = new ExchangeApiPoller(_logger, _exchangeAggregator, Polled);
 
             _poller.StartPolling(settings.PollInterval);
-        }
-
-        private void OnSessionEnded(object sender, SessionEndedEventArgs e)
-        {
-            _formManager.SaveState();
         }
 
         private async void RefreshClicked()
@@ -185,13 +177,6 @@ namespace MoneyMonitor.Windows.Infrastructure
         private void IconClicked()
         {
             _formManager.ShowHistory(true);
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            SystemEvents.SessionEnded -= OnSessionEnded;
-
-            base.Dispose(disposing);
         }
     }
 }
