@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using Microsoft.Win32;
 using MoneyMonitor.Common.Clients;
 using MoneyMonitor.Common.Infrastructure;
 using MoneyMonitor.Common.Models;
@@ -26,8 +28,12 @@ namespace MoneyMonitor.Windows.Infrastructure
 
         private readonly ExchangeAggregator _exchangeAggregator;
 
+        private readonly ILogger _logger;
+
         public Context()
         {
+            SystemEvents.SessionEnded += OnSessionEnded;
+
             var settings = AppSettings.Instance;
 
             var clients = settings.Clients.Split(',');
@@ -54,7 +60,7 @@ namespace MoneyMonitor.Windows.Infrastructure
                 }
             }
 
-            var logger = new FileLogger(Constants.LogFilename);
+            _logger = new FileLogger(Constants.LogFilename);
 
             _historyManager = new HistoryManager(Constants.HistoryLength, Constants.HistoryFilename);
 
@@ -74,9 +80,14 @@ namespace MoneyMonitor.Windows.Infrastructure
 
             _exchangeAggregator = new ExchangeAggregator(exchangeClients);
 
-            _poller = new ExchangeApiPoller(logger, _exchangeAggregator, Polled);
+            _poller = new ExchangeApiPoller(_logger, _exchangeAggregator, Polled);
 
             _poller.StartPolling(settings.PollInterval);
+        }
+
+        private void OnSessionEnded(object sender, SessionEndedEventArgs e)
+        {
+            _formManager.SaveState();
         }
 
         private async void RefreshClicked()
@@ -133,7 +144,7 @@ namespace MoneyMonitor.Windows.Infrastructure
             UpdateExcel(balance);
         }
 
-        private static void UpdateExcel(int balance)
+        private void UpdateExcel(int balance)
         {
             if (string.IsNullOrWhiteSpace(AppSettings.Instance.ExcelFilePath) || string.IsNullOrWhiteSpace(AppSettings.Instance.ExcelCell))
             {
@@ -154,9 +165,9 @@ namespace MoneyMonitor.Windows.Infrastructure
 
                 package.Save();
             }
-            catch
+            catch (Exception exception)
             {
-                //
+                _logger.LogError($"An error occurred updating the Excel spreadsheet {AppSettings.Instance.ExcelFilePath}", exception);
             } 
         }
 
@@ -164,12 +175,21 @@ namespace MoneyMonitor.Windows.Infrastructure
         {
             _trayManager.HideTrayIcon();
 
+            _formManager.SaveState();
+
             Application.Exit();
         }
 
         private void IconClicked()
         {
             _formManager.ShowHistory(true);
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            SystemEvents.SessionEnded -= OnSessionEnded;
+
+            base.Dispose(disposing);
         }
     }
 }

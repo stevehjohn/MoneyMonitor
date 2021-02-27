@@ -143,6 +143,10 @@ namespace MoneyMonitor.Windows.Services
             }
         }
 
+        public void SaveState()
+        {
+        }
+
         private void FormOnClosed(object sender, EventArgs e)
         {
             _forms.Remove((History) sender);
