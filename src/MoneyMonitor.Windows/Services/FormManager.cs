@@ -43,7 +43,8 @@ namespace MoneyMonitor.Windows.Services
                                Title = currency?.ToUpperInvariant() ?? "Total",
                                CurrencySymbol = AppSettings.Instance.FiatCurrencySymbol
                            },
-                           Text = currency
+                           Text = currency,
+                           FormMoved = FormMoved
                        };
 
             form.Closed += FormOnClosed;
@@ -95,6 +96,49 @@ namespace MoneyMonitor.Windows.Services
                 if (! form.IsTransient)
                 {
                     form.TopMost = topMost;
+                }
+            }
+        }
+
+        public void FormMoved(History form, Point position)
+        {
+            foreach (var item in _forms)
+            {
+                if (item == form)
+                {
+                    continue;
+                }
+
+                if (Math.Abs(form.Left + form.Width - item.Left) < 10 && Math.Abs(form.Top - item.Top) < 10)
+                {
+                    form.Left = item.Left - form.Width + 1;
+                    form.Top = item.Top;
+
+                    break;
+                }
+
+                if (Math.Abs(item.Left + item.Width - form.Left) < 10 && Math.Abs(form.Top - item.Top) < 10)
+                {
+                    form.Left = item.Left + item.Width - 2;
+                    form.Top = item.Top;
+
+                    break;
+                }
+
+                if (Math.Abs(item.Top + item.Height - form.Top) < 10 && Math.Abs(form.Left - item.Left) < 10)
+                {
+                    form.Left = item.Left;
+                    form.Top = item.Top + item.Height - 1;
+
+                    break;
+                }
+
+                if (Math.Abs(form.Top + form.Height - item.Top) < 10 && Math.Abs(form.Left - item.Left) < 10)
+                {
+                    form.Left = item.Left;
+                    form.Top = item.Top - item.Height + 1;
+
+                    break;
                 }
             }
         }

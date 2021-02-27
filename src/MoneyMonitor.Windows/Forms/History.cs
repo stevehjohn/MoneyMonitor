@@ -14,6 +14,8 @@ namespace MoneyMonitor.Windows.Forms
 
         public string Currency { get; set; }
 
+        public Action<History, Point> FormMoved { set; private get; }
+
         private Point? _previousMouse;
 
         public History()
@@ -72,6 +74,8 @@ namespace MoneyMonitor.Windows.Forms
             Top += Cursor.Position.Y - _previousMouse.Value.Y;
 
             _previousMouse = Cursor.Position;
+
+            FormMoved?.Invoke(this, new Point(Left, Top));
         }
 
         private void OnMouseDown(object sender, MouseEventArgs e)
