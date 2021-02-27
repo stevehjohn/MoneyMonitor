@@ -6,6 +6,8 @@
 
         public const string HistoryFilename = "history.json";
 
+        public const string FormStateFilename = "forms.json";
+
         public const int HistoryLength = 100;
         
         public const int HistoryWidth = 503;
