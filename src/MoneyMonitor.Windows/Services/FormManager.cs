@@ -42,7 +42,8 @@ namespace MoneyMonitor.Windows.Services
                            {
                                Title = currency?.ToUpperInvariant() ?? "Total",
                                CurrencySymbol = AppSettings.Instance.FiatCurrencySymbol
-                           }
+                           },
+                           Text = currency
                        };
 
             form.Closed += FormOnClosed;
