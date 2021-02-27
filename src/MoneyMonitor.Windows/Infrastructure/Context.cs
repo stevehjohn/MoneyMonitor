@@ -63,7 +63,11 @@ namespace MoneyMonitor.Windows.Infrastructure
 
             _historyManager.Load();
 
-            _trayManager = new TrayManager
+            _formManager = new FormManager(_historyManager);
+
+            _formManager.RestoreState();
+
+            _trayManager = new TrayManager(_formManager)
                            {
                                ExitClicked = ExitClicked,
                                IconClicked = IconClicked,
@@ -72,10 +76,6 @@ namespace MoneyMonitor.Windows.Infrastructure
                                HideCurrencyHistoryClicked = HideCurrencyHistoryClicked,
                                RefreshClicked = RefreshClicked
                            };
-
-            _formManager = new FormManager(_historyManager);
-
-            _formManager.RestoreState();
 
             _exchangeAggregator = new ExchangeAggregator(exchangeClients);
 

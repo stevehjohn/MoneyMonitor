@@ -190,6 +190,11 @@ namespace MoneyMonitor.Windows.Services
             }
         }
 
+        public bool IsFormShown(string currency)
+        {
+            return _forms.Any(f => f.Currency == currency);
+        }
+
         private void FormOnClosed(object sender, EventArgs e)
         {
             _forms.Remove((History) sender);

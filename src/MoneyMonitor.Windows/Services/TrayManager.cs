@@ -12,9 +12,11 @@ namespace MoneyMonitor.Windows.Services
     {
         private readonly NotifyIcon _icon;
 
-        private int _previousBalance;
+        private readonly FormManager _formManager;
 
         private readonly ContextMenuStrip _contextMenu;
+
+        private int _previousBalance;
 
         private ToolStripMenuItem _alwaysOnTop;
         
@@ -34,7 +36,7 @@ namespace MoneyMonitor.Windows.Services
 
         public Action RefreshClicked { set; private get; }
 
-        public TrayManager()
+        public TrayManager(FormManager formManager)
         {
             _contextMenu = new ContextMenuStrip();
 
@@ -46,6 +48,8 @@ namespace MoneyMonitor.Windows.Services
                     };
 
             _icon.Click += TrayIconClicked;
+
+            _formManager = formManager;
 
             ConstructContextMenu(null);
         }
@@ -110,7 +114,8 @@ namespace MoneyMonitor.Windows.Services
 
                 _contextMenu.Items.Clear();
 
-                _allCurrencies = new ToolStripMenuItem("Total", null, (_, _) => ToggleCurrencyHistory()) { Checked = allCurrenciesChecked };
+                // TODO: Can we just use _formManager for Checked?
+                _allCurrencies = new ToolStripMenuItem("Total", null, (_, _) => ToggleCurrencyHistory()) { Checked = allCurrenciesChecked || _formManager.IsFormShown(null) };
 
                 _contextMenu.Items.Add(_allCurrencies);
 
@@ -118,7 +123,8 @@ namespace MoneyMonitor.Windows.Services
                 {
                     foreach (var currency in currencies.OrderBy(c => c).ToList())
                     {
-                        _contextMenu.Items.Add(new ToolStripMenuItem(currency.ToUpperInvariant(), null, (_, _) => ToggleCurrencyHistory(currency)) { Tag = currency, Checked = isChecked.Contains(currency) });
+                        // TODO: Can we just use _formManager for Checked?
+                        _contextMenu.Items.Add(new ToolStripMenuItem(currency.ToUpperInvariant(), null, (_, _) => ToggleCurrencyHistory(currency)) { Tag = currency, Checked = isChecked.Contains(currency) || _formManager.IsFormShown(currency) });
                     }
                 }
 
