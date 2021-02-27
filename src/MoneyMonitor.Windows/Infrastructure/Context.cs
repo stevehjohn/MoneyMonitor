@@ -17,7 +17,7 @@ namespace MoneyMonitor.Windows.Infrastructure
     {
         private readonly HistoryManager _historyManager;
 
-        // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable - don't want it GC'd when constructor completes.
+        // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable - don't want it garbage collected when constructor completes.
         private readonly ExchangeApiPoller _poller;
 
         private readonly FormManager _formManager;
@@ -38,6 +38,7 @@ namespace MoneyMonitor.Windows.Infrastructure
             {
                 switch (client.Trim().ToLowerInvariant())
                 {
+                    // ReSharper disable StringLiteralTypo
                     case "coinbaseexchangeclient":
                         exchangeClients.Add(new CoinbaseExchangeClient(settings.CoinbaseCredentials.ApiKey, settings.CoinbaseCredentials.ApiSecret, settings.FiatCurrency));
                         break;
@@ -49,6 +50,7 @@ namespace MoneyMonitor.Windows.Infrastructure
                         break;
                     default:
                         throw new MoneyMonitorConfigurationException($"Unknown API client {client}.");
+                    // ReSharper restore StringLiteralTypo
                 }
             }
 

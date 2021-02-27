@@ -132,6 +132,7 @@ namespace MoneyMonitor.Common.Clients
 
             var bytes = Encoding.ASCII.GetBytes(toSign);
 
+            // ReSharper disable once IdentifierTypo
             using var hmacsha256 = new HMACSHA256(Encoding.UTF8.GetBytes(_apiSecret));
 
             var hash = hmacsha256.ComputeHash(bytes);

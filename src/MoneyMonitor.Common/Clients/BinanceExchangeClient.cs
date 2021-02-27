@@ -30,6 +30,7 @@ namespace MoneyMonitor.Common.Clients
 
             _fiatCurrency = fiatCurrency;
 
+            // ReSharper disable once StringLiteralTypo
             _client.DefaultRequestHeaders.Add("X-MBX-APIKEY", apiKey);
         }
 
@@ -134,6 +135,7 @@ namespace MoneyMonitor.Common.Clients
 
             var bytes = Encoding.ASCII.GetBytes(query);
 
+            // ReSharper disable once IdentifierTypo
             using var hmacsha256 = new HMACSHA256(Encoding.UTF8.GetBytes(_secretKey));
 
             var hash = hmacsha256.ComputeHash(bytes);
