@@ -30,6 +30,8 @@ namespace MoneyMonitor.Windows.Infrastructure.Settings
 
         public string FiatCurrencySymbol { get; set; }
 
+        public TimeSpan FiatCurrencyExchangeRateRefreshInterval { get; set; }
+
         public TimeSpan PollInterval { get; set; }
 
         public static AppSettings Instance => Lazy.Value;
