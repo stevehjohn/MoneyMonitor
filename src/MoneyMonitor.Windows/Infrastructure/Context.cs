@@ -51,7 +51,14 @@ namespace MoneyMonitor.Windows.Infrastructure
                         exchangeClients.Add(new CoinbaseExchangeClient(settings.CoinbaseCredentials.ApiKey, settings.CoinbaseCredentials.ApiSecret, settings.FiatCurrency));
                         break;
                     case "coinbaseproexchangeclient":
-                        exchangeClients.Add(new CoinbaseProExchangeClient(settings.CoinbaseProCredentials.ApiKey, settings.CoinbaseProCredentials.ApiSecret, settings.CoinbaseProCredentials.Passphrase, settings.FiatCurrency, _exchangeRateConverter));
+                        exchangeClients.Add(new CoinbaseProExchangeClient(settings.CoinbaseProCredentials.ApiKey,
+                                                                          settings.CoinbaseProCredentials.ApiSecret,
+                                                                          settings.CoinbaseProCredentials.Passphrase,
+                                                                          settings.FiatCurrency,
+                                                                          _exchangeRateConverter,
+                                                                          AppSettings.Instance.ExchangeRateFallbacks
+                                                                                     .Where(f => f.Exchange.Equals("coinbasepro", StringComparison.InvariantCultureIgnoreCase))
+                                                                                     .ToDictionary(f => f.CryptoCurrency, f => f.FiatCurrency)));
                         break;
                     case "binanceexchangeclient":
                         exchangeClients.Add(new BinanceExchangeClient(settings.BinanceCredentials.ApiKey, settings.BinanceCredentials.SecretKey, settings.FiatCurrency));
