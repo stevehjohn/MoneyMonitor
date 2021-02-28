@@ -20,6 +20,8 @@ namespace MoneyMonitor.Windows.Forms
 
         private Point? _previousMouse;
 
+        private DateTime _snapTime = DateTime.MinValue;
+
         public History()
         {
             InitializeComponent();
@@ -64,6 +66,21 @@ namespace MoneyMonitor.Windows.Forms
                 MouseMove += OnMouseMove;
                 MouseUp += OnMouseUp;
             }
+        }
+
+        public void Snap(int left, int top)
+        {
+            var lastSnap = (DateTime.UtcNow - _snapTime).TotalMilliseconds;
+
+            if (lastSnap > 500 && lastSnap < 1500)
+            {
+                return;
+            }
+
+            Left = left;
+            Top = top;
+
+            _snapTime = DateTime.UtcNow;
         }
 
         private void OnMouseUp(object sender, MouseEventArgs e)

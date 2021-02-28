@@ -51,6 +51,12 @@ namespace MoneyMonitor.Common.Clients
 
             foreach (var coinBalance in balances)
             {
+                // TODO: What to do if exchange rate not found?
+                if (! exchangeRates.ContainsKey(coinBalance.Currency))
+                {
+                    continue;
+                }
+
                 var rate = exchangeRates[coinBalance.Currency];
 
                 result.Add(new ExchangeBalance
@@ -104,16 +110,25 @@ namespace MoneyMonitor.Common.Clients
 
             foreach (var currency in currencies)
             {
-                var message = new HttpRequestMessage(HttpMethod.Get, $"/products/{currency.ToUpperInvariant()}-{_fiatCurrency}/ticker");
+                try
+                {
+                    // TODO: Some APIs don't support exchanges to all currencies, e.g. CBP doesn't have XLM-GBP.
+                    // Use a fallback of USD, then convert to GBP?
+                    var message = new HttpRequestMessage(HttpMethod.Get, $"/products/{currency.ToUpperInvariant()}-{_fiatCurrency}/ticker");
 
-                var response = await _client.SendAsync(message);
+                    var response = await _client.SendAsync(message);
 
-                var stringData = await response.Content.ReadAsStringAsync();
+                    var stringData = await response.Content.ReadAsStringAsync();
 
-                var ticker = JsonSerializer.Deserialize<Ticker>(stringData);
+                    var ticker = JsonSerializer.Deserialize<Ticker>(stringData);
 
-                // ReSharper disable once PossibleNullReferenceException
-                rates.Add(currency.ToUpperInvariant(), decimal.Parse(ticker.Price));
+                    // ReSharper disable once PossibleNullReferenceException
+                    rates.Add(currency.ToUpperInvariant(), decimal.Parse(ticker.Price));
+                }
+                catch
+                {
+                    //
+                }
             }
 
             return rates;
