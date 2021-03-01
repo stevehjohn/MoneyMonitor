@@ -57,7 +57,7 @@ namespace MoneyMonitor.Windows.Infrastructure
                                                                           settings.FiatCurrency,
                                                                           _exchangeRateConverter,
                                                                           AppSettings.Instance.ExchangeRateFallbacks
-                                                                                     .Where(f => f.Exchange.Equals("coinbasepro", StringComparison.InvariantCultureIgnoreCase))
+                                                                                     ?.Where(f => f.Exchange.Equals("coinbasepro", StringComparison.InvariantCultureIgnoreCase))
                                                                                      .ToDictionary(f => f.CryptoCurrency, f => f.FiatCurrency)));
                         break;
                     case "binanceexchangeclient":

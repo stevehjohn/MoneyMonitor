@@ -119,7 +119,7 @@ namespace MoneyMonitor.Common.Clients
             {
                 try
                 {
-                    var currencyOverride = _currencyOverrides.ContainsKey(currency.ToUpperInvariant());
+                    var currencyOverride = _currencyOverrides?.ContainsKey(currency.ToUpperInvariant()) ?? false;
 
                     var fiatCurrency = currencyOverride
                         ? _currencyOverrides[currency]
