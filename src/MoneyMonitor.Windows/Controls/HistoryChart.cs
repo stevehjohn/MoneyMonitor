@@ -181,7 +181,9 @@ namespace MoneyMonitor.Windows.Controls
             {
                 var diff = _dataPoints.Last() - _dataPoints[^2];
 
-                title = $"{(diff > 0 ? "+" : "-")}{CurrencySymbol}{Math.Abs(diff / 100m):N2}";
+                var percent = (decimal) diff / _dataPoints.Last() * 100;
+
+                title = $"{(diff > 0 ? "+" : "-")}{CurrencySymbol}{Math.Abs(diff / 100m):N2} [{percent:N2}%]";
 
                 size = graphics.MeasureString(title, font);
 
