@@ -5,7 +5,7 @@ namespace MoneyMonitor.Common.Models.FiatExchangeRateApiResponses
 {
     public class RatesResponse
     {
-        [JsonPropertyName("rates")]
-        public Dictionary<string, decimal> Rates;
+        [JsonPropertyName("rates")] 
+        public Dictionary<string, decimal> Rates { get; set; }
     }
 }

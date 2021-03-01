@@ -72,7 +72,7 @@ namespace MoneyMonitor.Common.Clients
                                Currency = coinBalance.Currency,
                                ExchangeRate = rate,
                                TimeUtc = now,
-                               Value = (int) (coinBalance.Amount / rate * 100)
+                               Value = (int) (coinBalance.Amount * rate * 100)
                            });
             }
 
@@ -138,7 +138,7 @@ namespace MoneyMonitor.Common.Clients
 
                     if (currencyOverride)
                     {
-                        price = await _exchangeRateConverter.GetValueInBaseCurrency(currency, price);
+                        price = await _exchangeRateConverter.GetValueInBaseCurrency(fiatCurrency, price);
                     }
 
                     rates.Add(currency.ToUpperInvariant(), price);
