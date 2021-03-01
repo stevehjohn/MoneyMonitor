@@ -26,9 +26,13 @@ namespace MoneyMonitor.Windows.Infrastructure.Settings
         
         public string ExcelFilePath { get; set; }
 
+        public ExchangeRateFallback[] ExchangeRateFallbacks { get; set; }
+
         public string FiatCurrency { get; set; }
 
         public string FiatCurrencySymbol { get; set; }
+
+        public TimeSpan FiatCurrencyExchangeRateRefreshInterval { get; set; }
 
         public TimeSpan PollInterval { get; set; }
 

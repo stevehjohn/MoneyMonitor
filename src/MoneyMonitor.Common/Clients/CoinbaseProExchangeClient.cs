@@ -8,6 +8,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using MoneyMonitor.Common.Models;
 using MoneyMonitor.Common.Models.CoinbaseProApiResponses;
+using MoneyMonitor.Common.Services;
 
 namespace MoneyMonitor.Common.Clients
 {
@@ -15,10 +16,14 @@ namespace MoneyMonitor.Common.Clients
     {
         private readonly HttpClient _client;
 
+        private readonly FiatExchangeRateConverter _exchangeRateConverter;
+
+        private readonly Dictionary<string, string> _currencyOverrides;
+
         private readonly string _apiSecret;
         private readonly string _fiatCurrency;
 
-        public CoinbaseProExchangeClient(string apiKey, string apiSecret, string passphrase, string fiatCurrency)
+        public CoinbaseProExchangeClient(string apiKey, string apiSecret, string passphrase, string fiatCurrency, FiatExchangeRateConverter exchangeRateConverter, Dictionary<string, string> currencyOverrides)
         {
             _client = new HttpClient
                       {
@@ -32,6 +37,8 @@ namespace MoneyMonitor.Common.Clients
 
             _apiSecret = apiSecret;
             _fiatCurrency = fiatCurrency;
+            _exchangeRateConverter = exchangeRateConverter;
+            _currencyOverrides = currencyOverrides;
         }
 
         public async Task<List<ExchangeBalance>> GetBalances()
@@ -65,7 +72,7 @@ namespace MoneyMonitor.Common.Clients
                                Currency = coinBalance.Currency,
                                ExchangeRate = rate,
                                TimeUtc = now,
-                               Value = (int) (coinBalance.Amount / rate * 100)
+                               Value = (int) (coinBalance.Amount * rate * 100)
                            });
             }
 
@@ -112,9 +119,13 @@ namespace MoneyMonitor.Common.Clients
             {
                 try
                 {
-                    // TODO: Some APIs don't support exchanges to all currencies, e.g. CBP doesn't have XLM-GBP.
-                    // Use a fallback of USD, then convert to GBP?
-                    var message = new HttpRequestMessage(HttpMethod.Get, $"/products/{currency.ToUpperInvariant()}-{_fiatCurrency}/ticker");
+                    var currencyOverride = _currencyOverrides.ContainsKey(currency.ToUpperInvariant());
+
+                    var fiatCurrency = currencyOverride
+                        ? _currencyOverrides[currency]
+                        : _fiatCurrency;
+
+                    var message = new HttpRequestMessage(HttpMethod.Get, $"/products/{currency.ToUpperInvariant()}-{fiatCurrency}/ticker");
 
                     var response = await _client.SendAsync(message);
 
@@ -123,7 +134,14 @@ namespace MoneyMonitor.Common.Clients
                     var ticker = JsonSerializer.Deserialize<Ticker>(stringData);
 
                     // ReSharper disable once PossibleNullReferenceException
-                    rates.Add(currency.ToUpperInvariant(), decimal.Parse(ticker.Price));
+                    var price = decimal.Parse(ticker.Price);
+
+                    if (currencyOverride)
+                    {
+                        price = await _exchangeRateConverter.GetValueInBaseCurrency(fiatCurrency, price);
+                    }
+
+                    rates.Add(currency.ToUpperInvariant(), price);
                 }
                 catch
                 {
