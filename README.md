@@ -32,6 +32,23 @@ In Coinbase Pro, create an API key with `View` permissions.
 
 Set `CoinbaseProCredentials.ApiKey`, `CoinbaseProCredentials.ApiSecret` and `CoinbaseProCredentials.Passphrase` in `appSettings.json` with the values obtained from Coinbase Pro. Add `CoinbaseProExchangeClient` to the `Clients` setting.
 
+## Exchange Rates
+
+Depending on the exchange, its API may not return exchange rate details for a particular crypto currency to your preferred fiat currency. In this instance, the monitor can be configured to request your balance in an intermediate currency, then automatically convert it to your preferred fiat.
+
+So, for example, if Coinbase Pro only supports XLM-EUR and your preferred fiat is GBP you can configure the monitor to perform this conversion with the following in `appSettings.json`.
+
+``` json
+"ExchangeRateFallbacks": [
+  {
+    "Exchange": "CoinbasePro",
+    "CryptoCurrency": "XLM",
+    "FiatCurrency": "EUR"
+  }
+],
+"FiatCurrency": "GBP"
+```
+
 ## User Interface
 
 The tray icon will display an arrow pointing up, down or right depending whether your investment has gone up, down or stayed the same respectively.
@@ -63,7 +80,7 @@ This is to prevent accidental check-in of secrets (API keys, passwords etc...) t
 Any value surrounded by braces `{}` in `appSettings.json` will be replaced if there is a corresponding entry in `secrets.json`.
 
 `\secrets\secrets.json`
-```
+``` json
 {
   "CoinbaseApiKey": "my-api-key",
   "CoinbaseApiSecret": "my-api-secret"
@@ -71,7 +88,7 @@ Any value surrounded by braces `{}` in `appSettings.json` will be replaced if th
 ```
 
 `\src\MoneyMonitor.Windows\appSettings.json`
-```
+``` json
 {
   "CoinbaseCredentials": {
     "ApiKey": "{CoinbaseApiKey}",
