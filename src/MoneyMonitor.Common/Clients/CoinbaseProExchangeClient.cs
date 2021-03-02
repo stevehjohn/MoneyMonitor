@@ -6,6 +6,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using MoneyMonitor.Common.Infrastructure;
 using MoneyMonitor.Common.Models;
 using MoneyMonitor.Common.Models.CoinbaseProApiResponses;
 using MoneyMonitor.Common.Services;
@@ -16,14 +17,17 @@ namespace MoneyMonitor.Common.Clients
     {
         private readonly HttpClient _client;
 
+        private readonly string _apiSecret;
+
+        private readonly string _fiatCurrency;
+
         private readonly FiatExchangeRateConverter _exchangeRateConverter;
 
         private readonly Dictionary<string, string> _currencyOverrides;
 
-        private readonly string _apiSecret;
-        private readonly string _fiatCurrency;
+        private readonly ILogger _logger;
 
-        public CoinbaseProExchangeClient(string apiKey, string apiSecret, string passphrase, string fiatCurrency, FiatExchangeRateConverter exchangeRateConverter, Dictionary<string, string> currencyOverrides)
+        public CoinbaseProExchangeClient(string apiKey, string apiSecret, string passphrase, string fiatCurrency, FiatExchangeRateConverter exchangeRateConverter, Dictionary<string, string> currencyOverrides, ILogger logger)
         {
             _client = new HttpClient
                       {
@@ -115,6 +119,8 @@ namespace MoneyMonitor.Common.Clients
         {
             var rates = new Dictionary<string, decimal>();
 
+            string pair = null;
+
             foreach (var currency in currencies)
             {
                 try
@@ -125,7 +131,9 @@ namespace MoneyMonitor.Common.Clients
                         ? _currencyOverrides[currency]
                         : _fiatCurrency;
 
-                    var message = new HttpRequestMessage(HttpMethod.Get, $"/products/{currency.ToUpperInvariant()}-{fiatCurrency}/ticker");
+                    pair = $"{currency.ToUpperInvariant()}-{fiatCurrency}";
+
+                    var message = new HttpRequestMessage(HttpMethod.Get, $"/products/{pair}/ticker");
 
                     var response = await _client.SendAsync(message);
 
@@ -143,9 +151,9 @@ namespace MoneyMonitor.Common.Clients
 
                     rates.Add(currency.ToUpperInvariant(), price);
                 }
-                catch
+                catch (Exception exception)
                 {
-                    //
+                    _logger.LogError($"Error getting exchange rate for {pair}.", exception);
                 }
             }
 

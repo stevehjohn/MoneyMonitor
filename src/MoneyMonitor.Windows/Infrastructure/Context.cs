@@ -42,6 +42,8 @@ namespace MoneyMonitor.Windows.Infrastructure
 
             _exchangeRateConverter = new FiatExchangeRateConverter(AppSettings.Instance.FiatCurrency, AppSettings.Instance.FiatCurrencyExchangeRateRefreshInterval);
 
+            _logger = new FileLogger(Constants.LogFilename);
+
             foreach (var client in clients)
             {
                 switch (client.Trim().ToLowerInvariant())
@@ -58,7 +60,8 @@ namespace MoneyMonitor.Windows.Infrastructure
                                                                           _exchangeRateConverter,
                                                                           AppSettings.Instance.ExchangeRateFallbacks
                                                                                      ?.Where(f => f.Exchange.Equals("coinbasepro", StringComparison.InvariantCultureIgnoreCase))
-                                                                                     .ToDictionary(f => f.CryptoCurrency, f => f.FiatCurrency)));
+                                                                                     .ToDictionary(f => f.CryptoCurrency, f => f.FiatCurrency),
+                                                                          _logger));
                         break;
                     case "binanceexchangeclient":
                         exchangeClients.Add(new BinanceExchangeClient(settings.BinanceCredentials.ApiKey, settings.BinanceCredentials.SecretKey, settings.FiatCurrency));
@@ -68,8 +71,6 @@ namespace MoneyMonitor.Windows.Infrastructure
                     // ReSharper restore StringLiteralTypo
                 }
             }
-
-            _logger = new FileLogger(Constants.LogFilename);
 
             _historyManager = new HistoryManager(Constants.HistoryLength, Constants.HistoryFilename);
 
