@@ -70,7 +70,7 @@ namespace MoneyMonitor.Common.Clients
                            {
                                Amount = coinBalance.Amount,
                                Currency = coinBalance.Currency,
-                               ExchangeRate = rate,
+                               ExchangeRate = 1 / rate,
                                TimeUtc = now,
                                Value = (int) (coinBalance.Amount * rate * 100)
                            });
