@@ -202,7 +202,7 @@ namespace MoneyMonitor.Windows.Controls
             {
                 var exchangeRate = 1 / _exchangeRate;
 
-                title = $"1 {Title} : £{exchangeRate:N4}";
+                title = $"1 {Title} : {CurrencySymbol}{exchangeRate:N4}";
 
                 size = graphics.MeasureString(title, font);
 
