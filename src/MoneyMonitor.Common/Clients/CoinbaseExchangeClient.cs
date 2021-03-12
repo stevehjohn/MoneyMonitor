@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Net.Http;
 using System.Security.Cryptography;
 using System.Text;
@@ -117,7 +118,7 @@ namespace MoneyMonitor.Common.Clients
             // ReSharper disable once PossibleNullReferenceException
             foreach (var rate in data.Data.Rates)
             {
-                rates.Add(rate.Key, decimal.Parse(rate.Value));
+                rates.Add(rate.Key, decimal.Parse(rate.Value, NumberStyles.Any));
             }
 
             return rates;
