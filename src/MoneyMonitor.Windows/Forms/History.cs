@@ -22,6 +22,8 @@ namespace MoneyMonitor.Windows.Forms
 
         private DateTime _snapTime = DateTime.MinValue;
 
+        private DateTime _dragStart;
+
         public History()
         {
             InitializeComponent();
@@ -70,6 +72,11 @@ namespace MoneyMonitor.Windows.Forms
 
         public void Snap(int left, int top)
         {
+            if (DateTime.UtcNow - _dragStart < TimeSpan.FromSeconds(1))
+            {
+                return;
+            }
+
             var lastSnap = (DateTime.UtcNow - _snapTime).TotalMilliseconds;
 
             if (lastSnap > 500 && lastSnap < 1500)
@@ -106,6 +113,8 @@ namespace MoneyMonitor.Windows.Forms
 
         private void OnMouseDown(object sender, MouseEventArgs e)
         {
+            _dragStart = DateTime.UtcNow;
+
             _previousMouse = Cursor.Position;
         }
 
