@@ -137,6 +137,13 @@ namespace MoneyMonitor.Windows.Controls
                 index--;
             }
 
+            var gridPen = new Pen(Color.Black);
+
+            for (var y = FontSize * 2; y < Height - FontSize * 2; y += BarWidth + BarSpace)
+            {
+                graphics.DrawLine(gridPen, 0, y, Width, y);
+            }
+
             var title = $"{CurrencySymbol}{max / 100m:N2}";
 
             size = graphics.MeasureString(title, font);
