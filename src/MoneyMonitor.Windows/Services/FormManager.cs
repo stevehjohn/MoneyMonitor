@@ -76,7 +76,7 @@ namespace MoneyMonitor.Windows.Services
                 }
             }
 
-            form.HistoryChart.UpdateData(_historyManager.GetHistory(currency), _historyManager.GetHistoryTime(), _historyManager.GetExchangeRate(currency), _historyManager.GetHolding(currency));
+            form.HistoryChart.UpdateData(_historyManager.GetHistory(currency), _historyManager.GetHistoryTime(), _historyManager.GetExchangeRate(currency), _historyManager.GetHolding(currency), GetHoldingPercent(currency));
         }
 
         public void CloseForm(string currency)
@@ -89,7 +89,7 @@ namespace MoneyMonitor.Windows.Services
         {
             foreach (var form in _forms)
             {
-                form.HistoryChart.UpdateData(_historyManager.GetHistory(form.Currency), _historyManager.GetHistoryTime(), _historyManager.GetExchangeRate(form.Currency), _historyManager.GetHolding(form.Currency));
+                form.HistoryChart.UpdateData(_historyManager.GetHistory(form.Currency), _historyManager.GetHistoryTime(), _historyManager.GetExchangeRate(form.Currency), _historyManager.GetHolding(form.Currency), GetHoldingPercent(form.Currency));
             }
         }
 
@@ -189,6 +189,20 @@ namespace MoneyMonitor.Windows.Services
         public bool IsFormShown(string currency)
         {
             return _forms.Any(f => f.Currency == currency);
+        }
+
+        private decimal? GetHoldingPercent(string currency)
+        {
+            if (string.IsNullOrWhiteSpace(currency))
+            {
+                return null;
+            }
+
+            var totalValue = _historyManager.GetHistory().Last();
+
+            var currencyValue = _historyManager.GetHistory(currency).Last();
+
+            return (decimal) currencyValue / totalValue * 100;
         }
 
         private void FormOnClosed(object sender, EventArgs e)

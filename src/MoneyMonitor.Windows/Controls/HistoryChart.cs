@@ -16,6 +16,8 @@ namespace MoneyMonitor.Windows.Controls
 
         private decimal? _holding;
 
+        private decimal? _holdingPercent;
+
         public string Title { set; private get; }
 
         public string CurrencySymbol { set; private get; }
@@ -43,7 +45,7 @@ namespace MoneyMonitor.Windows.Controls
             Enabled = false;
         }
 
-        public void UpdateData(List<int> dataPoints, DateTime? dataTime, decimal? exchangeRate, decimal? holding)
+        public void UpdateData(List<int> dataPoints, DateTime? dataTime, decimal? exchangeRate, decimal? holding, decimal? holdingPercent)
         {
             _dataPoints = dataPoints;
 
@@ -52,6 +54,8 @@ namespace MoneyMonitor.Windows.Controls
             _exchangeRate = exchangeRate;
 
             _holding = holding;
+
+            _holdingPercent = holdingPercent;
 
             Invalidate();
         }
@@ -146,6 +150,11 @@ namespace MoneyMonitor.Windows.Controls
             graphics.DrawString(title, font, textBrush, Width / 2f - size.Width / 2, Height - size.Height);
 
             title = $"{CurrencySymbol}{_dataPoints.Last() / 100m:N2}";
+
+            if (_holdingPercent.HasValue)
+            {
+                title = $"{title} [{_holdingPercent:N2}%]";
+            }
 
             size = graphics.MeasureString(title, font);
 
