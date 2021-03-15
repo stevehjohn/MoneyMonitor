@@ -43,6 +43,7 @@ namespace MoneyMonitor.Common.Clients
             _fiatCurrency = fiatCurrency;
             _exchangeRateConverter = exchangeRateConverter;
             _currencyOverrides = currencyOverrides;
+            _logger = logger;
         }
 
         public async Task<List<ExchangeBalance>> GetBalances()
