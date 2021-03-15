@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Windows.Forms;
 
@@ -40,7 +41,7 @@ namespace MoneyMonitor.Windows.Controls
 
             SetStyle(ControlStyles.UserPaint, true);
 
-            BarColour = Color.DarkSlateBlue;
+            BarColour = Color.DodgerBlue;
 
             Enabled = false;
         }
@@ -106,7 +107,12 @@ namespace MoneyMonitor.Windows.Controls
 
             var yScale = (float) (Height - FontSize * 4) / delta;
 
-            var barBrush = new SolidBrush(BarColour);
+            //var barBrush = new SolidBrush(BarColour);
+            var barBrush = new LinearGradientBrush(new Point(0, Height), new Point(0, 0), BarColour, 
+                                                   Color.FromArgb(BarColour.A, 
+                                                                  BarColour.R > 100 ? BarColour.R - 100 : 0,
+                                                                  BarColour.G > 100 ? BarColour.G - 100 : 0,
+                                                                  BarColour.B > 100 ? BarColour.B - 100 : 0));
 
             var backgroundBrush = new SolidBrush(Color.FromArgb(30, 30, 30));
 

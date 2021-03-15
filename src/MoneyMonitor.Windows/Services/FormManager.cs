@@ -29,7 +29,7 @@ namespace MoneyMonitor.Windows.Services
 
             _forms = new List<History>();
 
-            _colours = new[] { Color.Coral, Color.DeepPink, Color.DarkSeaGreen, Color.DodgerBlue, Color.Gold, Color.Lime, Color.DarkTurquoise, Color.LightBlue, Color.MediumSeaGreen, Color.Red };
+            _colours = new[] { Color.Coral, Color.DeepPink, Color.DarkSeaGreen, Color.Aquamarine, Color.Gold, Color.Lime, Color.DarkTurquoise, Color.LightBlue, Color.MediumSeaGreen, Color.Red };
         }
 
         public void ShowHistory(bool transient, string currency = null, int? left = null, int? top = null)
