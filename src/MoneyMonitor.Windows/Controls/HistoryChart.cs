@@ -129,10 +129,15 @@ namespace MoneyMonitor.Windows.Controls
                 {
                     barHeight = 2;
                 }
+                else
+                {
+                    barHeight = (int) barHeight / (BarWidth + BarSpace) * (BarWidth + BarSpace);
+                }
 
                 graphics.FillRectangle(barBrush, x - BarWidth, FontSize * 2 + (Height - FontSize * 4 - barHeight), BarWidth, barHeight);
 
-                currentY ??= FontSize * 2 + (Height - FontSize * 4 - barHeight);
+                //currentY ??= FontSize * 2 + (Height - FontSize * 4 - barHeight);
+                currentY ??= Height - barHeight - FontSize * 2;
 
                 index--;
             }
