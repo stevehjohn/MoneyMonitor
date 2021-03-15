@@ -2,7 +2,9 @@
 
 ![Tray screenshot](https://github.com/stevehjohn/MoneyMonitor/blob/master/assets/screenshot.png)
 
-## Usage
+## Overview
+
+This is an app to keep you abreast of your cryptocurrency investments. It shows in your system tray whether your investments have gone up or down. It can also display charts of your investments over time.
 
 ## Installation
 
