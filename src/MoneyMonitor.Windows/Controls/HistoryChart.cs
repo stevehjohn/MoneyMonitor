@@ -107,12 +107,10 @@ namespace MoneyMonitor.Windows.Controls
 
             var yScale = (float) (Height - FontSize * 4) / delta;
 
-            //var barBrush = new SolidBrush(BarColour);
-            var barBrush = new LinearGradientBrush(new Point(0, Height), new Point(0, 0), BarColour, 
-                                                   Color.FromArgb(BarColour.A, 
-                                                                  BarColour.R > 150 ? BarColour.R - 150 : 0,
-                                                                  BarColour.G > 150 ? BarColour.G - 150 : 0,
-                                                                  BarColour.B > 150 ? BarColour.B - 150 : 0));
+            var barBrush = new LinearGradientBrush(new Point(0, Height), new Point(0, 0), BarColour, Color.FromArgb(BarColour.A,
+                                                                                                                    BarColour.R > 150 ? BarColour.R - 150 : 0,
+                                                                                                                    BarColour.G > 150 ? BarColour.G - 150 : 0,
+                                                                                                                    BarColour.B > 150 ? BarColour.B - 150 : 0));
 
             var backgroundBrush = new SolidBrush(Color.FromArgb(30, 30, 30));
 
