@@ -76,7 +76,7 @@ namespace MoneyMonitor.Windows.Services
                 }
             }
 
-            form.HistoryChart.UpdateData(_historyManager.GetHistory(currency), _historyManager.GetHistoryTime(), _historyManager.GetExchangeRate(currency), _historyManager.GetHolding(currency), GetHoldingPercent(currency));
+            form.HistoryChart.UpdateData(_historyManager.GetHistory(currency), LocaliseTime(_historyManager.GetHistoryTime()), _historyManager.GetExchangeRate(currency), _historyManager.GetHolding(currency), GetHoldingPercent(currency));
         }
 
         public void CloseForm(string currency)
@@ -89,7 +89,7 @@ namespace MoneyMonitor.Windows.Services
         {
             foreach (var form in _forms)
             {
-                form.HistoryChart.UpdateData(_historyManager.GetHistory(form.Currency), _historyManager.GetHistoryTime(), _historyManager.GetExchangeRate(form.Currency), _historyManager.GetHolding(form.Currency), GetHoldingPercent(form.Currency));
+                form.HistoryChart.UpdateData(_historyManager.GetHistory(form.Currency), LocaliseTime(_historyManager.GetHistoryTime()), _historyManager.GetExchangeRate(form.Currency), _historyManager.GetHolding(form.Currency), GetHoldingPercent(form.Currency));
             }
         }
 
@@ -208,6 +208,16 @@ namespace MoneyMonitor.Windows.Services
         private void FormOnClosed(object sender, EventArgs e)
         {
             _forms.Remove((History) sender);
+        }
+
+        private DateTime? LocaliseTime(DateTime? utc)
+        {
+            if (utc.HasValue)
+            {
+                return TimeZoneInfo.ConvertTimeFromUtc(utc.Value, TimeZoneInfo.Local);
+            }
+
+            return null;
         }
     }
 }
