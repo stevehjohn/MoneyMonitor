@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
+using MoneyMonitor.Common.Infrastructure;
 using OfficeOpenXml;
 
 namespace MoneyMonitor.Windows.Infrastructure
@@ -15,7 +16,16 @@ namespace MoneyMonitor.Windows.Infrastructure
 
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
-            Application.Run(new Context());
+            try
+            {
+                Application.Run(new Context());
+            }
+            catch (Exception exception)
+            {
+                var logger = new FileLogger(Constants.LogFilename);
+
+                logger.LogError("Fatal", exception);
+            }
         }
     }
 }
