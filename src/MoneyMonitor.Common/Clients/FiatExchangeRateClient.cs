@@ -11,17 +11,21 @@ namespace MoneyMonitor.Common.Clients
     {
         private readonly HttpClient _client;
 
-        public FiatExchangeRateClient()
+        private readonly string _appId;
+
+        public FiatExchangeRateClient(string appId)
         {
+            _appId = appId;
+
             _client = new HttpClient
                       {
-                          BaseAddress = new Uri("https://api.exchangeratesapi.io")
+                          BaseAddress = new Uri("http://openexchangerates.org")
                       };
         }
 
-        public async Task<Dictionary<string, decimal>> GetExchangeRates(string baseCurrency)
+        public async Task<Dictionary<string, decimal>> GetExchangeRates()
         {
-            var response = await _client.GetAsync($"latest?base={baseCurrency}");
+            var response = await _client.GetAsync($"api/latest.json?app_id={_appId}");
 
             var stringData = await response.Content.ReadAsStringAsync();
 

@@ -34,6 +34,8 @@ namespace MoneyMonitor.Windows.Infrastructure.Settings
 
         public TimeSpan FiatCurrencyExchangeRateRefreshInterval { get; set; }
 
+        public string OpenExchangeRatesAppId { get; set; }
+
         public TimeSpan PollInterval { get; set; }
 
         public static AppSettings Instance => Lazy.Value;

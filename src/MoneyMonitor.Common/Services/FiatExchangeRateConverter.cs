@@ -17,20 +17,22 @@ namespace MoneyMonitor.Common.Services
 
         private DateTime _rateAge = DateTime.MinValue;
 
-        public FiatExchangeRateConverter(string baseCurrency, TimeSpan refreshInterval)
+        public FiatExchangeRateConverter(string baseCurrency, TimeSpan refreshInterval, string exchangeRatesApiAppId)
         {
             _baseCurrency = baseCurrency;
 
             _refreshInterval = refreshInterval;
 
-            _exchangeRateClient = new FiatExchangeRateClient();
+            _exchangeRateClient = new FiatExchangeRateClient(exchangeRatesApiAppId);
         }
 
         public async Task<decimal> GetValueInBaseCurrency(string currency, decimal value)
         {
             await RefreshRates();
 
-            return value / _rates[currency];
+            var usd = 1 / _rates[currency] * value;
+
+            return usd * _rates[_baseCurrency];
         }
 
         private async Task RefreshRates()
@@ -40,7 +42,7 @@ namespace MoneyMonitor.Common.Services
                 return;
             }
 
-            _rates = await _exchangeRateClient.GetExchangeRates(_baseCurrency);
+            _rates = await _exchangeRateClient.GetExchangeRates();
 
             _rateAge = DateTime.UtcNow;
         }

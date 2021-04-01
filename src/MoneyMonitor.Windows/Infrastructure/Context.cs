@@ -40,7 +40,7 @@ namespace MoneyMonitor.Windows.Infrastructure
 
             var exchangeClients = new List<ICryptoExchangeClient>();
 
-            _exchangeRateConverter = new FiatExchangeRateConverter(AppSettings.Instance.FiatCurrency, AppSettings.Instance.FiatCurrencyExchangeRateRefreshInterval);
+            _exchangeRateConverter = new FiatExchangeRateConverter(settings.FiatCurrency, settings.FiatCurrencyExchangeRateRefreshInterval, settings.OpenExchangeRatesAppId);
 
             _logger = new FileLogger(Constants.LogFilename);
 
