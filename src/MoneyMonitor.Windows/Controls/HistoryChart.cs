@@ -19,6 +19,10 @@ namespace MoneyMonitor.Windows.Controls
 
         private decimal? _holdingPercent;
 
+        private int? _high;
+
+        private int? _low;
+
         public string Title { set; private get; }
 
         public string CurrencySymbol { set; private get; }
@@ -46,7 +50,7 @@ namespace MoneyMonitor.Windows.Controls
             Enabled = false;
         }
 
-        public void UpdateData(List<int> dataPoints, DateTime? dataTime, decimal? exchangeRate, decimal? holding, decimal? holdingPercent)
+        public void UpdateData(List<int> dataPoints, DateTime? dataTime, decimal? exchangeRate, decimal? holding, decimal? holdingPercent, int? high, int? low)
         {
             _dataPoints = dataPoints;
 
@@ -57,6 +61,10 @@ namespace MoneyMonitor.Windows.Controls
             _holding = holding;
 
             _holdingPercent = holdingPercent;
+
+            _high = high;
+
+            _low = low;
 
             Invalidate();
         }
@@ -140,7 +148,6 @@ namespace MoneyMonitor.Windows.Controls
 
                 graphics.FillRectangle(barBrush, x - BarWidth, FontSize * 2 + (Height - FontSize * 4 - barHeight), BarWidth, barHeight);
 
-                //currentY ??= FontSize * 2 + (Height - FontSize * 4 - barHeight);
                 currentY ??= Height - barHeight - FontSize * 2;
 
                 index--;
@@ -158,6 +165,26 @@ namespace MoneyMonitor.Windows.Controls
             size = graphics.MeasureString(title, font);
 
             graphics.DrawString(title, font, textBrush, Width / 2f - size.Width / 2, 2);
+            
+            var dimTextBrush = new SolidBrush(Color.Gray);
+
+            if (_high.HasValue)
+            {
+                title = $"{CurrencySymbol}{_high / 100m:N2}";
+
+                size = graphics.MeasureString(title, font);
+
+                graphics.DrawString(title, font, dimTextBrush, Width * .68f - size.Width / 2, 2);
+            }
+
+            if (_low.HasValue)
+            {
+                title = $"{CurrencySymbol}{_low / 100m:N2}";
+
+                size = graphics.MeasureString(title, font);
+
+                graphics.DrawString(title, font, dimTextBrush, Width * .32f - size.Width / 2, 2);
+            }
 
             title = $"{CurrencySymbol}{min / 100m:N2}";
 
@@ -230,8 +257,6 @@ namespace MoneyMonitor.Windows.Controls
                 title = $"1 {Title} : {CurrencySymbol}{exchangeRate:N4}";
 
                 size = graphics.MeasureString(title, font);
-
-                var dimTextBrush = new SolidBrush(Color.Gray);
 
                 graphics.DrawString(title, font, dimTextBrush, 2, Height - size.Height);
 

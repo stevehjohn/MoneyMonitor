@@ -74,6 +74,16 @@ namespace MoneyMonitor.Common.Services
             return _history.Last().Balances.FirstOrDefault(b => b.Currency.Equals(currency, StringComparison.InvariantCultureIgnoreCase)).Amount;
         }
 
+        public int? GetHigh(string currency)
+        {
+            return _historySummaries.FirstOrDefault(s => s.Currency.Equals(currency, StringComparison.InvariantCultureIgnoreCase))?.High;
+        }
+
+        public int? GetLow(string currency)
+        {
+            return _historySummaries.FirstOrDefault(s => s.Currency.Equals(currency, StringComparison.InvariantCultureIgnoreCase))?.Low;
+        }
+
         public void Save()
         {
             var history = new History

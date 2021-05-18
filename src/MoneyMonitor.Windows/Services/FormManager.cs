@@ -76,7 +76,7 @@ namespace MoneyMonitor.Windows.Services
                 }
             }
 
-            form.HistoryChart.UpdateData(_historyManager.GetHistory(currency), LocaliseTime(_historyManager.GetHistoryTime()), _historyManager.GetExchangeRate(currency), _historyManager.GetHolding(currency), GetHoldingPercent(currency));
+            form.HistoryChart.UpdateData(_historyManager.GetHistory(currency), LocaliseTime(_historyManager.GetHistoryTime()), _historyManager.GetExchangeRate(currency), _historyManager.GetHolding(currency), GetHoldingPercent(currency), _historyManager.GetHigh(currency), _historyManager.GetLow(currency));
         }
 
         public void CloseForm(string currency)
@@ -89,7 +89,7 @@ namespace MoneyMonitor.Windows.Services
         {
             foreach (var form in _forms)
             {
-                form.HistoryChart.UpdateData(_historyManager.GetHistory(form.Currency), LocaliseTime(_historyManager.GetHistoryTime()), _historyManager.GetExchangeRate(form.Currency), _historyManager.GetHolding(form.Currency), GetHoldingPercent(form.Currency));
+                form.HistoryChart.UpdateData(_historyManager.GetHistory(form.Currency), LocaliseTime(_historyManager.GetHistoryTime()), _historyManager.GetExchangeRate(form.Currency), _historyManager.GetHolding(form.Currency), GetHoldingPercent(form.Currency), _historyManager.GetHigh(form.Currency), _historyManager.GetLow(form.Currency));
             }
         }
 
