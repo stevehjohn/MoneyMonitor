@@ -104,6 +104,8 @@ namespace MoneyMonitor.Windows.Infrastructure
             _historyManager.AddEntry(balances);
 
             _formManager.NewData();
+
+            Polled(balances);
         }
 
         private void HideCurrencyHistoryClicked(string currency)

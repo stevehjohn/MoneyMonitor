@@ -15,6 +15,8 @@ namespace MoneyMonitor.Common.Services
 
         private Queue<HistoryEntry> _history;
 
+        private List<HistorySummary> _historySummaries;
+
         public HistoryManager(int length, string filename)
         {
             _length = length;
@@ -22,6 +24,8 @@ namespace MoneyMonitor.Common.Services
             _filename = filename;
 
             _history = new Queue<HistoryEntry>(_length);
+
+            _historySummaries = new List<HistorySummary>();
         }
 
         public List<int> GetHistory(string currency = null)
@@ -72,7 +76,13 @@ namespace MoneyMonitor.Common.Services
 
         public void Save()
         {
-            var json = JsonSerializer.Serialize(_history);
+            var history = new History
+                          {
+                              HistoryEntries = _history,
+                              HistorySummaries = _historySummaries
+                          };
+
+            var json = JsonSerializer.Serialize(history);
 
             File.WriteAllText(_filename, json);
         }
@@ -86,7 +96,16 @@ namespace MoneyMonitor.Common.Services
 
             var json = File.ReadAllText(_filename);
 
-            _history = JsonSerializer.Deserialize<Queue<HistoryEntry>>(json);
+            var history = JsonSerializer.Deserialize<History>(json);
+
+            if (history == null)
+            {
+                return;
+            }
+
+            _history = history.HistoryEntries;
+
+            _historySummaries = history.HistorySummaries;
         }
 
         public void AddEntry(List<ExchangeBalance> balances)
@@ -101,6 +120,33 @@ namespace MoneyMonitor.Common.Services
                                  Balances = balances,
                                  Time = balances.Max(b => b.TimeUtc)
                              });
+
+            foreach (var balance in balances)
+            {
+                var summary = _historySummaries.FirstOrDefault(s => s.Currency.Equals(balance.Currency));
+
+                if (summary == null)
+                {
+                    summary = new HistorySummary
+                              {
+                                  Currency = balance.Currency,
+                                  High = int.MinValue,
+                                  Low = int.MaxValue
+                              };
+
+                    _historySummaries.Add(summary);
+                }
+
+                if (balance.Value > summary.High)
+                {
+                    summary.High = balance.Value;
+                }
+
+                if (balance.Value < summary.Low)
+                {
+                    summary.Low = balance.Value;
+                }
+            }
         }
     }
 }
