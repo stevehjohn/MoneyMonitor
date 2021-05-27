@@ -76,7 +76,15 @@ namespace MoneyMonitor.Windows.Services
                 }
             }
 
-            form.HistoryChart.UpdateData(_historyManager.GetHistory(currency), LocaliseTime(_historyManager.GetHistoryTime()), _historyManager.GetExchangeRate(currency), _historyManager.GetHolding(currency), GetHoldingPercent(currency));
+            var high = currency == null
+                           ? AppSettings.Instance.BalanceHigh
+                           : _historyManager.GetHigh(currency);
+
+            var low = currency == null
+                          ? AppSettings.Instance.BalanceLow
+                          : _historyManager.GetLow(currency);
+
+            form.HistoryChart.UpdateData(_historyManager.GetHistory(currency), LocaliseTime(_historyManager.GetHistoryTime()), _historyManager.GetExchangeRate(currency), _historyManager.GetHolding(currency), GetHoldingPercent(currency), high, low);
         }
 
         public void CloseForm(string currency)
@@ -89,7 +97,15 @@ namespace MoneyMonitor.Windows.Services
         {
             foreach (var form in _forms)
             {
-                form.HistoryChart.UpdateData(_historyManager.GetHistory(form.Currency), LocaliseTime(_historyManager.GetHistoryTime()), _historyManager.GetExchangeRate(form.Currency), _historyManager.GetHolding(form.Currency), GetHoldingPercent(form.Currency));
+                var high = form.Currency == null
+                               ? AppSettings.Instance.BalanceHigh
+                               : _historyManager.GetHigh(form.Currency);
+
+                var low = form.Currency == null
+                              ? AppSettings.Instance.BalanceLow
+                              : _historyManager.GetLow(form.Currency);
+
+                form.HistoryChart.UpdateData(_historyManager.GetHistory(form.Currency), LocaliseTime(_historyManager.GetHistoryTime()), _historyManager.GetExchangeRate(form.Currency), _historyManager.GetHolding(form.Currency), GetHoldingPercent(form.Currency), high, low);
             }
         }
 
