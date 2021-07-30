@@ -50,6 +50,9 @@ namespace MoneyMonitor.Common.Clients
         {
             var balances = await GetCoinBalances();
 
+            // TODO: Sort this out
+            balances = balances.Where(b => b.Currency != "GBP").ToList();
+
             var result = new List<ExchangeBalance>();
 
             if (balances.Count == 0)
