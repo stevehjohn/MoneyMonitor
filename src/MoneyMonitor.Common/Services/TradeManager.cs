@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using MoneyMonitor.Common.Models;
 
 namespace MoneyMonitor.Common.Services
 {
@@ -8,15 +9,13 @@ namespace MoneyMonitor.Common.Services
     {
         private readonly HistoryManager _historyManager;
 
-        private readonly Dictionary<string, decimal> _lastTradePrices;
-
-        private bool _buy = true;
+        private readonly Dictionary<string, LastTrade> _lastTradePrices;
 
         public TradeManager(HistoryManager historyManager)
         {
             _historyManager = historyManager;
 
-            _lastTradePrices = new Dictionary<string, decimal>();
+            _lastTradePrices = new Dictionary<string, LastTrade>();
         }
 
         public void Trade()
@@ -37,40 +36,46 @@ namespace MoneyMonitor.Common.Services
 
             if (! _lastTradePrices.ContainsKey(currency))
             {
-                _lastTradePrices.Add(currency, (decimal) price);
+                _lastTradePrices.Add(currency, new LastTrade
+                                               {
+                                                   Buy = true,
+                                                   Price = (decimal) price
+                                               });
 
                 return;
             }
 
-            if (_buy)
+            var buy = _lastTradePrices[currency].Buy;
+
+            if (buy)
             {
-                if (_lastTradePrices[currency] - price > 11)
+                if (_lastTradePrices[currency].Price - price > 11)
                 {
-                    File.AppendAllText("trades.txt", $"{DateTime.UtcNow:G},{currency},BUY,{price:C},-£10\n");
+                    File.AppendAllText("trades.csv", $"{DateTime.UtcNow:G},{currency},BUY,{price:C},-£10\n");
 
-                    _lastTradePrices[currency] = (decimal) price;
+                    _lastTradePrices[currency].Price = (decimal) price;
 
-                    _buy = false;
+                    _lastTradePrices[currency].Buy = false;
                 }
                 else
                 {
-                    File.AppendAllText("trades.txt", $"{DateTime.UtcNow:G},{currency},NO ACTION,{price:C}\n");
+                    File.AppendAllText("trades.csv", $"{DateTime.UtcNow:G},{currency},NO ACTION,{price:C}\n");
                 }
                     
                 return;
             }
 
-            if (price - _lastTradePrices[currency] > 21)
+            if (price - _lastTradePrices[currency].Price > 21)
             {
-                File.AppendAllText("trades.txt", $"{DateTime.UtcNow:G},{currency},SELL,{price:C},£10\n");
+                File.AppendAllText("trades.csv", $"{DateTime.UtcNow:G},{currency},SELL,{price:C},£10\n");
 
-                _lastTradePrices[currency] = (decimal) price;
+                _lastTradePrices[currency].Price = (decimal) price;
 
-                _buy = true;
+                _lastTradePrices[currency].Buy = true;
             }
             else
             {
-                File.AppendAllText("trades.txt", $"{DateTime.UtcNow:G},{currency},NO ACTION,{price:C}\n");
+                File.AppendAllText("trades.csv", $"{DateTime.UtcNow:G},{currency},NO ACTION,{price:C}\n");
             }
         }
     }
