@@ -32,6 +32,8 @@ namespace MoneyMonitor.Windows.Infrastructure
         // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable - don't want it garbage collected when constructor completes.
         private readonly FiatExchangeRateConverter _exchangeRateConverter;
 
+        private readonly TradeManager _tradeManager;
+
         public Context()
         {
             var settings = AppSettings.Instance;
@@ -92,6 +94,8 @@ namespace MoneyMonitor.Windows.Infrastructure
 
             _exchangeAggregator = new ExchangeAggregator(exchangeClients);
 
+            _tradeManager = new TradeManager(_historyManager);
+
             _poller = new ExchangeApiPoller(_logger, _exchangeAggregator, Polled);
 
             _poller.StartPolling(settings.PollInterval);
@@ -149,6 +153,8 @@ namespace MoneyMonitor.Windows.Infrastructure
             _trayManager.ConstructContextMenu(balances.Select(b => b.Currency).ToList());
 
             _formManager.NewData();
+
+            _tradeManager.Trade();
 
             UpdateExcel(balance);
         }

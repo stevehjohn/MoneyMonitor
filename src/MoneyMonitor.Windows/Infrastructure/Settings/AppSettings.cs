@@ -38,6 +38,8 @@ namespace MoneyMonitor.Windows.Infrastructure.Settings
 
         public TimeSpan PollInterval { get; set; }
 
+        public Trade[] Trades { get; set; }
+
         public static AppSettings Instance => Lazy.Value;
 
         private static readonly Lazy<AppSettings> Lazy = new(GetAppSettings);
