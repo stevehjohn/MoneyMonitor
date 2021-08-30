@@ -43,6 +43,8 @@ namespace MoneyMonitor.Common.Services
                                                    Price = (decimal) price
                                                });
 
+                File.AppendAllText("trades.csv", $"{DateTime.UtcNow:G},{currency},FIRST ENTRY,£{price:F2},£0\n", Encoding.UTF8);
+
                 return;
             }
 
@@ -60,7 +62,7 @@ namespace MoneyMonitor.Common.Services
                 }
                 else
                 {
-                    File.AppendAllText("trades.csv", $"{DateTime.UtcNow:G},{currency},NO ACTION,£{price:F2}\n", Encoding.UTF8);
+                    File.AppendAllText("trades.csv", $"{DateTime.UtcNow:G},{currency},NO ACTION,£{price:F2},£0\n", Encoding.UTF8);
                 }
                     
                 return;
@@ -76,7 +78,7 @@ namespace MoneyMonitor.Common.Services
             }
             else
             {
-                File.AppendAllText("trades.csv", $"{DateTime.UtcNow:G},{currency},NO ACTION,£{price:F2}\n", Encoding.UTF8);
+                File.AppendAllText("trades.csv", $"{DateTime.UtcNow:G},{currency},NO ACTION,£{price:F2},£0\n", Encoding.UTF8);
             }
         }
     }
