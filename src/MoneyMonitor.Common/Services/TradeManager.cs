@@ -21,49 +21,56 @@ namespace MoneyMonitor.Common.Services
 
         public void Trade()
         {
-            var price = 1 / _historyManager.GetExchangeRate("ETH");
+            Trade("ETH");
+            
+            Trade("BTC");
+        }
+
+        public void Trade(string currency)
+        {
+            var price = 1 / _historyManager.GetExchangeRate(currency);
 
             if (price == null)
             {
                 return;
             }
 
-            if (! _lastTradePrices.ContainsKey("ETH"))
+            if (! _lastTradePrices.ContainsKey(currency))
             {
-                _lastTradePrices.Add("ETH", (decimal) price);
+                _lastTradePrices.Add(currency, (decimal) price);
 
                 return;
             }
 
             if (_buy)
             {
-                if (_lastTradePrices["ETH"] - price > 11)
+                if (_lastTradePrices[currency] - price > 11)
                 {
-                    File.AppendAllText("trades.txt", $"{DateTime.UtcNow:G},BUY,{price}\n");
+                    File.AppendAllText("trades.txt", $"{DateTime.UtcNow:G},{currency},BUY,{price:C},-£10\n");
 
-                    _lastTradePrices["ETH"] = (decimal) price;
+                    _lastTradePrices[currency] = (decimal) price;
 
                     _buy = false;
                 }
                 else
                 {
-                    File.AppendAllText("trades.txt", $"{DateTime.UtcNow:G},NO ACTION,{price}\n");
-                    
-                    return;
+                    File.AppendAllText("trades.txt", $"{DateTime.UtcNow:G},{currency},NO ACTION,{price:C}\n");
                 }
+                    
+                return;
             }
 
-            if (price - _lastTradePrices["ETH"] > 21)
+            if (price - _lastTradePrices[currency] > 21)
             {
-                File.AppendAllText("trades.txt", $"{DateTime.UtcNow:G},SELL,{price}\n");
+                File.AppendAllText("trades.txt", $"{DateTime.UtcNow:G},{currency},SELL,{price:C},£10\n");
 
-                _lastTradePrices["ETH"] = (decimal) price;
+                _lastTradePrices[currency] = (decimal) price;
 
                 _buy = true;
             }
             else
             {
-                File.AppendAllText("trades.txt", $"{DateTime.UtcNow:G},NO ACTION,{price}\n");
+                File.AppendAllText("trades.txt", $"{DateTime.UtcNow:G},{currency},NO ACTION,{price:C}\n");
             }
         }
     }
