@@ -6,8 +6,12 @@
 
         public string CryptoCurrency { get; set; }
 
-        public decimal Buy { get; set; }
+        public decimal BuyThreshold { get; set; }
 
-        public decimal Sell { get; set; }
+        public decimal SellThreshold { get; set; }
+
+        public decimal BuyAmount { get; set; }
+
+        public decimal SellAmount { get; set; }
     }
 }
