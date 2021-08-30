@@ -52,7 +52,7 @@ namespace MoneyMonitor.Common.Services
             {
                 if (_lastTradePrices[currency].Price - price > 11)
                 {
-                    File.AppendAllText("trades.csv", $"{DateTime.UtcNow:G},{currency},BUY,{price:F2},-£10\n", Encoding.UTF8);
+                    File.AppendAllText("trades.csv", $"{DateTime.UtcNow:G},{currency},BUY,£{price:F2},-£10\n", Encoding.UTF8);
 
                     _lastTradePrices[currency].Price = (decimal) price;
 
@@ -60,7 +60,7 @@ namespace MoneyMonitor.Common.Services
                 }
                 else
                 {
-                    File.AppendAllText("trades.csv", $"{DateTime.UtcNow:G},{currency},NO ACTION,{price:F2}\n", Encoding.UTF8);
+                    File.AppendAllText("trades.csv", $"{DateTime.UtcNow:G},{currency},NO ACTION,£{price:F2}\n", Encoding.UTF8);
                 }
                     
                 return;
@@ -68,7 +68,7 @@ namespace MoneyMonitor.Common.Services
 
             if (price - _lastTradePrices[currency].Price > 21)
             {
-                File.AppendAllText("trades.csv", $"{DateTime.UtcNow:G},{currency},SELL,{price:F2},£10\n", Encoding.UTF8);
+                File.AppendAllText("trades.csv", $"{DateTime.UtcNow:G},{currency},SELL,£{price:F2},£10\n", Encoding.UTF8);
 
                 _lastTradePrices[currency].Price = (decimal) price;
 
@@ -76,7 +76,7 @@ namespace MoneyMonitor.Common.Services
             }
             else
             {
-                File.AppendAllText("trades.csv", $"{DateTime.UtcNow:G},{currency},NO ACTION,{price:F2}\n", Encoding.UTF8);
+                File.AppendAllText("trades.csv", $"{DateTime.UtcNow:G},{currency},NO ACTION,£{price:F2}\n", Encoding.UTF8);
             }
         }
     }
