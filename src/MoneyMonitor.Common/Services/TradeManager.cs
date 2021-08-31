@@ -40,10 +40,11 @@ namespace MoneyMonitor.Common.Services
                 _lastTradePrices.Add(currency, new LastTrade
                                                {
                                                    Buy = true,
-                                                   Price = (decimal) price
+                                                   Price = (decimal) price,
+                                                   Cumulative = 0
                                                });
 
-                File.AppendAllText("trades.csv", $"{DateTime.UtcNow:G},{currency},FIRST ENTRY,£{price:F2},£0\n", Encoding.UTF8);
+                File.AppendAllText("trades.csv", $"{DateTime.UtcNow:G},{currency},FIRST ENTRY,£{price:F2},£0,£0\n", Encoding.UTF8);
 
                 return;
             }
@@ -54,15 +55,17 @@ namespace MoneyMonitor.Common.Services
             {
                 if (_lastTradePrices[currency].Price - price > 11)
                 {
-                    File.AppendAllText("trades.csv", $"{DateTime.UtcNow:G},{currency},BUY,£{price:F2},-£10\n", Encoding.UTF8);
-
                     _lastTradePrices[currency].Price = (decimal) price;
 
+                    _lastTradePrices[currency].Cumulative -= 10;
+
                     _lastTradePrices[currency].Buy = false;
+
+                    File.AppendAllText("trades.csv", $"{DateTime.UtcNow:G},{currency},BUY,£{price:F2},-£10,{_lastTradePrices[currency].Cumulative}\n", Encoding.UTF8);
                 }
                 else
                 {
-                    File.AppendAllText("trades.csv", $"{DateTime.UtcNow:G},{currency},NO ACTION,£{price:F2},£0\n", Encoding.UTF8);
+                    File.AppendAllText("trades.csv", $"{DateTime.UtcNow:G},{currency},NO ACTION,£{price:F2},£0,{_lastTradePrices[currency].Cumulative}\n", Encoding.UTF8);
                 }
                     
                 return;
@@ -70,15 +73,17 @@ namespace MoneyMonitor.Common.Services
 
             if (price - _lastTradePrices[currency].Price > 21)
             {
-                File.AppendAllText("trades.csv", $"{DateTime.UtcNow:G},{currency},SELL,£{price:F2},£10\n", Encoding.UTF8);
-
                 _lastTradePrices[currency].Price = (decimal) price;
 
+                _lastTradePrices[currency].Cumulative += 20;
+
                 _lastTradePrices[currency].Buy = true;
+
+                File.AppendAllText("trades.csv", $"{DateTime.UtcNow:G},{currency},SELL,£{price:F2},£10,{_lastTradePrices[currency].Cumulative}\n", Encoding.UTF8);
             }
             else
             {
-                File.AppendAllText("trades.csv", $"{DateTime.UtcNow:G},{currency},NO ACTION,£{price:F2},£0\n", Encoding.UTF8);
+                File.AppendAllText("trades.csv", $"{DateTime.UtcNow:G},{currency},NO ACTION,£{price:F2},£0,{_lastTradePrices[currency].Cumulative}\n", Encoding.UTF8);
             }
         }
     }
