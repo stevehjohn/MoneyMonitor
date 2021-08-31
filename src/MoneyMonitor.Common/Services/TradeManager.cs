@@ -21,8 +21,6 @@ namespace MoneyMonitor.Common.Services
 
         public void Trade()
         {
-            Trade("ETH");
-            
             Trade("BTC");
         }
 
@@ -61,11 +59,11 @@ namespace MoneyMonitor.Common.Services
 
                     _lastTradePrices[currency].Buy = false;
 
-                    File.AppendAllText("trades.csv", $"{DateTime.UtcNow:G},{currency},BUY,£{price:F2},-£10,{_lastTradePrices[currency].Cumulative}\n", Encoding.UTF8);
+                    File.AppendAllText("trades.csv", $"{DateTime.UtcNow:G},{currency},BUY,£{price:F2},-£10,£{_lastTradePrices[currency].Cumulative}\n", Encoding.UTF8);
                 }
                 else
                 {
-                    File.AppendAllText("trades.csv", $"{DateTime.UtcNow:G},{currency},NO ACTION,£{price:F2},£0,{_lastTradePrices[currency].Cumulative}\n", Encoding.UTF8);
+                    File.AppendAllText("trades.csv", $"{DateTime.UtcNow:G},{currency},NO ACTION,£{price:F2},£0,£{_lastTradePrices[currency].Cumulative}\n", Encoding.UTF8);
                 }
                     
                 return;
@@ -79,11 +77,11 @@ namespace MoneyMonitor.Common.Services
 
                 _lastTradePrices[currency].Buy = true;
 
-                File.AppendAllText("trades.csv", $"{DateTime.UtcNow:G},{currency},SELL,£{price:F2},£10,{_lastTradePrices[currency].Cumulative}\n", Encoding.UTF8);
+                File.AppendAllText("trades.csv", $"{DateTime.UtcNow:G},{currency},SELL,£{price:F2},£10,£{_lastTradePrices[currency].Cumulative}\n", Encoding.UTF8);
             }
             else
             {
-                File.AppendAllText("trades.csv", $"{DateTime.UtcNow:G},{currency},NO ACTION,£{price:F2},£0,{_lastTradePrices[currency].Cumulative}\n", Encoding.UTF8);
+                File.AppendAllText("trades.csv", $"{DateTime.UtcNow:G},{currency},NO ACTION,£{price:F2},£0,£{_lastTradePrices[currency].Cumulative}\n", Encoding.UTF8);
             }
         }
     }
