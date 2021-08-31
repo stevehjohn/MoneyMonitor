@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using MoneyMonitor.Common.Clients;
 using MoneyMonitor.Common.Models;
 
 namespace MoneyMonitor.Common.Services
@@ -12,16 +13,21 @@ namespace MoneyMonitor.Common.Services
 
         private readonly Dictionary<string, LastTrade> _lastTradePrices;
 
-        public TradeManager(HistoryManager historyManager)
+        // TODO: Use ICryptoExchangeClient
+        private readonly CoinbaseProExchangeClient _exchangeClient;
+
+        public TradeManager(HistoryManager historyManager, CoinbaseProExchangeClient exchangeClient)
         {
             _historyManager = historyManager;
+
+            _exchangeClient = exchangeClient;
 
             _lastTradePrices = new Dictionary<string, LastTrade>();
         }
 
         public void Trade()
         {
-            Trade("BTC");
+            Trade("ETH");
         }
 
         public void Trade(string currency)
@@ -51,6 +57,13 @@ namespace MoneyMonitor.Common.Services
 
             if (buy)
             {
+                if (_historyManager.GetHolding("GBP") < 50)
+                {
+                    File.AppendAllText("trades.csv", "Insufficient funds for buy order.");
+
+                    return;
+                }
+
                 if (_lastTradePrices[currency].Price - price > 11)
                 {
                     _lastTradePrices[currency].Price = (decimal) price;
@@ -60,6 +73,8 @@ namespace MoneyMonitor.Common.Services
                     _lastTradePrices[currency].Buy = false;
 
                     File.AppendAllText("trades.csv", $"{DateTime.UtcNow:G},{currency},BUY,£{price:F2},-£10,£{_lastTradePrices[currency].Cumulative}\n", Encoding.UTF8);
+                    
+                    File.AppendAllText("trades.csv", $"Placing buy order for {10 / price} {currency} @ {price / 10}\n", Encoding.UTF8);
                 }
                 else
                 {
@@ -78,6 +93,8 @@ namespace MoneyMonitor.Common.Services
                 _lastTradePrices[currency].Buy = true;
 
                 File.AppendAllText("trades.csv", $"{DateTime.UtcNow:G},{currency},SELL,£{price:F2},£10,£{_lastTradePrices[currency].Cumulative}\n", Encoding.UTF8);
+
+                File.AppendAllText("trades.csv", $"Placing sell order for {10 / price} {currency} @ {price / 10}\n", Encoding.UTF8);
             }
             else
             {

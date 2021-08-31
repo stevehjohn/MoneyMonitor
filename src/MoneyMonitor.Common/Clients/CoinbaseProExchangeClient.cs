@@ -8,6 +8,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using MoneyMonitor.Common.Infrastructure;
 using MoneyMonitor.Common.Models;
+using MoneyMonitor.Common.Models.CoinbaseProApiRequests;
 using MoneyMonitor.Common.Models.CoinbaseProApiResponses;
 using MoneyMonitor.Common.Services;
 
@@ -44,6 +45,19 @@ namespace MoneyMonitor.Common.Clients
             _exchangeRateConverter = exchangeRateConverter;
             _currencyOverrides = currencyOverrides;
             _logger = logger;
+        }
+
+        public void Trade(string currency, decimal amount, bool buy)
+        {
+            var request = new PlaceOrder
+                          {
+                              CancelAfter = "min",
+                              ProductId = $"{currency}-{_fiatCurrency}".ToUpperInvariant(),
+                              Side = buy ? "buy" : "sell",
+                              Stop = buy ? "loss" : "entry",
+                              TimeInForce = "GTT",
+                              Type = "limit"
+                          };
         }
 
         public async Task<List<ExchangeBalance>> GetBalances()

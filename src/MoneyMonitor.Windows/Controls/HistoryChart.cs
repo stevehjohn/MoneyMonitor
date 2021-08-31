@@ -104,13 +104,7 @@ namespace MoneyMonitor.Windows.Controls
 
             if (delta == 0)
             {
-                text = "Invalid Data";
-
-                size = graphics.MeasureString(text, font);
-
-                graphics.DrawString(text, font, textBrush, (Width - size.Width) / 2, (Height - size.Height) / 2);
-
-                return;
+                delta = max;
             }
 
             var yScale = (float) (Height - FontSize * 4) / delta;

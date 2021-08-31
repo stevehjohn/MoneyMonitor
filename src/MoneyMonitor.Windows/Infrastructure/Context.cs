@@ -94,7 +94,7 @@ namespace MoneyMonitor.Windows.Infrastructure
 
             _exchangeAggregator = new ExchangeAggregator(exchangeClients);
 
-            _tradeManager = new TradeManager(_historyManager);
+            _tradeManager = new TradeManager(_historyManager, (CoinbaseProExchangeClient) exchangeClients.FirstOrDefault(c => c is CoinbaseProExchangeClient));
 
             _poller = new ExchangeApiPoller(_logger, _exchangeAggregator, Polled);
 
