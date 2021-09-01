@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Net.Http;
 using System.Security.Cryptography;
@@ -47,17 +48,32 @@ namespace MoneyMonitor.Common.Clients
             _logger = logger;
         }
 
-        public void Trade(string currency, decimal amount, bool buy)
+        public async Task Trade(string currency, decimal price, decimal size, bool buy)
         {
             var request = new PlaceOrder
                           {
                               CancelAfter = "min",
+                              Price = price.ToString(CultureInfo.InvariantCulture),
                               ProductId = $"{currency}-{_fiatCurrency}".ToUpperInvariant(),
                               Side = buy ? "buy" : "sell",
+                              Size = size.ToString(CultureInfo.InvariantCulture),
                               Stop = buy ? "loss" : "entry",
+                              StopPrice = price.ToString(CultureInfo.InvariantCulture),
                               TimeInForce = "GTT",
                               Type = "limit"
                           };
+
+            var body = JsonSerializer.Serialize(request);
+
+            var message = new HttpRequestMessage(HttpMethod.Post, "/orders");
+
+            AddRequestHeaders(message, body);
+
+            var response = await _client.SendAsync(message);
+
+            var stringData = await response.Content.ReadAsStringAsync();
+
+            // TODO: Log response?
         }
 
         public async Task<List<ExchangeBalance>> GetBalances()

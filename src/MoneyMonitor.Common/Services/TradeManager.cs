@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 using MoneyMonitor.Common.Clients;
 using MoneyMonitor.Common.Models;
 
@@ -27,10 +28,10 @@ namespace MoneyMonitor.Common.Services
 
         public void Trade()
         {
-            Trade("ETH");
+            Trade("ETH").Wait();
         }
 
-        public void Trade(string currency)
+        public async Task Trade(string currency)
         {
             var price = 1 / _historyManager.GetExchangeRate(currency);
 
@@ -75,6 +76,8 @@ namespace MoneyMonitor.Common.Services
                     File.AppendAllText("trades.csv", $"{DateTime.UtcNow:G},{currency},BUY,£{price:F2},-£10,£{_lastTradePrices[currency].Cumulative}\n", Encoding.UTF8);
                     
                     File.AppendAllText("trades.csv", $"Placing buy order for {10 / price} {currency} @ {price / 10}\n", Encoding.UTF8);
+
+                    await _exchangeClient.Trade(currency, (decimal) price / 10, 10 / (decimal) price, true);
                 }
                 else
                 {
@@ -84,7 +87,7 @@ namespace MoneyMonitor.Common.Services
                 return;
             }
 
-            if (price - _lastTradePrices[currency].Price > 21)
+            if (price - _lastTradePrices[currency].Price > 31)
             {
                 _lastTradePrices[currency].Price = (decimal) price;
 
@@ -94,7 +97,7 @@ namespace MoneyMonitor.Common.Services
 
                 File.AppendAllText("trades.csv", $"{DateTime.UtcNow:G},{currency},SELL,£{price:F2},£10,£{_lastTradePrices[currency].Cumulative}\n", Encoding.UTF8);
 
-                File.AppendAllText("trades.csv", $"Placing sell order for {10 / price} {currency} @ {price / 10}\n", Encoding.UTF8);
+                File.AppendAllText("trades.csv", $"Placing sell order for {20 / price} {currency} @ {price / 20}\n", Encoding.UTF8);
             }
             else
             {
