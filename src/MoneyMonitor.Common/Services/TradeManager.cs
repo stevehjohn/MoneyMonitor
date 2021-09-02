@@ -65,29 +65,27 @@ namespace MoneyMonitor.Common.Services
                     return;
                 }
 
-                await _exchangeClient.Trade(currency, (decimal) price, 10 / (decimal) price, true);
+                if (_lastTradePrices[currency].Price - price > 11)
+                {
+                    _lastTradePrices[currency].Price = (decimal)price;
 
-                //if (_lastTradePrices[currency].Price - price > 11)
-                //{
-                //    _lastTradePrices[currency].Price = (decimal) price;
+                    _lastTradePrices[currency].Cumulative -= 10;
 
-                //    _lastTradePrices[currency].Cumulative -= 10;
+                    _lastTradePrices[currency].Buy = false;
 
-                //    _lastTradePrices[currency].Buy = false;
+                    await File.AppendAllTextAsync("trades.csv", $"{DateTime.UtcNow:G},{currency},BUY,£{price:F2},-£10,£{_lastTradePrices[currency].Cumulative}\n", Encoding.UTF8);
 
-                //    await File.AppendAllTextAsync("trades.csv", $"{DateTime.UtcNow:G},{currency},BUY,£{price:F2},-£10,£{_lastTradePrices[currency].Cumulative}\n", Encoding.UTF8);
+                    var amount = 10 / price;
 
-                //    var amount = 10 / price;
+                    await File.AppendAllTextAsync("trades.csv", $"Placing buy order for {amount:F8} {currency} @ {price:F2}, cost {amount * price:F2}\n", Encoding.UTF8);
 
-                //    await File.AppendAllTextAsync("trades.csv", $"Placing buy order for {amount:F8} {currency} @ {price:F2}, cost {amount * price:F2}\n", Encoding.UTF8);
+                    await _exchangeClient.Trade(currency, (decimal) price, 10 / (decimal) price, true);
+                }
+                else
+                {
+                    await File.AppendAllTextAsync("trades.csv", $"{DateTime.UtcNow:G},{currency},NO ACTION,£{price:F2},£0,£{_lastTradePrices[currency].Cumulative}\n", Encoding.UTF8);
+                }
 
-                //    await _exchangeClient.Trade(currency, (decimal) price, 10 / (decimal) price, true);
-                //}
-                //else
-                //{
-                //    await File.AppendAllTextAsync("trades.csv", $"{DateTime.UtcNow:G},{currency},NO ACTION,£{price:F2},£0,£{_lastTradePrices[currency].Cumulative}\n", Encoding.UTF8);
-                //}
-                    
                 return;
             }
 
@@ -104,6 +102,8 @@ namespace MoneyMonitor.Common.Services
                 var amount = 10 / price;
 
                 await File.AppendAllTextAsync("trades.csv", $"Placing sell order for {20 / price:F8} {currency} @ {price:F2}, cost {amount * price:F2}\n", Encoding.UTF8);
+
+                await _exchangeClient.Trade(currency, (decimal) price, 20 / (decimal) price, false);
             }
             else
             {

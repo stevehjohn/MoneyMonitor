@@ -52,7 +52,7 @@ namespace MoneyMonitor.Common.Clients
         {
             var request = new PlaceOrder
                           {
-                              CancelAfter = "min",
+                              CancelAfter = "hour",
                               Price = price.ToString("F2", CultureInfo.InvariantCulture),
                               ProductId = $"{currency}-{_fiatCurrency}".ToUpperInvariant(),
                               Side = buy ? "buy" : "sell",
