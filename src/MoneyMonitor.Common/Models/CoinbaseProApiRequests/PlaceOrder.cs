@@ -7,6 +7,9 @@ namespace MoneyMonitor.Common.Models.CoinbaseProApiRequests
         [JsonPropertyName("cancel_after")]
         public string CancelAfter { get; set; }
 
+        [JsonPropertyName("client_oid")]
+        public string OrderId { get; set; }
+
         [JsonPropertyName("price")]
         public string Price { get; set; }
 

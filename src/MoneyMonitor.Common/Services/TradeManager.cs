@@ -79,7 +79,7 @@ namespace MoneyMonitor.Common.Services
 
                     await File.AppendAllTextAsync("trades.csv", $"Placing buy order for {amount:F8} {currency} @ {price:F2}, cost {amount * price:F2}\n", Encoding.UTF8);
 
-                    await _exchangeClient.Trade(currency, (decimal) price, 10 / (decimal) price, true);
+                    await _exchangeClient.Trade(currency, (decimal)price, 10 / (decimal)price, true);
                 }
                 else
                 {
@@ -91,7 +91,7 @@ namespace MoneyMonitor.Common.Services
 
             if (price - _lastTradePrices[currency].Price > 31)
             {
-                _lastTradePrices[currency].Price = (decimal) price;
+                _lastTradePrices[currency].Price = (decimal)price;
 
                 _lastTradePrices[currency].Cumulative += 20;
 
@@ -103,7 +103,7 @@ namespace MoneyMonitor.Common.Services
 
                 await File.AppendAllTextAsync("trades.csv", $"Placing sell order for {20 / price:F8} {currency} @ {price:F2}, cost {amount * price:F2}\n", Encoding.UTF8);
 
-                await _exchangeClient.Trade(currency, (decimal) price, 20 / (decimal) price, false);
+                await _exchangeClient.Trade(currency, (decimal)price, 20 / (decimal)price, false);
             }
             else
             {

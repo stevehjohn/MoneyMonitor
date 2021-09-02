@@ -48,11 +48,12 @@ namespace MoneyMonitor.Common.Clients
             _logger = logger;
         }
 
-        public async Task Trade(string currency, decimal price, decimal size, bool buy)
+        public async Task<string> Trade(string currency, decimal price, decimal size, bool buy)
         {
             var request = new PlaceOrder
                           {
                               CancelAfter = "hour",
+                              OrderId = Guid.NewGuid().ToString("D"),
                               Price = price.ToString("F2", CultureInfo.InvariantCulture),
                               ProductId = $"{currency}-{_fiatCurrency}".ToUpperInvariant(),
                               Side = buy ? "buy" : "sell",
@@ -74,9 +75,12 @@ namespace MoneyMonitor.Common.Clients
 
             var response = await _client.SendAsync(message);
 
+            response.EnsureSuccessStatusCode();
+
+            // TODO: Log?
             var stringData = await response.Content.ReadAsStringAsync();
 
-            // TODO: Log response?
+            return request.OrderId;
         }
 
         public async Task<List<ExchangeBalance>> GetBalances()
