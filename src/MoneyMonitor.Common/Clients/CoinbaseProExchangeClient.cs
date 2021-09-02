@@ -53,19 +53,22 @@ namespace MoneyMonitor.Common.Clients
             var request = new PlaceOrder
                           {
                               CancelAfter = "min",
-                              Price = price.ToString(CultureInfo.InvariantCulture),
+                              Price = price.ToString("F2", CultureInfo.InvariantCulture),
                               ProductId = $"{currency}-{_fiatCurrency}".ToUpperInvariant(),
                               Side = buy ? "buy" : "sell",
-                              Size = size.ToString(CultureInfo.InvariantCulture),
+                              Size = size.ToString("F8", CultureInfo.InvariantCulture),
                               Stop = buy ? "loss" : "entry",
-                              StopPrice = price.ToString(CultureInfo.InvariantCulture),
+                              StopPrice = price.ToString("F2", CultureInfo.InvariantCulture),
                               TimeInForce = "GTT",
                               Type = "limit"
                           };
 
             var body = JsonSerializer.Serialize(request);
 
-            var message = new HttpRequestMessage(HttpMethod.Post, "/orders");
+            var message = new HttpRequestMessage(HttpMethod.Post, "/orders")
+                          {
+                              Content = new StringContent(body, Encoding.UTF8, "application/json")
+                          };
 
             AddRequestHeaders(message, body);
 

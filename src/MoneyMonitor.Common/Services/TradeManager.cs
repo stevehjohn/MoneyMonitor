@@ -28,7 +28,7 @@ namespace MoneyMonitor.Common.Services
 
         public void Trade()
         {
-            Trade("ETH").Wait();
+            Trade("ETH").ConfigureAwait(false);
         }
 
         public async Task Trade(string currency)
@@ -49,7 +49,7 @@ namespace MoneyMonitor.Common.Services
                                                    Cumulative = 0
                                                });
 
-                File.AppendAllText("trades.csv", $"{DateTime.UtcNow:G},{currency},FIRST ENTRY,£{price:F2},£0,£0\n", Encoding.UTF8);
+                await File.AppendAllTextAsync("trades.csv", $"{DateTime.UtcNow:G},{currency},FIRST ENTRY,£{price:F2},£0,£0\n", Encoding.UTF8);
 
                 return;
             }
@@ -60,29 +60,33 @@ namespace MoneyMonitor.Common.Services
             {
                 if (_historyManager.GetHolding("GBP") < 50)
                 {
-                    File.AppendAllText("trades.csv", "Insufficient funds for buy order.");
+                    await File.AppendAllTextAsync("trades.csv", "Insufficient funds for buy order.");
 
                     return;
                 }
 
-                if (_lastTradePrices[currency].Price - price > 11)
-                {
-                    _lastTradePrices[currency].Price = (decimal) price;
+                await _exchangeClient.Trade(currency, (decimal) price, 10 / (decimal) price, true);
 
-                    _lastTradePrices[currency].Cumulative -= 10;
+                //if (_lastTradePrices[currency].Price - price > 11)
+                //{
+                //    _lastTradePrices[currency].Price = (decimal) price;
 
-                    _lastTradePrices[currency].Buy = false;
+                //    _lastTradePrices[currency].Cumulative -= 10;
 
-                    File.AppendAllText("trades.csv", $"{DateTime.UtcNow:G},{currency},BUY,£{price:F2},-£10,£{_lastTradePrices[currency].Cumulative}\n", Encoding.UTF8);
-                    
-                    File.AppendAllText("trades.csv", $"Placing buy order for {10 / price} {currency} @ {price / 10}\n", Encoding.UTF8);
+                //    _lastTradePrices[currency].Buy = false;
 
-                    await _exchangeClient.Trade(currency, (decimal) price / 10, 10 / (decimal) price, true);
-                }
-                else
-                {
-                    File.AppendAllText("trades.csv", $"{DateTime.UtcNow:G},{currency},NO ACTION,£{price:F2},£0,£{_lastTradePrices[currency].Cumulative}\n", Encoding.UTF8);
-                }
+                //    await File.AppendAllTextAsync("trades.csv", $"{DateTime.UtcNow:G},{currency},BUY,£{price:F2},-£10,£{_lastTradePrices[currency].Cumulative}\n", Encoding.UTF8);
+
+                //    var amount = 10 / price;
+
+                //    await File.AppendAllTextAsync("trades.csv", $"Placing buy order for {amount:F8} {currency} @ {price:F2}, cost {amount * price:F2}\n", Encoding.UTF8);
+
+                //    await _exchangeClient.Trade(currency, (decimal) price, 10 / (decimal) price, true);
+                //}
+                //else
+                //{
+                //    await File.AppendAllTextAsync("trades.csv", $"{DateTime.UtcNow:G},{currency},NO ACTION,£{price:F2},£0,£{_lastTradePrices[currency].Cumulative}\n", Encoding.UTF8);
+                //}
                     
                 return;
             }
@@ -95,13 +99,15 @@ namespace MoneyMonitor.Common.Services
 
                 _lastTradePrices[currency].Buy = true;
 
-                File.AppendAllText("trades.csv", $"{DateTime.UtcNow:G},{currency},SELL,£{price:F2},£10,£{_lastTradePrices[currency].Cumulative}\n", Encoding.UTF8);
+                await File.AppendAllTextAsync("trades.csv", $"{DateTime.UtcNow:G},{currency},SELL,£{price:F2},£10,£{_lastTradePrices[currency].Cumulative}\n", Encoding.UTF8);
 
-                File.AppendAllText("trades.csv", $"Placing sell order for {20 / price} {currency} @ {price / 20}\n", Encoding.UTF8);
+                var amount = 10 / price;
+
+                await File.AppendAllTextAsync("trades.csv", $"Placing sell order for {20 / price:F8} {currency} @ {price:F2}, cost {amount * price:F2}\n", Encoding.UTF8);
             }
             else
             {
-                File.AppendAllText("trades.csv", $"{DateTime.UtcNow:G},{currency},NO ACTION,£{price:F2},£0,£{_lastTradePrices[currency].Cumulative}\n", Encoding.UTF8);
+                await File.AppendAllTextAsync("trades.csv", $"{DateTime.UtcNow:G},{currency},NO ACTION,£{price:F2},£0,£{_lastTradePrices[currency].Cumulative}\n", Encoding.UTF8);
             }
         }
     }
