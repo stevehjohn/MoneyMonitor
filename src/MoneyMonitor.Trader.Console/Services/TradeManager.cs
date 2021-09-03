@@ -16,8 +16,6 @@ namespace MoneyMonitor.Trader.Console.Services
 
         private readonly Output _output;
 
-        private int _profit;
-
         public TradeManager(ILogger logger)
         {
             var settings = Settings.Instance;
@@ -33,6 +31,8 @@ namespace MoneyMonitor.Trader.Console.Services
             _tradeInfos = new Dictionary<string, Trade>();
 
             _output = new Output("trade-data.csv");
+
+            _output.Write("DateTime,Crypto,Price,TargetDelta,BuyCount,SellCount,Action");
         }
 
         public async Task Trade(string currency)
@@ -43,8 +43,6 @@ namespace MoneyMonitor.Trader.Console.Services
 
             var rate = rates[currency];
 
-            _output.Write($"{DateTime.UtcNow:G},{currency},{rate:F2}");
-
             if (! _tradeInfos.ContainsKey(currency))
             {
                 _tradeInfos.Add(currency, new Trade
@@ -53,10 +51,18 @@ namespace MoneyMonitor.Trader.Console.Services
                                               Side = Side.Buy
                                           });
 
+                WriteOut(currency, rate, 0, 0, 0, "INITIALISE");
+
                 return;
             }
 
             var trade = _tradeInfos[currency];
+
+            _output.Write($"{DateTime.UtcNow:G},{currency},{rate:F2},,{trade.Buys},{trade.Sells},POLL");
+
+            var delta = 0;
+
+            WriteOut(currency, rate, delta, trade.Buys, trade.Sells, "POLL");
 
             // TODO: Check if previous active trade. If expired/unfulfilled, reset the previous trade price to current price.
 
@@ -64,11 +70,13 @@ namespace MoneyMonitor.Trader.Console.Services
             {
                 if (trade.PreviousTradePrice - rate > 11)
                 {
-                    _output.Write("Buy.");
-
                     trade.PreviousTradePrice = rate;
 
+                    trade.Buys++;
+
                     trade.Side = Side.Sell;
+
+                    WriteOut(currency, rate, 0, trade.Buys, trade.Sells, "BUY");
                 }
 
                 return;
@@ -76,14 +84,19 @@ namespace MoneyMonitor.Trader.Console.Services
 
             if (rate - trade.PreviousTradePrice > 31)
             {
-                _output.Write($"Sell. Total profit {Settings.Instance.FiatCurrencySymbol}{_profit}");
-
-                _profit += 10;
-
                 trade.PreviousTradePrice = rate;
 
+                trade.Sells++;
+
                 trade.Side = Side.Buy;
+
+                WriteOut(currency, rate, 0, trade.Buys, trade.Sells, "SELL");
             }
+        }
+
+        private void WriteOut(string currency, decimal rate, decimal delta, int buys, int sells, string action)
+        {
+            _output.Write($"{DateTime.UtcNow:G},{currency},{rate:F2},{delta:F2},{buys},{sells},{action}");
         }
     }
 }

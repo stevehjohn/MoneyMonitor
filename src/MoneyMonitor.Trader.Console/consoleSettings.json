@@ -5,6 +5,5 @@
     "Passphrase": "{CoinbaseProApiPassphrase}"
   },
   "FiatCurrency": "GBP",
-  "FiatCurrencySymbol": "£",
   "PollInterval": "00:00:10"
 }

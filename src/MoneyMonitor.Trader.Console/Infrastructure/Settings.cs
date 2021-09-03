@@ -12,8 +12,6 @@ namespace MoneyMonitor.Trader.Console.Infrastructure
 
         public string FiatCurrency { get; set; }
         
-        public string FiatCurrencySymbol { get; set; }
-
         public TimeSpan PollInterval { get; set; }
 
         public static Settings Instance => Lazy.Value;
