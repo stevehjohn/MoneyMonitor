@@ -86,7 +86,6 @@ namespace MoneyMonitor.Trader.Console.Services
                     }
                 }
 
-                // TODO: Trade complete?
                 WriteOut(currency, rate, delta, trade.Buys, trade.Sells, "TRADE CANCELLED", ConsoleColor.Blue);
 
                 trade.PreviousTradePrice = rate;
