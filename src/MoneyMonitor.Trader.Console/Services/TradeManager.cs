@@ -63,7 +63,7 @@ namespace MoneyMonitor.Trader.Console.Services
 
 
             // TODO: Check if previous active trade. If expired/unfulfilled, reset the previous trade price to current price.
-            if (trade.LastTradeId != null)
+            if (! string.IsNullOrWhiteSpace(trade.LastTradeId))
             {
                 var status = await _client.GetOrderStatus(trade.LastTradeId);
 
@@ -73,6 +73,12 @@ namespace MoneyMonitor.Trader.Console.Services
 
                     return;
                 }
+
+                trade.PreviousTradePrice = rate;
+
+                trade.LastTradeId = null;
+
+                return;
             }
 
             WriteOut(currency, rate, delta, trade.Buys, trade.Sells, "POLL", ConsoleColor.Gray);
