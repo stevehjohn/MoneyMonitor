@@ -67,6 +67,15 @@ namespace MoneyMonitor.Trader.Console.Services
             {
                 var status = await _client.GetOrderStatus(trade.LastTradeId);
 
+                if (status == null)
+                {
+                    trade.LastTradeId = null;
+
+                    trade.PreviousTradePrice = rate;
+
+                    return;
+                }
+
                 if (new[] { "pending", "active", "open" }.Contains(status.Status.ToLowerInvariant()))
                 {
                     WriteOut(currency, rate, delta, trade.Buys, trade.Sells, "ACTIVE TRADE", ConsoleColor.DarkCyan);
