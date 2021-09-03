@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using MoneyMonitor.Common.Clients;
 using MoneyMonitor.Common.Infrastructure;
@@ -60,14 +61,28 @@ namespace MoneyMonitor.Trader.Console.Services
 
             var delta = trade.PreviousTradePrice - rate;
 
-            WriteOut(currency, rate, delta, trade.Buys, trade.Sells, "POLL", ConsoleColor.Gray);
 
             // TODO: Check if previous active trade. If expired/unfulfilled, reset the previous trade price to current price.
+            if (trade.LastTradeId != null)
+            {
+                var status = await _client.GetOrderStatus(trade.LastTradeId);
+
+                if (new[] { "pending", "active", "open" }.Contains(status.Status.ToLowerInvariant()))
+                {
+                    WriteOut(currency, rate, delta, trade.Buys, trade.Sells, "ACTIVE TRADE", ConsoleColor.DarkCyan);
+
+                    return;
+                }
+            }
+
+            WriteOut(currency, rate, delta, trade.Buys, trade.Sells, "POLL", ConsoleColor.Gray);
 
             if (trade.Side == Side.Buy)
             {
                 if (trade.PreviousTradePrice - rate > 11)
                 {
+                    trade.LastTradeId = await _client.Trade(currency, rate, 10 / rate, true);
+
                     trade.PreviousTradePrice = rate;
 
                     trade.Buys++;
@@ -82,6 +97,8 @@ namespace MoneyMonitor.Trader.Console.Services
 
             if (rate - trade.PreviousTradePrice > 31)
             {
+                trade.LastTradeId = await _client.Trade(currency, rate, 20 / rate, false);
+
                 trade.PreviousTradePrice = rate;
 
                 trade.Sells++;

@@ -9,5 +9,7 @@
         public int Sells { get; set; }
 
         public Side Side { get; set; }
+
+        public string LastTradeId { get; set; }
     }
 }
