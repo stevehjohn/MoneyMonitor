@@ -65,13 +65,28 @@ namespace MoneyMonitor.Trader.Console.Services
             {
                 var status = await _client.GetOrderStatus(trade.LastTradeId);
 
-                if (status != null && new[] { "pending", "active", "open" }.Contains(status.Status.ToLowerInvariant()))
+                if (status != null)
                 {
-                    WriteOut(currency, rate, delta, trade.Buys, trade.Sells, "ACTIVE TRADE", ConsoleColor.DarkCyan);
+                    if (new[] { "pending", "active", "open" }.Contains(status.Status.ToLowerInvariant()))
+                    {
+                        WriteOut(currency, rate, delta, trade.Buys, trade.Sells, "ACTIVE TRADE", ConsoleColor.DarkCyan);
 
-                    return;
+                        return;
+                    }
+                    
+                    if (new[] { "done", "settled" }.Contains(status.Status.ToLowerInvariant()))
+                    {
+                        WriteOut(currency, rate, delta, trade.Buys, trade.Sells, "TRADE COMPLETE", ConsoleColor.Blue);
+
+                        trade.PreviousTradePrice = rate;
+
+                        trade.LastTradeId = null;
+
+                        return;
+                    }
                 }
 
+                // TODO: Trade complete?
                 WriteOut(currency, rate, delta, trade.Buys, trade.Sells, "TRADE CANCELLED", ConsoleColor.Blue);
 
                 trade.PreviousTradePrice = rate;
