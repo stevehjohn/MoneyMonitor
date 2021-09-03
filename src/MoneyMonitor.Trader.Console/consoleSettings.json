@@ -1,0 +1,8 @@
+{
+  "CoinbaseProCredentials": {
+    "ApiKey": "{CoinbaseProApiKey}",
+    "ApiSecret": "{CoinbaseProApiSecret}",
+    "Passphrase": "{CoinbaseProApiPassphrase}"
+  },
+  "PollInterval": "00:00:10"
+}

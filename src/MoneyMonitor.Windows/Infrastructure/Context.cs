@@ -1,16 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Windows.Forms;
-using MoneyMonitor.Common.Clients;
+﻿using MoneyMonitor.Common.Clients;
 using MoneyMonitor.Common.Infrastructure;
 using MoneyMonitor.Common.Models;
 using MoneyMonitor.Common.Services;
 using MoneyMonitor.Windows.Exceptions;
-using MoneyMonitor.Windows.Infrastructure.Settings;
 using MoneyMonitor.Windows.Services;
 using OfficeOpenXml;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Windows.Forms;
 
 namespace MoneyMonitor.Windows.Infrastructure
 {
@@ -34,7 +33,7 @@ namespace MoneyMonitor.Windows.Infrastructure
 
         public Context()
         {
-            var settings = AppSettings.Instance;
+            var settings = Settings.Settings.Instance;
 
             var clients = settings.Clients.Split(',');
 
@@ -58,9 +57,9 @@ namespace MoneyMonitor.Windows.Infrastructure
                                                                           settings.CoinbaseProCredentials.Passphrase,
                                                                           settings.FiatCurrency,
                                                                           _exchangeRateConverter,
-                                                                          AppSettings.Instance.ExchangeRateFallbacks
-                                                                                     ?.Where(f => f.Exchange.Equals("coinbasepro", StringComparison.InvariantCultureIgnoreCase))
-                                                                                     .ToDictionary(f => f.CryptoCurrency, f => f.FiatCurrency),
+                                                                          Settings.Settings.Instance.ExchangeRateFallbacks
+                                                                                  ?.Where(f => f.Exchange.Equals("coinbasepro", StringComparison.InvariantCultureIgnoreCase))
+                                                                                  .ToDictionary(f => f.CryptoCurrency, f => f.FiatCurrency),
                                                                           _logger));
                         break;
                     case "binanceexchangeclient":
@@ -131,17 +130,17 @@ namespace MoneyMonitor.Windows.Infrastructure
 
             var balance = balances.Sum(b => b.Value);
 
-            if (balance > AppSettings.Instance.BalanceHigh)
+            if (balance > Settings.Settings.Instance.BalanceHigh)
             {
-                AppSettings.Instance.BalanceHigh = balance;
+                Settings.Settings.Instance.BalanceHigh = balance;
 
-                AppSettings.Instance.Save();
+                Settings.Settings.Instance.Save();
             }
-            else if (balance < AppSettings.Instance.BalanceLow)
+            else if (balance < Settings.Settings.Instance.BalanceLow)
             {
-                AppSettings.Instance.BalanceLow = balance;
+                Settings.Settings.Instance.BalanceLow = balance;
 
-                AppSettings.Instance.Save();
+                Settings.Settings.Instance.Save();
             }
 
             _trayManager.BalanceChanged(balance);
@@ -155,18 +154,18 @@ namespace MoneyMonitor.Windows.Infrastructure
 
         private void UpdateExcel(int balance)
         {
-            if (string.IsNullOrWhiteSpace(AppSettings.Instance.ExcelFilePath) || string.IsNullOrWhiteSpace(AppSettings.Instance.ExcelCell))
+            if (string.IsNullOrWhiteSpace(Settings.Settings.Instance.ExcelFilePath) || string.IsNullOrWhiteSpace(Settings.Settings.Instance.ExcelCell))
             {
                 return;
             }
 
             try
             {
-                using var package = new ExcelPackage(new FileInfo(AppSettings.Instance.ExcelFilePath));
+                using var package = new ExcelPackage(new FileInfo(Settings.Settings.Instance.ExcelFilePath));
 
                 var sheet = package.Workbook.Worksheets[0];
 
-                var cell = sheet.Cells[AppSettings.Instance.ExcelCell];
+                var cell = sheet.Cells[Settings.Settings.Instance.ExcelCell];
 
                 cell.Style.Numberformat.Format = "£#,###,##0.00";
 
@@ -176,7 +175,7 @@ namespace MoneyMonitor.Windows.Infrastructure
             }
             catch (Exception exception)
             {
-                _logger.LogError($"An error occurred updating the Excel spreadsheet {AppSettings.Instance.ExcelFilePath}", exception);
+                _logger.LogError($"An error occurred updating the Excel spreadsheet {Settings.Settings.Instance.ExcelFilePath}", exception);
             } 
         }
 

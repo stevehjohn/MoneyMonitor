@@ -98,3 +98,13 @@ Any value surrounded by braces `{}` in `appSettings.json` will be replaced if th
   }
 }
 ```
+
+# Trading
+
+Trading is performed by a separate application, `MoneyMonitor.Trader.Console`. This is so that it can be run independently of the Windows monitoring UI.
+The trading application currently only supports Coinbase Pro.
+It could be run on an AWS instance for example, potentially in the same region as the Coinbase Pro API for speedier communication.
+
+## Configuration
+
+Secrets held within `consoleSettings.json` can be updated in the same way as the Windows application. See [Secrets](#secrets) above.

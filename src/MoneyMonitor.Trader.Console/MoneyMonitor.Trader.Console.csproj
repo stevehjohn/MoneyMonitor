@@ -9,4 +9,18 @@
     <ProjectReference Include="..\MoneyMonitor.Common\MoneyMonitor.Common.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="consoleSettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Services\" />
+  </ItemGroup>
+
+  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+    <Exec Command="powershell.exe -NoProfile -ExecutionPolicy RemoteSigned -file ..\Copy-Secrets.ps1 $(TargetDir)consoleSettings.json&#xD;&#xA;" />
+  </Target>
+
 </Project>

@@ -156,7 +156,7 @@ namespace MoneyMonitor.Common.Clients
             return balances;
         }
         
-        private async Task<Dictionary<string, decimal>> GetExchangeRates(List<string> currencies)
+        public async Task<Dictionary<string, decimal>> GetExchangeRates(List<string> currencies)
         {
             var rates = new Dictionary<string, decimal>();
 

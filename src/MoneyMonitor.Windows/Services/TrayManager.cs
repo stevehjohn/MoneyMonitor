@@ -56,7 +56,7 @@ namespace MoneyMonitor.Windows.Services
 
         public void BalanceChanged(int newBalance)
         {
-            var settings = AppSettings.Instance;
+            var settings = Settings.Instance;
 
             if (newBalance > _previousBalance)
             {
@@ -77,12 +77,12 @@ namespace MoneyMonitor.Windows.Services
 
             var symbol = settings.FiatCurrencySymbol;
 
-            var low = AppSettings.Instance.BalanceLow == int.MaxValue
+            var low = Settings.Instance.BalanceLow == int.MaxValue
                 ? 0
-                : AppSettings.Instance.BalanceLow;
+                : Settings.Instance.BalanceLow;
 
             // ReSharper disable once LocalizableElement
-            _icon.Text = $"{DateTime.Now:HH:mm}\r\n\r\n🡅 {symbol}{AppSettings.Instance.BalanceHigh / 100m:N2}\r\n🡆 {symbol}{newBalance / 100m:N2}{Difference(newBalance)}\r\n🡇 {symbol}{low / 100m:N2}";
+            _icon.Text = $"{DateTime.Now:HH:mm}\r\n\r\n🡅 {symbol}{Settings.Instance.BalanceHigh / 100m:N2}\r\n🡆 {symbol}{newBalance / 100m:N2}{Difference(newBalance)}\r\n🡇 {symbol}{low / 100m:N2}";
         }
 
         public void HideTrayIcon()
@@ -116,7 +116,7 @@ namespace MoneyMonitor.Windows.Services
 
                 _contextMenu.Items.Add(new ToolStripSeparator());
 
-                _alwaysOnTop = new ToolStripMenuItem("Keep Windows Above Others", null, (_, _) => ToggleTopMost()) { Checked = AppSettings.Instance.AlwaysOnTop };
+                _alwaysOnTop = new ToolStripMenuItem("Keep Windows Above Others", null, (_, _) => ToggleTopMost()) { Checked = Settings.Instance.AlwaysOnTop };
 
                 _contextMenu.Items.Add(_alwaysOnTop);
 
@@ -185,13 +185,13 @@ namespace MoneyMonitor.Windows.Services
 
         private void ToggleTopMost()
         {
-            AppSettings.Instance.AlwaysOnTop = ! AppSettings.Instance.AlwaysOnTop;
+            Settings.Instance.AlwaysOnTop = ! Settings.Instance.AlwaysOnTop;
 
-            AppSettings.Instance.Save();
+            Settings.Instance.Save();
 
-            _alwaysOnTop.Checked = AppSettings.Instance.AlwaysOnTop;
+            _alwaysOnTop.Checked = Settings.Instance.AlwaysOnTop;
 
-            TopMostToggled(AppSettings.Instance.AlwaysOnTop);
+            TopMostToggled(Settings.Instance.AlwaysOnTop);
         }
     }
 }
