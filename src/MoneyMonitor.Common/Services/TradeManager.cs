@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MoneyMonitor.Common.Clients;
@@ -56,7 +57,11 @@ namespace MoneyMonitor.Common.Services
 
             if (! string.IsNullOrEmpty(_lastTrades[currency].LastTradeId))
             {
-                var status = _exchangeClient.GetOrderStatus(_lastTrades[currency].LastTradeId);
+                var status = await _exchangeClient.GetOrderStatus(_lastTrades[currency].LastTradeId);
+
+                if (! new[] { "rejected", "done" }.Contains(status.Status.ToLowerInvariant()))
+                {
+                }
             }
 
             if (_lastTrades[currency].Buy)
