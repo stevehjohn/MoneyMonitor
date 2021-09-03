@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 
 namespace MoneyMonitor.Trader.Console.Infrastructure
 {
@@ -11,8 +12,10 @@ namespace MoneyMonitor.Trader.Console.Infrastructure
             _fileName = fileName;
         }
 
-        public void Write(string output)
+        public void Write(string output, ConsoleColor color)
         {
+            System.Console.ForegroundColor = color;
+
             System.Console.WriteLine(output);
 
             File.AppendAllLines(_fileName, new [] { output });

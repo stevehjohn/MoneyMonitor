@@ -32,7 +32,7 @@ namespace MoneyMonitor.Trader.Console.Services
 
             _output = new Output("trade-data.csv");
 
-            _output.Write("DateTime,Crypto,Price,TargetDelta,BuyCount,SellCount,Action");
+            _output.Write("DateTime,Crypto,Price,TargetDelta,BuyCount,SellCount,Action", ConsoleColor.White);
         }
 
         public async Task Trade(string currency)
@@ -51,18 +51,16 @@ namespace MoneyMonitor.Trader.Console.Services
                                               Side = Side.Buy
                                           });
 
-                WriteOut(currency, rate, 0, 0, 0, "INITIALISE");
+                WriteOut(currency, rate, 0, 0, 0, "INITIALISE", ConsoleColor.Gray);
 
                 return;
             }
 
             var trade = _tradeInfos[currency];
 
-            _output.Write($"{DateTime.UtcNow:G},{currency},{rate:F2},,{trade.Buys},{trade.Sells},POLL");
+            var delta = trade.PreviousTradePrice - rate;
 
-            var delta = 0;
-
-            WriteOut(currency, rate, delta, trade.Buys, trade.Sells, "POLL");
+            WriteOut(currency, rate, delta, trade.Buys, trade.Sells, "POLL", ConsoleColor.Gray);
 
             // TODO: Check if previous active trade. If expired/unfulfilled, reset the previous trade price to current price.
 
@@ -76,7 +74,7 @@ namespace MoneyMonitor.Trader.Console.Services
 
                     trade.Side = Side.Sell;
 
-                    WriteOut(currency, rate, 0, trade.Buys, trade.Sells, "BUY");
+                    WriteOut(currency, rate, 0, trade.Buys, trade.Sells, "BUY", ConsoleColor.Red);
                 }
 
                 return;
@@ -90,13 +88,13 @@ namespace MoneyMonitor.Trader.Console.Services
 
                 trade.Side = Side.Buy;
 
-                WriteOut(currency, rate, 0, trade.Buys, trade.Sells, "SELL");
+                WriteOut(currency, rate, 0, trade.Buys, trade.Sells, "SELL", ConsoleColor.Green);
             }
         }
 
-        private void WriteOut(string currency, decimal rate, decimal delta, int buys, int sells, string action)
+        private void WriteOut(string currency, decimal rate, decimal delta, int buys, int sells, string action, ConsoleColor colour)
         {
-            _output.Write($"{DateTime.UtcNow:G},{currency},{rate:F2},{delta:F2},{buys},{sells},{action}");
+            _output.Write($"{DateTime.UtcNow:G},{currency},{rate:F2},{delta:F2},{buys},{sells},{action}", colour);
         }
     }
 }
