@@ -1,4 +1,5 @@
-﻿using MoneyMonitor.Common.Infrastructure;
+﻿using System;
+using MoneyMonitor.Common.Infrastructure;
 using MoneyMonitor.Trader.Console.Services;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,9 +16,18 @@ namespace MoneyMonitor.Trader.Console.Infrastructure
 
             _trader = new TradeManager(logger);
 
+            System.Console.CursorVisible = false;
+
             while (true)
             {
-                await _trader.Trade("BTC");
+                try
+                {
+                    await _trader.Trade("BTC");
+                }
+                catch (Exception exception)
+                {
+                    logger.LogError("An error occurred when calling the Trade method.", exception);
+                }
 
                 Thread.Sleep(Settings.Instance.PollInterval);
             }
