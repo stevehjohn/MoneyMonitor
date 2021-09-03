@@ -28,7 +28,9 @@ namespace MoneyMonitor.Common.Services
 
         public void StartPolling(TimeSpan interval)
         {
-            _pollThread = new Thread(async () => await Poll(interval))
+            async void Start() => await Poll(interval);
+
+            _pollThread = new Thread(Start)
                           {
                               IsBackground = true
                           };
