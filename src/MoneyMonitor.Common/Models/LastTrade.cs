@@ -7,5 +7,7 @@
         public bool Buy { get; set; }
 
         public decimal Cumulative { get; set; }
+
+        public string LastTradeId { get; set; }
     }
 }

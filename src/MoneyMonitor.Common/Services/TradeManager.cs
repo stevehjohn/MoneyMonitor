@@ -12,7 +12,7 @@ namespace MoneyMonitor.Common.Services
     {
         private readonly HistoryManager _historyManager;
 
-        private readonly Dictionary<string, LastTrade> _lastTradePrices;
+        private readonly Dictionary<string, LastTrade> _lastTrades;
 
         // TODO: Use ICryptoExchangeClient
         private readonly CoinbaseProExchangeClient _exchangeClient;
@@ -23,7 +23,7 @@ namespace MoneyMonitor.Common.Services
 
             _exchangeClient = exchangeClient;
 
-            _lastTradePrices = new Dictionary<string, LastTrade>();
+            _lastTrades = new Dictionary<string, LastTrade>();
         }
 
         public void Trade()
@@ -40,21 +40,21 @@ namespace MoneyMonitor.Common.Services
                 return;
             }
 
-            if (! _lastTradePrices.ContainsKey(currency))
+            if (! _lastTrades.ContainsKey(currency))
             {
-                _lastTradePrices.Add(currency, new LastTrade
-                                               {
-                                                   Buy = true,
-                                                   Price = (decimal) price,
-                                                   Cumulative = 0
-                                               });
+                _lastTrades.Add(currency, new LastTrade
+                                          {
+                                              Buy = true,
+                                              Price = (decimal) price,
+                                              Cumulative = 0
+                                          });
 
                 await File.AppendAllTextAsync("trades.csv", $"{DateTime.UtcNow:G},{currency},FIRST ENTRY,£{price:F2},£0,£0\n", Encoding.UTF8);
 
                 return;
             }
 
-            var buy = _lastTradePrices[currency].Buy;
+            var buy = _lastTrades[currency].Buy;
 
             if (buy)
             {
@@ -65,49 +65,49 @@ namespace MoneyMonitor.Common.Services
                     return;
                 }
 
-                if (_lastTradePrices[currency].Price - price > 11)
+                if (_lastTrades[currency].Price - price > 11)
                 {
-                    _lastTradePrices[currency].Price = (decimal)price;
+                    _lastTrades[currency].Price = (decimal) price;
 
-                    _lastTradePrices[currency].Cumulative -= 10;
+                    _lastTrades[currency].Cumulative -= 10;
 
-                    _lastTradePrices[currency].Buy = false;
+                    _lastTrades[currency].Buy = false;
 
-                    await File.AppendAllTextAsync("trades.csv", $"{DateTime.UtcNow:G},{currency},BUY,£{price:F2},-£10,£{_lastTradePrices[currency].Cumulative}\n", Encoding.UTF8);
+                    await File.AppendAllTextAsync("trades.csv", $"{DateTime.UtcNow:G},{currency},BUY,£{price:F2},-£10,£{_lastTrades[currency].Cumulative}\n", Encoding.UTF8);
 
                     var amount = 10 / price;
 
                     await File.AppendAllTextAsync("trades.csv", $"Placing buy order for {amount:F8} {currency} @ {price:F2}, cost {amount * price:F2}\n", Encoding.UTF8);
 
-                    await _exchangeClient.Trade(currency, (decimal)price, 10 / (decimal)price, true);
+                    _lastTrades[currency].LastTradeId = await _exchangeClient.Trade(currency, (decimal) price, 10 / (decimal) price, true);
                 }
                 else
                 {
-                    await File.AppendAllTextAsync("trades.csv", $"{DateTime.UtcNow:G},{currency},NO ACTION,£{price:F2},£0,£{_lastTradePrices[currency].Cumulative}\n", Encoding.UTF8);
+                    await File.AppendAllTextAsync("trades.csv", $"{DateTime.UtcNow:G},{currency},NO ACTION,£{price:F2},£0,£{_lastTrades[currency].Cumulative}\n", Encoding.UTF8);
                 }
 
                 return;
             }
 
-            if (price - _lastTradePrices[currency].Price > 31)
+            if (price - _lastTrades[currency].Price > 31)
             {
-                _lastTradePrices[currency].Price = (decimal)price;
+                _lastTrades[currency].Price = (decimal) price;
 
-                _lastTradePrices[currency].Cumulative += 20;
+                _lastTrades[currency].Cumulative += 20;
 
-                _lastTradePrices[currency].Buy = true;
+                _lastTrades[currency].Buy = true;
 
-                await File.AppendAllTextAsync("trades.csv", $"{DateTime.UtcNow:G},{currency},SELL,£{price:F2},£10,£{_lastTradePrices[currency].Cumulative}\n", Encoding.UTF8);
+                await File.AppendAllTextAsync("trades.csv", $"{DateTime.UtcNow:G},{currency},SELL,£{price:F2},£10,£{_lastTrades[currency].Cumulative}\n", Encoding.UTF8);
 
                 var amount = 10 / price;
 
                 await File.AppendAllTextAsync("trades.csv", $"Placing sell order for {20 / price:F8} {currency} @ {price:F2}, cost {amount * price:F2}\n", Encoding.UTF8);
 
-                await _exchangeClient.Trade(currency, (decimal)price, 20 / (decimal)price, false);
+                _lastTrades[currency].LastTradeId = await _exchangeClient.Trade(currency, (decimal) price, 20 / (decimal) price, false);
             }
             else
             {
-                await File.AppendAllTextAsync("trades.csv", $"{DateTime.UtcNow:G},{currency},NO ACTION,£{price:F2},£0,£{_lastTradePrices[currency].Cumulative}\n", Encoding.UTF8);
+                await File.AppendAllTextAsync("trades.csv", $"{DateTime.UtcNow:G},{currency},NO ACTION,£{price:F2},£0,£{_lastTrades[currency].Cumulative}\n", Encoding.UTF8);
             }
         }
     }
