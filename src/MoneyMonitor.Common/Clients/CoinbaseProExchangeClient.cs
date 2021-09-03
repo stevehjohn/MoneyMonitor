@@ -83,6 +83,21 @@ namespace MoneyMonitor.Common.Clients
             return request.OrderId;
         }
 
+        public async Task<OrderStatus> GetOrderStatus(string orderId)
+        {
+            var message = new HttpRequestMessage(HttpMethod.Get, $"/orders/client:{orderId}");
+
+            AddRequestHeaders(message);
+
+            var response = await _client.SendAsync(message);
+
+            var stringData = await response.Content.ReadAsStringAsync();
+
+            var status = JsonSerializer.Deserialize<OrderStatus>(stringData);
+
+            return status;
+        }
+
         public async Task<List<ExchangeBalance>> GetBalances()
         {
             var balances = await GetCoinBalances();
