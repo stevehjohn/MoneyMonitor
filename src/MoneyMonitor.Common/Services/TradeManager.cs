@@ -61,6 +61,7 @@ namespace MoneyMonitor.Common.Services
 
                 if (! new[] { "rejected", "done" }.Contains(status.Status.ToLowerInvariant()))
                 {
+                    return;
                 }
             }
 
