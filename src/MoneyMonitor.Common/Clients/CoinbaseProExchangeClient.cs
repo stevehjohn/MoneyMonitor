@@ -77,8 +77,8 @@ namespace MoneyMonitor.Common.Clients
 
             response.EnsureSuccessStatusCode();
 
-            // TODO: Log?
-            var stringData = await response.Content.ReadAsStringAsync();
+            // TODO: Log response?
+            // var stringData = await response.Content.ReadAsStringAsync();
 
             return request.OrderId;
         }

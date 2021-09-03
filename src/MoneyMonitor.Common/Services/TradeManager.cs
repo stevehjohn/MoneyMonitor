@@ -54,9 +54,12 @@ namespace MoneyMonitor.Common.Services
                 return;
             }
 
-            var buy = _lastTrades[currency].Buy;
+            if (! string.IsNullOrEmpty(_lastTrades[currency].LastTradeId))
+            {
+                var status = _exchangeClient.GetOrderStatus(_lastTrades[currency].LastTradeId);
+            }
 
-            if (buy)
+            if (_lastTrades[currency].Buy)
             {
                 if (_historyManager.GetHolding("GBP") < 50)
                 {

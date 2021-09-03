@@ -81,13 +81,11 @@ namespace MoneyMonitor.Windows.Controls
             
             graphics.DrawString($"{Title} @ {_dataTime:HH:mm.ss}", font, textBrush, 2, 2);
 
-            string text;
-
             SizeF size;
 
             if (_dataPoints == null || _dataPoints.Count == 0)
             {
-                text = "No Data";
+                var text = "No Data";
 
                 size = graphics.MeasureString(text, font);
 
