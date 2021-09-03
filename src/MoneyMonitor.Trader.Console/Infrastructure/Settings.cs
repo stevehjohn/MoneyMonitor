@@ -9,7 +9,11 @@ namespace MoneyMonitor.Trader.Console.Infrastructure
     public class Settings
     {
         public CoinbaseProCredentials CoinbaseProCredentials { get; set; }
+
+        public string FiatCurrency { get; set; }
         
+        public string FiatCurrencySymbol { get; set; }
+
         public TimeSpan PollInterval { get; set; }
 
         public static Settings Instance => Lazy.Value;

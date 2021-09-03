@@ -1,6 +1,5 @@
 ﻿using MoneyMonitor.Common.Infrastructure;
 using MoneyMonitor.Trader.Console.Services;
-using System;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -20,7 +19,7 @@ namespace MoneyMonitor.Trader.Console.Infrastructure
             {
                 await _trader.Trade("BTC");
 
-                Thread.Sleep(new TimeSpan(0, 0, 10));
+                Thread.Sleep(Settings.Instance.PollInterval);
             }
             // ReSharper disable once FunctionNeverReturns
         }

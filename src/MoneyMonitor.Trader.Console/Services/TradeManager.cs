@@ -18,14 +18,14 @@ namespace MoneyMonitor.Trader.Console.Services
 
         private int _profit;
 
-        public TradeManager(FileLogger logger)
+        public TradeManager(ILogger logger)
         {
             var settings = Settings.Instance;
 
             _client = new CoinbaseProExchangeClient(settings.CoinbaseProCredentials.ApiKey,
                                                     settings.CoinbaseProCredentials.ApiSecret,
                                                     settings.CoinbaseProCredentials.Passphrase,
-                                                    "GBP",
+                                                    settings.FiatCurrency,
                                                     null, 
                                                     null, 
                                                     logger);
@@ -76,7 +76,7 @@ namespace MoneyMonitor.Trader.Console.Services
 
             if (rate - trade.PreviousTradePrice > 31)
             {
-                _output.Write($"Sell. Total profit £{_profit}");
+                _output.Write($"Sell. Total profit {Settings.Instance.FiatCurrencySymbol}{_profit}");
 
                 _profit += 10;
 
