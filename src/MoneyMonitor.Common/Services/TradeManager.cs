@@ -55,18 +55,18 @@ namespace MoneyMonitor.Common.Services
                 return;
             }
 
-            if (! string.IsNullOrEmpty(_lastTrades[currency].LastTradeId))
-            {
-                var status = await _exchangeClient.GetOrderStatus(_lastTrades[currency].LastTradeId);
+            //if (! string.IsNullOrEmpty(_lastTrades[currency].LastTradeId))
+            //{
+            //    var status = await _exchangeClient.GetOrderStatus(_lastTrades[currency].LastTradeId);
 
-                // TODO: Think carefully about this logic and how to flip flop between buys and sells
+            //    // TODO: Think carefully about this logic and how to flip flop between buys and sells
 
-                // https://github.com/dougdellolio/coinbasepro-csharp/blob/3f31c86ae8b1c64b1637e55836058dc05655df59/CoinbasePro/Services/Orders/Types/OrderStatus.cs
-                if (! new[] { "rejected", "done", "settled" }.Contains(status.Status.ToLowerInvariant()))
-                {
-                    return;
-                }
-            }
+            //    // https://github.com/dougdellolio/coinbasepro-csharp/blob/3f31c86ae8b1c64b1637e55836058dc05655df59/CoinbasePro/Services/Orders/Types/OrderStatus.cs
+            //    if (! new[] { "rejected", "done", "settled" }.Contains(status.Status.ToLowerInvariant()))
+            //    {
+            //        return;
+            //    }
+            //}
 
             if (_lastTrades[currency].Buy)
             {
