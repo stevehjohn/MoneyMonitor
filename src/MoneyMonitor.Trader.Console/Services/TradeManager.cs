@@ -65,7 +65,7 @@ namespace MoneyMonitor.Trader.Console.Services
             {
                 var status = await _client.GetOrderStatus(trade.LastTradeId);
 
-                if (status != null)
+                if (status != null && ! string.IsNullOrWhiteSpace(status.Status))
                 {
                     if (new[] { "pending", "active", "open" }.Contains(status.Status.ToLowerInvariant()))
                     {
