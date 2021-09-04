@@ -4,7 +4,7 @@ using System.Text;
 using System.Text.Json;
 using MoneyMonitor.Common.Infrastructure;
 
-namespace MoneyMonitor.Trader.Console.Infrastructure
+namespace MoneyMonitor.Trader.Console.Infrastructure.Settings
 {
     public class Settings
     {
@@ -13,6 +13,8 @@ namespace MoneyMonitor.Trader.Console.Infrastructure
         public string FiatCurrency { get; set; }
         
         public TimeSpan PollInterval { get; set; }
+
+        public TradeParameters[] TradeParameters { get; set; }
 
         public static Settings Instance => Lazy.Value;
 

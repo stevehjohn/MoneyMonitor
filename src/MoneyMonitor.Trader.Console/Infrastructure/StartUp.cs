@@ -18,18 +18,23 @@ namespace MoneyMonitor.Trader.Console.Infrastructure
 
             System.Console.CursorVisible = false;
 
+            var tradeParameters = Settings.Settings.Instance.TradeParameters;
+
             while (true)
             {
                 try
                 {
-                    await _trader.Trade("BTC");
+                    foreach (var trade in tradeParameters)
+                    {
+                        await _trader.Trade(trade);
+                    }
                 }
                 catch (Exception exception)
                 {
                     logger.LogError("An error occurred when calling the Trade method.", exception);
                 }
 
-                Thread.Sleep(Settings.Instance.PollInterval);
+                Thread.Sleep(Settings.Settings.Instance.PollInterval);
             }
             // ReSharper disable once FunctionNeverReturns
         }
