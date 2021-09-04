@@ -37,6 +37,24 @@ namespace MoneyMonitor.Historical.Console.Services
 
         public async Task ExecuteAsync(string currency)
         {
+            // TODO - analyse data - work out...
+            //
+            // .. need to work out what the best params for a neural net actually are.
+            // now many interpreted metrics, and how many raw
+            //
+            // probability that if I buy now, price will increase at least x% in the next 1 hour.
+            //
+            // per candle
+            // - % change after 1 hour, bucketed
+            // - next 5 candles exit higher
+            //
+            // market
+            // rising / falling - buckets
+            // 
+        }
+
+        public async Task RenderCSVReportAsync(string currency)
+        {
             DirectoryInfo _cache = new DirectoryInfo(@$"C:\_Git\_TimeCache\{currency}\{granularity}");
             if (!_cache.Exists) _cache.Create();
 
