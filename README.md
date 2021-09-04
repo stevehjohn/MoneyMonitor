@@ -108,3 +108,5 @@ It could be run on an AWS instance for example, potentially in the same region a
 ## Configuration
 
 Secrets held within `consoleSettings.json` can be updated in the same way as the Windows application. See [Secrets](#secrets) above.
+
+You will need to also add the `Trade` permission to the API key you create.
