@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Security.Cryptography;
 using System.Text;
@@ -12,6 +14,7 @@ using MoneyMonitor.Common.Models;
 using MoneyMonitor.Common.Models.CoinbaseProApiRequests;
 using MoneyMonitor.Common.Models.CoinbaseProApiResponses;
 using MoneyMonitor.Common.Services;
+using Newtonsoft.Json.Linq;
 
 namespace MoneyMonitor.Common.Clients
 {
@@ -31,9 +34,14 @@ namespace MoneyMonitor.Common.Clients
 
         public CoinbaseProExchangeClient(string apiKey, string apiSecret, string passphrase, string fiatCurrency, FiatExchangeRateConverter exchangeRateConverter, Dictionary<string, string> currencyOverrides, ILogger logger)
         {
-            _client = new HttpClient
+            HttpClientHandler httpClientHandler = new HttpClientHandler()
+            {
+                Proxy = new WebProxy(string.Format("{0}:{1}", "127.0.0.1", 8888), false)
+            };
+
+            _client = new HttpClient(httpClientHandler)
                       {
-                          BaseAddress = new Uri("https://api.pro.coinbase.com")
+                          BaseAddress = new Uri("https://api.pro.coinbase.com"),
                       };
 
             _client.DefaultRequestHeaders.Add("User-Agent", "CoinbaseProApiClient");
@@ -46,6 +54,59 @@ namespace MoneyMonitor.Common.Clients
             _exchangeRateConverter = exchangeRateConverter;
             _currencyOverrides = currencyOverrides;
             _logger = logger;
+        }
+
+        // [[1630794600,36025.63,36265.88,36265.88,36055.25,10.0927808],[1630793700,36194.45,36304.58,36283.04,36257.95,7.84832646],[ ...
+        [DebuggerDisplay("{time}")]
+        public sealed class HistoryResponse
+        {
+            /// <summary>
+            ///     Timestamp to DateTime:
+            ///     var xx = DateTime.UnixEpoch + TimeSpan.FromSeconds(1630795500); // 4th September 2021 @ 22:00 ish
+            /// </summary>
+            public int time;
+            public double low;
+            public double high;
+            public double open;
+            public double close;
+            public double volume;
+        }
+
+        /// <summary>
+        ///     Historical Price Data
+        /// </summary>
+        /// <param name="currency">Currency Pair - e.g. BTC-GBP</param>
+        /// <param name="granularity">The granularity field must be one of the following values: {60, 300, 900, 3600, 21600, 86400} (seconds)</param>
+        /// <returns><see cref="HistoryResponse"/></returns>
+        public async Task<HistoryResponse[]> GetHistory(string currency, DateTime start, DateTime end, string granularity = "900")
+        {
+            string productId = $"{currency}-{_fiatCurrency}".ToUpperInvariant();
+
+            string url = $"/products/{productId}/candles?start={start.ToISO8601()}&end={end.ToISO8601()}&granularity={granularity}";
+            HttpRequestMessage message = new (HttpMethod.Get, url);
+            AddRequestHeaders(message, null);
+
+            var response = await _client.SendAsync(message);
+            var stringData = await response.Content.ReadAsStringAsync();
+
+            JArray jsonData = JArray.Parse(stringData);
+
+            List<HistoryResponse> data = new List<HistoryResponse>();
+
+            foreach (JArray item in jsonData)
+            {
+                data.Add(new HistoryResponse
+                {
+                    time = item.Value<int>(0),
+                    low = item.Value<double>(1),
+                    high = item.Value<double>(2),
+                    open = item.Value<double>(3),
+                    close = item.Value<double>(4),
+                    volume = item.Value<double>(5)
+                });
+            }
+
+            return data.ToArray();
         }
 
         public async Task<string> Trade(string currency, decimal price, decimal size, bool buy)
@@ -218,7 +279,6 @@ namespace MoneyMonitor.Common.Clients
 
         private void AddRequestHeaders(HttpRequestMessage message, string body = null)
         {
-
             var timestamp = $"{(long) DateTime.UtcNow.Subtract(DateTime.UnixEpoch).TotalSeconds}";
 
             // ReSharper disable once PossibleNullReferenceException
