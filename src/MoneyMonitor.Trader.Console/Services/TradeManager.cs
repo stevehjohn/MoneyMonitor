@@ -94,6 +94,15 @@ namespace MoneyMonitor.Trader.Console.Services
 
                 trade.Side = trade.Side == Side.Buy ? Side.Sell : Side.Buy;
 
+                if (trade.Side == Side.Buy)
+                {
+                    trade.Buys--;
+                }
+                else
+                {
+                    trade.Sells--;
+                }
+
                 return;
             }
 
