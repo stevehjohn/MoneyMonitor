@@ -81,13 +81,11 @@ namespace MoneyMonitor.Windows.Controls
             
             graphics.DrawString($"{Title} @ {_dataTime:HH:mm.ss}", font, textBrush, 2, 2);
 
-            string text;
-
             SizeF size;
 
             if (_dataPoints == null || _dataPoints.Count == 0)
             {
-                text = "No Data";
+                var text = "No Data";
 
                 size = graphics.MeasureString(text, font);
 
@@ -104,13 +102,7 @@ namespace MoneyMonitor.Windows.Controls
 
             if (delta == 0)
             {
-                text = "Invalid Data";
-
-                size = graphics.MeasureString(text, font);
-
-                graphics.DrawString(text, font, textBrush, (Width - size.Width) / 2, (Height - size.Height) / 2);
-
-                return;
+                delta = max;
             }
 
             var yScale = (float) (Height - FontSize * 4) / delta;

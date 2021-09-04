@@ -1,0 +1,9 @@
+{
+  "CoinbaseProCredentials": {
+    "ApiKey": "{CoinbaseProApiKey}",
+    "ApiSecret": "{CoinbaseProApiSecret}",
+    "Passphrase": "{CoinbaseProApiPassphrase}"
+  },
+  "FiatCurrency": "GBP",
+  "PollInterval": "00:00:10"
+}

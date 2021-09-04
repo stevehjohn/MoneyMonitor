@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Net.Http;
 using System.Security.Cryptography;
@@ -8,6 +9,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using MoneyMonitor.Common.Infrastructure;
 using MoneyMonitor.Common.Models;
+using MoneyMonitor.Common.Models.CoinbaseProApiRequests;
 using MoneyMonitor.Common.Models.CoinbaseProApiResponses;
 using MoneyMonitor.Common.Services;
 
@@ -44,6 +46,56 @@ namespace MoneyMonitor.Common.Clients
             _exchangeRateConverter = exchangeRateConverter;
             _currencyOverrides = currencyOverrides;
             _logger = logger;
+        }
+
+        public async Task<string> Trade(string currency, decimal price, decimal size, bool buy)
+        {
+            var request = new PlaceOrder
+                          {
+                              CancelAfter = "min",
+                              OrderId = Guid.NewGuid().ToString("D"),
+                              Price = price.ToString("F2", CultureInfo.InvariantCulture),
+                              ProductId = $"{currency}-{_fiatCurrency}".ToUpperInvariant(),
+                              Side = buy ? "buy" : "sell",
+                              Size = size.ToString("F8", CultureInfo.InvariantCulture),
+                              Stop = buy ? "loss" : "entry",
+                              StopPrice = price.ToString("F2", CultureInfo.InvariantCulture),
+                              TimeInForce = "GTT",
+                              Type = "limit"
+                          };
+
+            var body = JsonSerializer.Serialize(request);
+
+            var message = new HttpRequestMessage(HttpMethod.Post, "/orders")
+                          {
+                              Content = new StringContent(body, Encoding.UTF8, "application/json")
+                          };
+
+            AddRequestHeaders(message, body);
+
+            var response = await _client.SendAsync(message);
+
+            response.EnsureSuccessStatusCode();
+
+            // TODO: Log response?
+            // var stringData = await response.Content.ReadAsStringAsync();
+
+            return request.OrderId;
+        }
+
+        public async Task<OrderStatus> GetOrderStatus(string orderId)
+        {
+            var message = new HttpRequestMessage(HttpMethod.Get, $"/orders/client:{orderId}");
+
+            AddRequestHeaders(message);
+
+            var response = await _client.SendAsync(message);
+
+            var stringData = await response.Content.ReadAsStringAsync();
+
+            var status = JsonSerializer.Deserialize<OrderStatus>(stringData);
+
+            return status;
         }
 
         public async Task<List<ExchangeBalance>> GetBalances()
@@ -119,7 +171,7 @@ namespace MoneyMonitor.Common.Clients
             return balances;
         }
         
-        private async Task<Dictionary<string, decimal>> GetExchangeRates(List<string> currencies)
+        public async Task<Dictionary<string, decimal>> GetExchangeRates(List<string> currencies)
         {
             var rates = new Dictionary<string, decimal>();
 
