@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using MoneyMonitor.Common.Clients;
 using MoneyMonitor.Common.Infrastructure;
 using MoneyMonitor.Trader.Console.Infrastructure;
+using MoneyMonitor.Trader.Console.Infrastructure.Settings;
 using MoneyMonitor.Trader.Console.Models;
 
 namespace MoneyMonitor.Trader.Console.Services
@@ -36,9 +37,9 @@ namespace MoneyMonitor.Trader.Console.Services
             _output.Write("DateTime,Crypto,Price,TargetDelta,BuyCount,SellCount,Action", ConsoleColor.White);
         }
 
-        public async Task Trade(string currency)
+        public async Task Trade(TradeParameters parameters)
         {
-            currency = currency.ToUpperInvariant();
+            var currency = parameters.Currency.ToUpperInvariant();
 
             var rates = await _client.GetExchangeRates(new List<string> { currency });
 
@@ -110,9 +111,9 @@ namespace MoneyMonitor.Trader.Console.Services
 
             if (trade.Side == Side.Buy)
             {
-                if (trade.PreviousTradePrice - rate > 11)
+                if (trade.PreviousTradePrice - rate > parameters.BuyDropThreshold)
                 {
-                    trade.LastTradeId = await _client.Trade(currency, rate, 10 / rate, true);
+                    trade.LastTradeId = await _client.Trade(currency, rate, parameters.BuyAmount / rate, true);
 
                     trade.PreviousTradePrice = rate;
 
@@ -126,9 +127,9 @@ namespace MoneyMonitor.Trader.Console.Services
                 return;
             }
 
-            if (rate - trade.PreviousTradePrice > 31)
+            if (rate - trade.PreviousTradePrice > parameters.SellRiseThreshold)
             {
-                trade.LastTradeId = await _client.Trade(currency, rate, 20 / rate, false);
+                trade.LastTradeId = await _client.Trade(currency, rate, parameters.SellAmount / rate, false);
 
                 trade.PreviousTradePrice = rate;
 
