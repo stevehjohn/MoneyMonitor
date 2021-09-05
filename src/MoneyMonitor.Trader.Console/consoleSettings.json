@@ -9,10 +9,10 @@
   "TradeParameters": [
     {
       "Currency": "BTC",
-      "BuyDropThreshold": 11,
-      "BuyAmount": 10,
-      "SellRiseThreshold": 31,
-      "SellAmount": 20 
+      "BuyDropThreshold": 15,
+      "BuyAmount": 11,
+      "SellRiseThreshold": 14,
+      "SellAmount": 10 
     }
   ]
 }
