@@ -8,11 +8,11 @@
   "PollInterval": "00:00:10",
   "TradeParameters": [
     {
-      "Currency": "BTC",
-      "BuyDropThreshold": 15,
-      "BuyAmount": 11,
-      "SellRiseThreshold": 14,
-      "SellAmount": 10 
+      "Currency": "ETH",
+      "BuyDropThreshold": 40,
+      "BuyAmount": 0.1,
+      "SellRiseThreshold": 60,
+      "SellAmount": 0.1 
     }
   ]
 }
