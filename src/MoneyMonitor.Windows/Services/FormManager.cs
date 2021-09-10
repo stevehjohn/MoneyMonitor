@@ -44,7 +44,7 @@ namespace MoneyMonitor.Windows.Services
                            HistoryChart =
                            {
                                Title = currency?.ToUpperInvariant() ?? "Total",
-                               CurrencySymbol = Settings.Instance.FiatCurrencySymbol
+                               CurrencySymbol = AppSettings.Instance.FiatCurrencySymbol
                            },
                            Text = currency,
                            FormMoved = FormMoved,
@@ -61,7 +61,7 @@ namespace MoneyMonitor.Windows.Services
 
             if (! transient)
             {
-                form.TopMost = Settings.Instance.AlwaysOnTop;
+                form.TopMost = AppSettings.Instance.AlwaysOnTop;
 
                 if (! string.IsNullOrWhiteSpace(currency))
                 {
@@ -77,11 +77,11 @@ namespace MoneyMonitor.Windows.Services
             }
 
             var high = currency == null
-                           ? Settings.Instance.BalanceHigh
+                           ? AppSettings.Instance.BalanceHigh
                            : _historyManager.GetHigh(currency);
 
             var low = currency == null
-                          ? Settings.Instance.BalanceLow
+                          ? AppSettings.Instance.BalanceLow
                           : _historyManager.GetLow(currency);
 
             form.HistoryChart.UpdateData(_historyManager.GetHistory(currency), LocaliseTime(_historyManager.GetHistoryTime()), _historyManager.GetExchangeRate(currency), _historyManager.GetHolding(currency), GetHoldingPercent(currency), high, low);
@@ -98,11 +98,11 @@ namespace MoneyMonitor.Windows.Services
             foreach (var form in _forms)
             {
                 var high = form.Currency == null
-                               ? Settings.Instance.BalanceHigh
+                               ? AppSettings.Instance.BalanceHigh
                                : _historyManager.GetHigh(form.Currency);
 
                 var low = form.Currency == null
-                              ? Settings.Instance.BalanceLow
+                              ? AppSettings.Instance.BalanceLow
                               : _historyManager.GetLow(form.Currency);
 
                 form.HistoryChart.UpdateData(_historyManager.GetHistory(form.Currency), LocaliseTime(_historyManager.GetHistoryTime()), _historyManager.GetExchangeRate(form.Currency), _historyManager.GetHolding(form.Currency), GetHoldingPercent(form.Currency), high, low);

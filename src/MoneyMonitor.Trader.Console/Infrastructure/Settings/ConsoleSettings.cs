@@ -6,7 +6,7 @@ using MoneyMonitor.Common.Infrastructure;
 
 namespace MoneyMonitor.Trader.Console.Infrastructure.Settings
 {
-    public class Settings
+    public class ConsoleSettings
     {
         public CoinbaseProCredentials CoinbaseProCredentials { get; set; }
 
@@ -16,9 +16,9 @@ namespace MoneyMonitor.Trader.Console.Infrastructure.Settings
 
         public TradeParameters[] TradeParameters { get; set; }
 
-        public static Settings Instance => Lazy.Value;
+        public static ConsoleSettings Instance => Lazy.Value;
 
-        private static readonly Lazy<Settings> Lazy = new(GetAppSettings);
+        private static readonly Lazy<ConsoleSettings> Lazy = new(GetAppSettings);
 
         public void Save()
         {
@@ -30,11 +30,11 @@ namespace MoneyMonitor.Trader.Console.Infrastructure.Settings
             File.WriteAllText("consoleSettings.json", json, Encoding.UTF8);
         } 
 
-        private static Settings GetAppSettings()
+        private static ConsoleSettings GetAppSettings()
         {
             var json = File.ReadAllText("consoleSettings.json", Encoding.UTF8);
 
-            var settings = JsonSerializer.Deserialize<Settings>(json, new JsonSerializerOptions
+            var settings = JsonSerializer.Deserialize<ConsoleSettings>(json, new JsonSerializerOptions
                                                                          {
                                                                              Converters = { new TimeSpanConverter() }
                                                                          });

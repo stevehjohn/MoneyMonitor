@@ -6,7 +6,7 @@ using MoneyMonitor.Common.Infrastructure;
 
 namespace MoneyMonitor.Windows.Infrastructure.Settings
 {
-    public class Settings
+    public class AppSettings
     {
         public bool AlwaysOnTop { get; set; }
 
@@ -38,9 +38,9 @@ namespace MoneyMonitor.Windows.Infrastructure.Settings
 
         public TimeSpan PollInterval { get; set; }
 
-        public static Settings Instance => Lazy.Value;
+        public static AppSettings Instance => Lazy.Value;
 
-        private static readonly Lazy<Settings> Lazy = new(GetAppSettings);
+        private static readonly Lazy<AppSettings> Lazy = new(GetAppSettings);
 
         public void Save()
         {
@@ -52,11 +52,11 @@ namespace MoneyMonitor.Windows.Infrastructure.Settings
             File.WriteAllText("appSettings.json", json, Encoding.UTF8);
         } 
 
-        private static Settings GetAppSettings()
+        private static AppSettings GetAppSettings()
         {
             var json = File.ReadAllText("appSettings.json", Encoding.UTF8);
 
-            var settings = JsonSerializer.Deserialize<Settings>(json, new JsonSerializerOptions
+            var settings = JsonSerializer.Deserialize<AppSettings>(json, new JsonSerializerOptions
                                                                          {
                                                                              Converters = { new TimeSpanConverter() }
                                                                          });

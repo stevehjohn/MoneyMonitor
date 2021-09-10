@@ -20,7 +20,7 @@ namespace MoneyMonitor.Trader.Console.Services
 
         public TradeManager(ILogger logger)
         {
-            var settings = Settings.Instance;
+            var settings = ConsoleSettings.Instance;
 
             _client = new CoinbaseProExchangeClient(settings.CoinbaseProCredentials.ApiKey,
                                                     settings.CoinbaseProCredentials.ApiSecret,

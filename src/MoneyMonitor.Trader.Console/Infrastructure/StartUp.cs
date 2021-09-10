@@ -3,6 +3,7 @@ using MoneyMonitor.Common.Infrastructure;
 using MoneyMonitor.Trader.Console.Services;
 using System.Threading;
 using System.Threading.Tasks;
+using MoneyMonitor.Trader.Console.Infrastructure.Settings;
 
 namespace MoneyMonitor.Trader.Console.Infrastructure
 {
@@ -18,7 +19,7 @@ namespace MoneyMonitor.Trader.Console.Infrastructure
 
             System.Console.CursorVisible = false;
 
-            var tradeParameters = Settings.Settings.Instance.TradeParameters;
+            var tradeParameters = ConsoleSettings.Instance.TradeParameters;
 
             while (true)
             {
@@ -34,7 +35,7 @@ namespace MoneyMonitor.Trader.Console.Infrastructure
                     logger.LogError("An error occurred when calling the Trade method.", exception);
                 }
 
-                Thread.Sleep(Settings.Settings.Instance.PollInterval);
+                Thread.Sleep(ConsoleSettings.Instance.PollInterval);
             }
             // ReSharper disable once FunctionNeverReturns
         }
