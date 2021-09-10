@@ -100,10 +100,6 @@ namespace MoneyMonitor.Windows.Infrastructure
         {
             var balances = await _exchangeAggregator.GetAllBalances();
 
-            _historyManager.AddEntry(balances);
-
-            _formManager.NewData();
-
             Polled(balances);
         }
 
