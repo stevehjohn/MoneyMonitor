@@ -50,7 +50,7 @@ namespace MoneyMonitor.Trader.Console.Services
                 _tradeInfos.Add(currency, new Trade
                                           {
                                               PreviousTradePrice = rate,
-                                              Side = Side.Buy
+                                              Side = Side.Sell
                                           });
 
                 WriteOut(currency, rate, 0, 0, 0, "INITIALISE", ConsoleColor.Gray);
@@ -113,7 +113,7 @@ namespace MoneyMonitor.Trader.Console.Services
             {
                 if (trade.PreviousTradePrice - rate > parameters.BuyDropThreshold)
                 {
-                    trade.LastTradeId = await _client.Trade(currency, rate, parameters.BuyAmount / rate, true);
+                    trade.LastTradeId = await _client.Trade(currency, rate, parameters.BuyAmount, true);
 
                     trade.PreviousTradePrice = rate;
 
@@ -129,7 +129,7 @@ namespace MoneyMonitor.Trader.Console.Services
 
             if (rate - trade.PreviousTradePrice > parameters.SellRiseThreshold)
             {
-                trade.LastTradeId = await _client.Trade(currency, rate, parameters.SellAmount / rate, false);
+                trade.LastTradeId = await _client.Trade(currency, rate, parameters.SellAmount, false);
 
                 trade.PreviousTradePrice = rate;
 
