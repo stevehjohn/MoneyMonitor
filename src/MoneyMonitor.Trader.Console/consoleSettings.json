@@ -10,7 +10,7 @@
     {
       "Currency": "ETH",
       "BuyDropThreshold": 40,
-      "BuyAmount": 0.1,
+      "BuyAmount": 0.1004,
       "SellRiseThreshold": 60,
       "SellAmount": 0.1 
     }
