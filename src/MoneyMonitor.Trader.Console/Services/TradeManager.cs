@@ -45,12 +45,14 @@ namespace MoneyMonitor.Trader.Console.Services
 
             var rate = rates[currency];
 
+            var currencySettings = ConsoleSettings.Instance.TradeParameters.First(p => p.Currency.Equals(currency, StringComparison.InvariantCultureIgnoreCase));
+
             if (! _tradeInfos.ContainsKey(currency))
             {
                 _tradeInfos.Add(currency, new Trade
                                           {
-                                              PreviousTradePrice = rate,
-                                              Side = Side.Sell
+                                              PreviousTradePrice = currencySettings.LastTradePrice ?? rate,
+                                              Side = currencySettings.LastSide ?? Side.Sell
                                           });
 
                 WriteOut(currency, rate, 0, 0, 0, "INITIALISE", ConsoleColor.Gray);
@@ -82,8 +84,6 @@ namespace MoneyMonitor.Trader.Console.Services
                         trade.PreviousTradePrice = rate;
 
                         trade.LastTradeId = null;
-
-                        var currencySettings = ConsoleSettings.Instance.TradeParameters.First(p => p.Currency.Equals(currency, StringComparison.InvariantCultureIgnoreCase));
 
                         currencySettings.LastTradePrice = rate;
 

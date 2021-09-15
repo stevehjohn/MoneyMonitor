@@ -14,8 +14,8 @@ namespace MoneyMonitor.Trader.Console.Infrastructure.Settings
 
         public decimal SellAmount { get; set; }
 
-        public Side LastSide { get; set; }
+        public Side? LastSide { get; set; }
 
-        public decimal LastTradePrice { get; set; }
+        public decimal? LastTradePrice { get; set; }
     }
 }
