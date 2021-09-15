@@ -83,6 +83,14 @@ namespace MoneyMonitor.Trader.Console.Services
 
                         trade.LastTradeId = null;
 
+                        var currencySettings = ConsoleSettings.Instance.TradeParameters.First(p => p.Currency.Equals(currency, StringComparison.InvariantCultureIgnoreCase));
+
+                        currencySettings.LastTradePrice = rate;
+
+                        currencySettings.LastSide = trade.Side;
+
+                        ConsoleSettings.Instance.Save();
+
                         return;
                     }
                 }
