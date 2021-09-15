@@ -72,7 +72,7 @@ namespace MoneyMonitor.Windows.Infrastructure
                 }
             }
 
-            _historyManager = new HistoryManager(Constants.HistoryLength, Constants.HistoryFilename);
+            _historyManager = new HistoryManager(Constants.HistoryLength, Constants.HistoryFilename, settings.FiatCurrency);
 
             _historyManager.Load();
 
@@ -100,7 +100,7 @@ namespace MoneyMonitor.Windows.Infrastructure
         private async void RefreshClicked()
         {
             var balances = await _exchangeAggregator.GetAllBalances();
-
+            
             Polled(balances);
         }
 

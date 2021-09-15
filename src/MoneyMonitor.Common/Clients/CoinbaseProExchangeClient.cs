@@ -102,9 +102,6 @@ namespace MoneyMonitor.Common.Clients
         {
             var balances = await GetCoinBalances();
 
-            // TODO: Sort this out
-            balances = balances.Where(b => b.Currency != "GBP").ToList();
-
             var result = new List<ExchangeBalance>();
 
             if (balances.Count == 0)
@@ -186,6 +183,13 @@ namespace MoneyMonitor.Common.Clients
                     var fiatCurrency = currencyOverride
                         ? _currencyOverrides[currency]
                         : _fiatCurrency;
+
+                    if (currency.Equals(fiatCurrency, StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        rates.Add(currency.ToUpperInvariant(), 1);
+
+                        continue;
+                    }
 
                     pair = $"{currency.ToUpperInvariant()}-{fiatCurrency}";
 

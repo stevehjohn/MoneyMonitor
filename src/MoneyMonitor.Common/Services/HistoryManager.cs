@@ -13,15 +13,19 @@ namespace MoneyMonitor.Common.Services
 
         private readonly string _filename;
 
+        private readonly string _fiatCurrency;
+
         private Queue<HistoryEntry> _history;
 
         private List<HistorySummary> _historySummaries;
 
-        public HistoryManager(int length, string filename)
+        public HistoryManager(int length, string filename, string fiatCurrency)
         {
             _length = length;
 
             _filename = filename;
+
+            _fiatCurrency = fiatCurrency;
 
             _history = new Queue<HistoryEntry>(_length);
 
@@ -57,6 +61,11 @@ namespace MoneyMonitor.Common.Services
             if (string.IsNullOrWhiteSpace(currency))
             {
                 return null;
+            }
+
+            if (currency.Equals(_fiatCurrency, StringComparison.InvariantCultureIgnoreCase))
+            {
+                return 1;
             }
 
             // ReSharper disable once PossibleNullReferenceException
