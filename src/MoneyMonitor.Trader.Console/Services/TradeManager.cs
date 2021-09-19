@@ -45,12 +45,14 @@ namespace MoneyMonitor.Trader.Console.Services
 
             var rate = rates[currency];
 
+            var currencySettings = ConsoleSettings.Instance.TradeParameters.First(p => p.Currency.Equals(currency, StringComparison.InvariantCultureIgnoreCase));
+
             if (! _tradeInfos.ContainsKey(currency))
             {
                 _tradeInfos.Add(currency, new Trade
                                           {
-                                              PreviousTradePrice = rate,
-                                              Side = Side.Sell
+                                              PreviousTradePrice = currencySettings.LastTradePrice ?? rate,
+                                              Side = currencySettings.LastSide ?? Side.Sell
                                           });
 
                 WriteOut(currency, rate, 0, 0, 0, "INITIALISE", ConsoleColor.Gray);
@@ -83,6 +85,12 @@ namespace MoneyMonitor.Trader.Console.Services
 
                         trade.LastTradeId = null;
 
+                        currencySettings.LastTradePrice = rate;
+
+                        currencySettings.LastSide = trade.Side;
+
+                        ConsoleSettings.Instance.Save();
+
                         return;
                     }
                 }
@@ -107,7 +115,7 @@ namespace MoneyMonitor.Trader.Console.Services
                 return;
             }
 
-            WriteOut(currency, rate, delta, trade.Buys, trade.Sells, "POLL", ConsoleColor.Gray);
+            WriteOut(currency, rate, delta, trade.Buys, trade.Sells, "POLL", ConsoleColor.Gray, true);
 
             if (trade.Side == Side.Buy)
             {
@@ -141,9 +149,9 @@ namespace MoneyMonitor.Trader.Console.Services
             }
         }
 
-        private void WriteOut(string currency, decimal rate, decimal delta, int buys, int sells, string action, ConsoleColor colour)
+        private void WriteOut(string currency, decimal rate, decimal delta, int buys, int sells, string action, ConsoleColor colour, bool sameLine = false)
         {
-            _output.Write($"{DateTime.UtcNow:G},{currency},{rate:F2},{delta:F2},{buys},{sells},{action}", colour);
+            _output.Write($"{DateTime.UtcNow:G},{currency},{rate:F2},{delta:F2},{buys},{sells},{action}", colour, sameLine);
         }
     }
 }
