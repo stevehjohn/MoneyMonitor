@@ -115,7 +115,7 @@ namespace MoneyMonitor.Trader.Console.Services
                 return;
             }
 
-            WriteOut(currency, rate, delta, trade.Buys, trade.Sells, "POLL", ConsoleColor.Gray);
+            WriteOut(currency, rate, delta, trade.Buys, trade.Sells, "POLL", ConsoleColor.Gray, true);
 
             if (trade.Side == Side.Buy)
             {
@@ -149,9 +149,9 @@ namespace MoneyMonitor.Trader.Console.Services
             }
         }
 
-        private void WriteOut(string currency, decimal rate, decimal delta, int buys, int sells, string action, ConsoleColor colour)
+        private void WriteOut(string currency, decimal rate, decimal delta, int buys, int sells, string action, ConsoleColor colour, bool sameLine = false)
         {
-            _output.Write($"{DateTime.UtcNow:G},{currency},{rate:F2},{delta:F2},{buys},{sells},{action}", colour);
+            _output.Write($"{DateTime.UtcNow:G},{currency},{rate:F2},{delta:F2},{buys},{sells},{action}", colour, sameLine);
         }
     }
 }

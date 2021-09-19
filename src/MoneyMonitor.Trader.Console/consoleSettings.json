@@ -5,14 +5,14 @@
     "Passphrase": "{CoinbaseProApiPassphrase}"
   },
   "FiatCurrency": "GBP",
-  "PollInterval": "00:00:10",
+  "PollInterval": "00:00:05",
   "TradeParameters": [
     {
       "Currency": "ETH",
-      "BuyDropThreshold": 40,
-      "BuyAmount": 0.1,
-      "SellRiseThreshold": 60,
-      "SellAmount": 0.1 
+      "BuyDropThreshold": 20,
+      "BuyAmount": 0.01,
+      "SellRiseThreshold": 30,
+      "SellAmount": 0.01 
     }
   ]
 }
