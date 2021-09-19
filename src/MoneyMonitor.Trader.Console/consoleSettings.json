@@ -9,9 +9,9 @@
   "TradeParameters": [
     {
       "Currency": "ETH",
-      "BuyDropThreshold": 20,
+      "BuyDropThreshold": 10,
       "BuyAmount": 0.01,
-      "SellRiseThreshold": 30,
+      "SellRiseThreshold": 20,
       "SellAmount": 0.01 
     }
   ]
