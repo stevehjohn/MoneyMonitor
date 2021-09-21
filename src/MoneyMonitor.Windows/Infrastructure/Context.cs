@@ -53,15 +53,18 @@ namespace MoneyMonitor.Windows.Infrastructure
                         exchangeClients.Add(new CoinbaseExchangeClient(settings.CoinbaseCredentials.ApiKey, settings.CoinbaseCredentials.ApiSecret, settings.FiatCurrency));
                         break;
                     case "coinbaseproexchangeclient":
-                        exchangeClients.Add(new CoinbaseProExchangeClient(settings.CoinbaseProCredentials.ApiKey,
-                                                                          settings.CoinbaseProCredentials.ApiSecret,
-                                                                          settings.CoinbaseProCredentials.Passphrase,
-                                                                          settings.FiatCurrency,
-                                                                          _exchangeRateConverter,
-                                                                          settings.ExchangeRateFallbacks
-                                                                                  ?.Where(f => f.Exchange.Equals("coinbasepro", StringComparison.InvariantCultureIgnoreCase))
-                                                                                  .ToDictionary(f => f.CryptoCurrency, f => f.FiatCurrency),
-                                                                          _logger));
+                        foreach (var credentials in settings.CoinbaseProCredentials)
+                        {
+                            exchangeClients.Add(new CoinbaseProExchangeClient(credentials.ApiKey,
+                                                                              credentials.ApiSecret,
+                                                                              credentials.Passphrase,
+                                                                              settings.FiatCurrency,
+                                                                              _exchangeRateConverter,
+                                                                              settings.ExchangeRateFallbacks
+                                                                                      ?.Where(f => f.Exchange.Equals("coinbasepro", StringComparison.InvariantCultureIgnoreCase))
+                                                                                      .ToDictionary(f => f.CryptoCurrency, f => f.FiatCurrency),
+                                                                              _logger));
+                        }
                         break;
                     case "binanceexchangeclient":
                         exchangeClients.Add(new BinanceExchangeClient(settings.BinanceCredentials.ApiKey, settings.BinanceCredentials.SecretKey, settings.FiatCurrency));
