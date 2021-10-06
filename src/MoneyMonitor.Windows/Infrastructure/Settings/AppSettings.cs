@@ -20,7 +20,7 @@ namespace MoneyMonitor.Windows.Infrastructure.Settings
 
         public CoinbaseCredentials CoinbaseCredentials { get; set; }
 
-        public CoinbaseProCredentials CoinbaseProCredentials { get; set; }
+        public CoinbaseProCredentials[] CoinbaseProCredentials { get; set; }
 
         public string ExcelCell { get; set; }
         

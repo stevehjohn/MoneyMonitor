@@ -9,9 +9,9 @@ namespace MoneyMonitor.Common.Services
 {
     public class ExchangeAggregator
     {
-        private readonly List<ICryptoExchangeClient> _exchangeClients;
+        private readonly Dictionary<string, ICryptoExchangeClient> _exchangeClients;
 
-        public ExchangeAggregator(List<ICryptoExchangeClient> exchangeClients)
+        public ExchangeAggregator(Dictionary<string, ICryptoExchangeClient> exchangeClients)
         {
             _exchangeClients = exchangeClients;
         }
@@ -22,7 +22,7 @@ namespace MoneyMonitor.Common.Services
 
             foreach (var client in _exchangeClients)
             {
-                var balances = await client.GetBalances();
+                var balances = await client.Value.GetBalances();
 
                 foreach (var balance in balances)
                 {
