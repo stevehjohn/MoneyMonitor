@@ -246,13 +246,13 @@ namespace MoneyMonitor.Windows.Controls
             {
                 var exchangeRate = 1 / _exchangeRate;
 
-                title = $"1 {Title} : {CurrencySymbol}{exchangeRate:N4}";
+                title = $"1 {Title} : {CurrencySymbol}{exchangeRate:N6}";
 
                 size = graphics.MeasureString(title, font);
 
                 graphics.DrawString(title, font, dimTextBrush, 2, Height - size.Height);
 
-                graphics.DrawString(title.Substring(0, title.Length - 2), font, textBrush, 2, Height - size.Height);
+                graphics.DrawString(title.Substring(0, title.Length - 4), font, textBrush, 2, Height - size.Height);
             }
         }
     }
