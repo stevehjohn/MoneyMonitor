@@ -209,7 +209,7 @@ namespace MoneyMonitor.Windows.Controls
 
             if (_holding.HasValue)
             {
-                title = $"{_holding:G29}";
+                title = $"{_holding:#,###,###,##0.#########}";
 
                 size = graphics.MeasureString(title, font);
 
