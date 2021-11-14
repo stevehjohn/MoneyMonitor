@@ -10,7 +10,7 @@
     {
       "Currency": "SHIB",
       "BaseAmount": 250000,
-      "BuyDropThreshold": 1.5,
+      "BuyDropThreshold": 1,
       "SellRiseThreshold": 2
     }
   ]
