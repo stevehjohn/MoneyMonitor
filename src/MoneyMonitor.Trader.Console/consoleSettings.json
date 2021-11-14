@@ -1,8 +1,8 @@
 {
   "CoinbaseProCredentials": {
-    "ApiKey": "{CoinbaseProApiKey}",
-    "ApiSecret": "{CoinbaseProApiSecret}",
-    "Passphrase": "{CoinbaseProApiPassphrase}"
+    "ApiKey": "{CoinbaseProApiKey-Trading}",
+    "ApiSecret": "{CoinbaseProApiSecret-Trading}",
+    "Passphrase": "{CoinbaseProApiPassphrase-Trading}"
   },
   "FiatCurrency": "GBP",
   "PollInterval": "00:00:05",

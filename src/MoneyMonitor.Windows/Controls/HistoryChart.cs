@@ -102,7 +102,7 @@ namespace MoneyMonitor.Windows.Controls
 
             if (delta == 0)
             {
-                delta = max;
+                delta = max == 0 ? 1 : max;
             }
 
             var yScale = (float) (Height - FontSize * 4) / delta;
@@ -225,7 +225,7 @@ namespace MoneyMonitor.Windows.Controls
             {
                 var diff = _dataPoints.Last() - _dataPoints[^2];
 
-                var percent = (decimal) diff / _dataPoints.Last() * 100;
+                var percent = (decimal) diff / (_dataPoints.Last() == 0 ? 1 : _dataPoints.Last()) * 100;
 
                 title = $"{(diff > 0 ? "+" : "-")}{CurrencySymbol}{Math.Abs(diff / 100m):N2} [{Math.Abs(percent):N2}%]";
 
