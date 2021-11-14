@@ -6,13 +6,11 @@ namespace MoneyMonitor.Trader.Console.Infrastructure.Settings
     {
         public string Currency { get; set; }
 
+        public decimal BaseAmount { get; set; }
+
         public decimal BuyDropThreshold { get; set; }
 
-        public decimal BuyAmount { get; set; }
-
         public decimal SellRiseThreshold { get; set; }
-
-        public decimal SellAmount { get; set; }
 
         public Side? LastSide { get; set; }
 

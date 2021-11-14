@@ -55,7 +55,7 @@ namespace MoneyMonitor.Trader.Console.Services
                                               Side = currencySettings.LastSide ?? Side.Sell
                                           });
 
-                WriteOut(currency, rate, 0, 0, 0, "INITIALISE", ConsoleColor.Gray);
+                WriteOut(currency, rate, 0, 0, 0, "INITIALISE", ConsoleColor.Gray, parameters.BaseAmount);
 
                 return;
             }
@@ -72,14 +72,14 @@ namespace MoneyMonitor.Trader.Console.Services
                 {
                     if (new[] { "pending", "active", "open" }.Contains(status.Status.ToLowerInvariant()))
                     {
-                        WriteOut(currency, rate, delta, trade.Buys, trade.Sells, "ACTIVE TRADE", ConsoleColor.DarkCyan);
+                        WriteOut(currency, rate, delta, trade.Buys, trade.Sells, "ACTIVE TRADE", ConsoleColor.DarkCyan, parameters.BaseAmount);
 
                         return;
                     }
                     
                     if (new[] { "done", "settled" }.Contains(status.Status.ToLowerInvariant()))
                     {
-                        WriteOut(currency, rate, delta, trade.Buys, trade.Sells, "TRADE COMPLETE", ConsoleColor.Blue);
+                        WriteOut(currency, rate, delta, trade.Buys, trade.Sells, "TRADE COMPLETE", ConsoleColor.Blue, parameters.BaseAmount);
 
                         trade.PreviousTradePrice = rate;
 
@@ -95,7 +95,7 @@ namespace MoneyMonitor.Trader.Console.Services
                     }
                 }
 
-                WriteOut(currency, rate, delta, trade.Buys, trade.Sells, "TRADE CANCELLED", ConsoleColor.Blue);
+                WriteOut(currency, rate, delta, trade.Buys, trade.Sells, "TRADE CANCELLED", ConsoleColor.Blue, parameters.BaseAmount);
 
                 trade.PreviousTradePrice = rate;
 
@@ -115,13 +115,13 @@ namespace MoneyMonitor.Trader.Console.Services
                 return;
             }
 
-            WriteOut(currency, rate, delta, trade.Buys, trade.Sells, "POLL", ConsoleColor.Gray, true);
+            WriteOut(currency, rate, delta, trade.Buys, trade.Sells, "POLL", ConsoleColor.Gray, parameters.BaseAmount, true);
 
             if (trade.Side == Side.Buy)
             {
-                if (trade.PreviousTradePrice - rate > parameters.BuyDropThreshold)
+                if ((trade.PreviousTradePrice - rate) * parameters.BaseAmount > parameters.BuyDropThreshold)
                 {
-                    trade.LastTradeId = await _client.Trade(currency, rate, parameters.BuyAmount, true);
+                    trade.LastTradeId = await _client.Trade(currency, rate, parameters.BaseAmount, true);
 
                     trade.PreviousTradePrice = rate;
 
@@ -129,15 +129,15 @@ namespace MoneyMonitor.Trader.Console.Services
 
                     trade.Side = Side.Sell;
 
-                    WriteOut(currency, rate, 0, trade.Buys, trade.Sells, "BUY", ConsoleColor.Red);
+                    WriteOut(currency, rate, 0, trade.Buys, trade.Sells, "BUY", ConsoleColor.Red, parameters.BaseAmount);
                 }
 
                 return;
             }
 
-            if (rate - trade.PreviousTradePrice > parameters.SellRiseThreshold)
+            if ((rate - trade.PreviousTradePrice) * parameters.BaseAmount > parameters.SellRiseThreshold)
             {
-                trade.LastTradeId = await _client.Trade(currency, rate, parameters.SellAmount, false);
+                trade.LastTradeId = await _client.Trade(currency, rate, parameters.BaseAmount, false);
 
                 trade.PreviousTradePrice = rate;
 
@@ -145,13 +145,13 @@ namespace MoneyMonitor.Trader.Console.Services
 
                 trade.Side = Side.Buy;
 
-                WriteOut(currency, rate, 0, trade.Buys, trade.Sells, "SELL", ConsoleColor.Green);
+                WriteOut(currency, rate, 0, trade.Buys, trade.Sells, "SELL", ConsoleColor.Green, parameters.BaseAmount);
             }
         }
 
-        private void WriteOut(string currency, decimal rate, decimal delta, int buys, int sells, string action, ConsoleColor colour, bool sameLine = false)
+        private void WriteOut(string currency, decimal rate, decimal delta, int buys, int sells, string action, ConsoleColor colour, decimal baseAmount, bool sameLine = false)
         {
-            _output.Write($"{DateTime.UtcNow:G},{currency},{rate:F2},{delta:F2},{buys},{sells},{action}", colour, sameLine);
+            _output.Write($"{DateTime.UtcNow:G},{currency},{rate * baseAmount:F2},{delta * baseAmount:F2},{buys},{sells},{action}", colour, sameLine);
         }
     }
 }

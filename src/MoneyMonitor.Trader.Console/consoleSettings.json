@@ -8,11 +8,10 @@
   "PollInterval": "00:00:05",
   "TradeParameters": [
     {
-      "Currency": "ETH",
-      "BuyDropThreshold": 10,
-      "BuyAmount": 0.01,
-      "SellRiseThreshold": 20,
-      "SellAmount": 0.01 
+      "Currency": "SHIB",
+      "BaseAmount": 250000,
+      "BuyDropThreshold": 1.5,
+      "SellRiseThreshold": 2
     }
   ]
 }
